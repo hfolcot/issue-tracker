@@ -3,6 +3,10 @@
 {% block content %}
 
 <div class="container">
+    <div class="row">
+        <a href="{% url 'new_bug' %}"><button class="btn btn-secondary">New Bug</button></a>
+        <a href="{% url 'new_feature' %}"><button class="btn btn-primary">New Feature</button></a>
+    </div>
 	<div class="row">
         <div class="col s12 results z-depth-2" id="results">
             <div class="row">
