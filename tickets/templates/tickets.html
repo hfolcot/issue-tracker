@@ -3,7 +3,25 @@
 {% block content %}
 
 <div class="container">
-Tickets here
+	<div class="row">
+        <div class="col s12 results z-depth-2" id="results">
+            <div class="row">
+                {% for bug in bug_tickets %}
+                <div class="col s12 m6 l3">
+                    <div class="card" id="{{ bug.id }}">
+                        <div class="card-content">
+                            <p>{{ bug.title }}</p>
+                            <p><a href="{{ bug.get_absolute_url }}">Go</a></p>
+                        </div>
+                        <div>
+
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 </div>
 
 

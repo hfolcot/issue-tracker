@@ -20,5 +20,5 @@ from tickets import urls as tickets_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('tickets', include(tickets_urls))
+    path('', include(tickets_urls))
 ]
