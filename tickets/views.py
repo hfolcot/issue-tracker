@@ -23,12 +23,16 @@ def new_bug_view(request):
 	"""
 	Add a new bug ticket to the system
 	"""
-	new_bug_form = NewBugForm()
+	new_bug_form = NewBugForm(request.POST or None, request.FILES or None)
+	if new_bug_form.is_valid():
+		new_bug_form.save()
 	return render(request, 'new_ticket.html', {'form' : new_bug_form})
 
 def new_feature_view(request):
 	"""
 	Add a new bug ticket to the system
 	"""
-	new_feature_form = NewFeatureForm()
+	new_feature_form = NewFeatureForm(request.POST or None, request.FILES or None)
+	if new_feature_form.is_valid():
+		new_feature_form.save()
 	return render(request, 'new_ticket.html', {'form' : new_feature_form})

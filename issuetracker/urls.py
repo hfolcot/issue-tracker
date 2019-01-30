@@ -17,8 +17,10 @@ from django.contrib import admin
 from django.conf.urls import include
 from django.urls import path
 from tickets import urls as tickets_urls
+from tickets.views import all_tickets_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include(tickets_urls))
+    path('', all_tickets_view),
+    path('tickets/', include(tickets_urls))
 ]

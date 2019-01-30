@@ -5,7 +5,7 @@ from django.db import models
 class BugTicket(models.Model):
 	title = models.CharField(max_length=300, blank=False)
 	description = models.TextField()
-	screenshot = models.ImageField(upload_to='images', blank=True)
+	screenshot = models.ImageField(upload_to='images')
 	upvotes = models.IntegerField(default=0)
 	downvotes = models.IntegerField(default=0)
 	fixed = models.BooleanField(default=False)
@@ -14,7 +14,7 @@ class BugTicket(models.Model):
 		return self.title
 
 	def get_absolute_url(self):
-		return f"/bugs/{self.id}"
+		return f"tickets/bugs/{self.id}"
 
 class NewFeatureTicket(models.Model):
 	title = models.CharField(max_length=300, blank=False)
@@ -29,4 +29,4 @@ class NewFeatureTicket(models.Model):
 		return self.title
 
 	def get_absolute_url(self):
-		return f"/features/{self.id}"
+		return f"tickets/features/{self.id}"

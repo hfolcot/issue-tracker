@@ -2,6 +2,15 @@
 
 {% block content %}
 
-<h1>{{bug.title}}</h1>
+<h1>{{ bug.title }}</h1>
+<div class="row">
+	<div class="col-xs-12 col-md-8">
+	</div>
+	<div class="col-xs-12 col-md-4">
+		<p style="text-decoration: underline;">Screenshots</p>
+		<div class="screenshot" style="background-image: url('{{ MEDIA_URL }}{{ bug.screenshot }}')"></div>
+	</div>
+</div>
+
 
 {% endblock %}
