@@ -8,23 +8,28 @@
         <a href="{% url 'new_feature' %}"><button class="btn btn-primary">New Feature</button></a>
     </div>
 	<div class="row">
-        <div class="col s12 results z-depth-2" id="results">
-            <div class="row">
-                {% for bug in bug_tickets %}
-                <div class="col s12 m6 l3">
-                    <div class="card" id="{{ bug.id }}">
-                        <div class="card-content">
-                            <p>{{ bug.title }}</p>
-                            <p><a href="{{ bug.get_absolute_url }}">Go</a></p>
-                        </div>
-                        <div>
-
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
+        <ul class="nav nav-tabs">
+          <li class="nav-item">
+            <a class="nav-link active" href="#">Bugs</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">New Features</a>
+          </li>
+        </ul>
+    </div>
+    <div class="row" id="results">
+        {% for bug in bug_tickets %}
+        <div class="col-12 result">
+            <div class="card">
+              <h5 class="card-header">{{ bug.title }}</h5>
+              <div class="card-body">
+                <p class="card-text">{{ bug.description }}</p>
+                <a href="{{ bug.get_absolute_url }}" class="card-link">Open</a>
+              </div>
             </div>
         </div>
+        {% endfor %}
+
     </div>
 </div>
 
