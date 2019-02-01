@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'tickets',
     'storages',
+    'accounts',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -136,6 +138,8 @@ AWS_S3_CUSTOM_DOMAIN = "%s.s3.amazonaws.com" % AWS_STORAGE_BUCKET_NAME
 # STATICFILES_LOCATION = 'static'
 # STATICFILES_STORAGE = 'custom_storages.StaticStorage'
 
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 MEDIAFILES_LOCATION = 'media'
 DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
 
@@ -146,3 +150,16 @@ STATICFILES_DIRS = [
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
+
+MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"
+
+LOGIN_REDIRECT_URL = 'profile'
+LOGIN_URL = 'login'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')

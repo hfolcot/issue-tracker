@@ -18,9 +18,11 @@ from django.conf.urls import include
 from django.urls import path
 from tickets import urls as tickets_urls
 from tickets.views import all_tickets_view
+from accounts import urls as accounts_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', all_tickets_view),
-    path('tickets/', include(tickets_urls))
+    path('', all_tickets_view, name='home'),
+    path('tickets/', include(tickets_urls)),
+    path('accounts/', include(accounts_urls))
 ]

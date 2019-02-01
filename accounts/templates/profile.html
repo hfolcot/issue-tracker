@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<p>{{ user }}</p>
+{{ user.email }}
+{% if user.developer %}
+<p>Developer!</p>
+{% endif %}
+
+
+
+{% endblock %}
