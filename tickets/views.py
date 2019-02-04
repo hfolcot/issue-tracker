@@ -1,4 +1,7 @@
+from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render, get_object_or_404
+
+from comments.models import Comment
 from .models import BugTicket, NewFeatureTicket
 from .forms import NewBugForm, NewFeatureForm
 
@@ -12,12 +15,17 @@ def all_tickets_view(request):
 	new_features = NewFeatureTicket.objects.all()
 	return render(request, 'tickets.html', {'bug_tickets' : bug_tickets, 'new_features' : new_features})
 
+
 def bug_ticket_view(request, id):
 	"""
-	Opening the ticket to view specifics and add comments
+	Opening the bug ticket to view specifics and add comments
 	"""
 	bug = get_object_or_404(BugTicket, id=id)
-	return render(request, 'bug.html', {'bug' : bug})
+
+	#Get comments
+	comments = Comment.get_comments(BugTicket, bug.id)
+
+	return render(request, 'bug.html', {'bug' : bug, 'comments' : comments})
 
 def new_bug_view(request):
 	"""
@@ -27,6 +35,17 @@ def new_bug_view(request):
 	if new_bug_form.is_valid():
 		new_bug_form.save()
 	return render(request, 'new_ticket.html', {'form' : new_bug_form})
+
+def feature_ticket_view(request, id):
+	"""
+	Opening the feature ticket to view specifics and add comments
+	"""
+	feature = get_object_or_404(NewFeatureTicket, id=id)
+
+	#Get comments
+	comments = Comment.get_comments(NewFeatureTicket, feature.id)
+
+	return render(request, 'feature.html', {'feature' : feature})
 
 def new_feature_view(request):
 	"""
