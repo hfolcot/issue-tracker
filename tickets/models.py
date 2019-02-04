@@ -1,8 +1,11 @@
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 
 # Create your models here.
+
+
 
 class BugTicket(models.Model):
 	"""
@@ -24,6 +27,15 @@ class BugTicket(models.Model):
 
 	def get_absolute_url(self):
 		return f"tickets/bugs/{self.id}"
+
+	class Meta:
+		verbose_name = 'bugticket'
+
+	@property
+	def get_content_type(self):
+		instance = self
+		content_type = ContentType.objects.get_for_model(instance.__class__)
+		return content_type
 
 class NewFeatureTicket(models.Model):
 	title = models.CharField(max_length=300, blank=False)
