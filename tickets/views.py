@@ -5,7 +5,7 @@ from django.shortcuts import render, get_object_or_404, reverse
 from comments.forms import CommentForm
 from comments.models import Comment
 from .models import BugTicket, NewFeatureTicket
-from .forms import NewBugForm, NewFeatureForm
+from .forms import NewBugForm, NewFeatureForm, BugUpdateForm
 
 # Create your views here.
 
@@ -23,17 +23,22 @@ def bug_ticket_view(request, id):
 	Opening the bug ticket to view specifics and add comments
 	"""
 	bug = get_object_or_404(BugTicket, id=id)
+	#Assigning the bug and marking as resolved
+	update_form = BugUpdateForm(request.POST or None, instance=bug)
+	if update_form.is_valid():
+		update_form.save()
+
 	#Adding a new comment
 	initial_data = {
 		"content_type": bug.get_content_type,
 		"object_id": bug.id
 	}
-	form = CommentForm(request.POST or None, initial=initial_data)
-	if form.is_valid():
-		c_type = form.cleaned_data.get("content_type")
+	comment_form = CommentForm(request.POST or None, initial=initial_data)
+	if comment_form.is_valid():
+		c_type = comment_form.cleaned_data.get("content_type")
 		content_type = ContentType.objects.get(model=c_type)
-		oid = form.cleaned_data.get("object_id")
-		content_data = form.cleaned_data.get("content")
+		oid = comment_form.cleaned_data.get("object_id")
+		content_data = comment_form.cleaned_data.get("content")
 		new_comment, created = Comment.objects.get_or_create(
 							user=request.user,
 							content_type=content_type,
@@ -44,7 +49,7 @@ def bug_ticket_view(request, id):
 	#Get comments to display
 	comments = Comment.get_comments(BugTicket, bug.id)
 
-	return render(request, 'bug.html', {'bug' : bug, 'comments' : comments, 'comment_form' : form})
+	return render(request, 'bug.html', {'bug' : bug, 'comments' : comments, 'comment_form' : comment_form, 'update_form' : update_form})
 
 def new_bug_view(request):
 	"""

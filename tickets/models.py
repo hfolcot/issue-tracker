@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
@@ -11,6 +12,24 @@ class BugTicket(models.Model):
 	"""
 	Model for a ticket describing a bug
 	"""
+	#Choices for priority and status
+	CRITICAL = 'Critical'
+	HIGH = 'High'
+	MEDIUM = 'Medium'
+	LOW = 'Low'
+	PENDING = 'Pending'
+	INPROGRESS = 'In Progress'
+	FIXED = 'Fixed'
+
+	PRIORITY_CHOICES = ((CRITICAL, 'Critical'), 
+		(HIGH, 'High'), 
+		(MEDIUM, 'Medium'), 
+		(LOW, 'Low'))
+
+	STATUS_CHOICES = ((PENDING,'Pending'),
+		(INPROGRESS, 'In Progress'),
+		(FIXED, 'Fixed'))
+
 	customer = models.ForeignKey(settings.AUTH_USER_MODEL, 
 					default=1,
         			on_delete=models.CASCADE,)
@@ -20,7 +39,9 @@ class BugTicket(models.Model):
 	screenshot = models.ImageField(upload_to='images', blank=True)
 	upvotes = models.IntegerField(default=0)
 	downvotes = models.IntegerField(default=0)
-	fixed = models.BooleanField(default=False)
+	assignedto = models.CharField(max_length=150)
+	status = models.CharField(choices=STATUS_CHOICES, default=1, max_length=150)
+	priority = models.CharField(choices=PRIORITY_CHOICES, default='Medium', max_length=8, blank=True)
 
 	def __str__(self):
 		return self.title
