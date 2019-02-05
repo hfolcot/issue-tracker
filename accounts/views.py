@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import auth, messages
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegistrationForm
+from tickets.models import BugTicket, NewFeatureTicket
 
 # Create your views here.
 
@@ -32,4 +33,6 @@ def profile_view(request):
 	"""
 	See the profile page of the user currently logged in
 	"""
-	return render(request, 'profile.html')
+	bug_tickets = BugTicket.objects.all()
+	new_features = NewFeatureTicket.objects.all()
+	return render(request, 'profile.html', {'bugs' : bug_tickets, 'features' : NewFeatureTicket})

@@ -4,23 +4,34 @@
 
 <h1>{{ bug.title }}</h1>
 <div class="row">
-	<div class="col-xs-12 col-md-8">
+	<div class="col-12 col-md-8">
 		<p>{{ bug.description }}</p>
 		<h5>Comments:</h5>
-		<div>
-			<form method="POST">{% csrf_token %}
-				{{ comment_form|crispy }}
+		<form method="POST">{% csrf_token %}
+			{{ comment_form|crispy }}
 			<input type="submit" value="Post" class="btn btn-outline-dark">
-			</form>
-		</div>
+		</form>
 		<div class="comments">
+			<h5>Comments</h5>
 		{% for comment in comments %}
-		<div>{{ comment.content }}</div>
+		<div class="row card mt-1">
+			<div class="col-12 mt-1">
+				<img class="profile-pic rounded-circle" src="{{ comment.user.profile.image.url }}"/>
+				<span>
+					<strong>{{ comment.user }}</strong> 
+					<small>on {{ comment.timestamp.date }} at {{ comment.timestamp.time }}</small>
+				</span>
+			</div>
+			<div class="col-12">
+				<p>{{ comment.content }}</p>
+			</div>
+		</div>
+		
 		{% endfor %}
 		</div>
 
 	</div>
-	<div class="col-xs-12 col-md-4">
+	<div class="col-12 col-md-4">
 		<p style="text-decoration: underline;">Screenshots</p>
 		<div class="screenshot" style="background-image: url('{{ MEDIA_URL }}{{ bug.screenshot }}')"></div>
 	</div>

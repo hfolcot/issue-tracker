@@ -4,15 +4,28 @@
 
 
 <div class="row">
-	<div class="col-2">
-		<img class="profile-pic rounded-circle" src="{{ user.profile.image.url }}"/>
+	<div class="col-12 col-md-8">
+		<div class="col-9">
+			<img class="rounded-circle" style="width: 30%" src="{{ user.profile.image.url }}"/>
+			<span>
+				<strong>{{ user|capfirst }}'s IssueTracker</strong>
+			</span>
+		</div>
 	</div>
-	<div class="col-10">
-		<h5>{{ user|capfirst }}'s Profile</h5>
+	<div class="col-12 col-md-4 mt-2">
+		<a href="{% url 'reset_password' %}">
+			<button class="btn btn-success">Change Password</button>
+		</a>
 	</div>
 
-
-
+</div>
+<div class="row mt-2">
+		{% for bug in bugs %}
+			{% if bug.customer == user %}
+				<p>{{ bug.title }}</p><hr>
+				<p>{{ bug.customer }}</p><hr>
+			{% endif %}
+		{% endfor %}
 </div>
 
 {% endblock %}
