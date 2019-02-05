@@ -2,12 +2,17 @@
 
 {% block content %}
 
-<p>{{ user }}</p>
-{{ user.email }}
-{% if user.developer %}
-<p>Developer!</p>
-{% endif %}
+
+<div class="row">
+	<div class="col-2">
+		<img class="profile-pic rounded-circle" src="{{ user.profile.image.url }}"/>
+	</div>
+	<div class="col-10">
+		<h5>{{ user|capfirst }}'s Profile</h5>
+	</div>
 
 
+
+</div>
 
 {% endblock %}
