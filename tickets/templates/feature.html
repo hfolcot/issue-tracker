@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<h1>{{ feature.title }}</h1>
+<div class="row">
+	<div class="col-xs-12 col-md-8">
+		<p>{{ feature.description }}</p>
+		<h5>Comments:</h5>
+		<div>
+			<form method="POST">{% csrf_token %}
+				{{ comment_form|crispy }}
+			<input type="submit" value="Post" class="btn btn-outline-dark">
+			</form>
+		</div>
+		<div class="comments">
+		{% for comment in comments %}
+			<div>{{ comment.content }}</div>
+		{% endfor %}
+		</div>
+	</div>
+</div>
+
+
+{% endblock %}

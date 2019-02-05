@@ -7,30 +7,44 @@
         <a href="{% url 'new_bug' %}"><button class="btn btn-secondary">New Bug</button></a>
         <a href="{% url 'new_feature' %}"><button class="btn btn-primary">New Feature</button></a>
     </div>
-	<div class="row">
-        <ul class="nav nav-tabs">
-          <li class="nav-item">
-            <a class="nav-link active" href="#">Bugs</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">New Features</a>
-          </li>
-        </ul>
-    </div>
-    <div class="row" id="results">
-        {% for bug in bug_tickets %}
-        <div class="col-12 result">
-            <div class="card">
-              <h5 class="card-header">{{ bug.title }}</h5>
-              <div class="card-body">
-                <p class="card-text">{{ bug.description }}</p>
-                <a href="{{ bug.get_absolute_url }}" class="card-link">Open</a>
-              </div>
-            </div>
-        </div>
-        {% endfor %}
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link active"  data-toggle="tab" href="#bug-results" role="tab" aria-selected="true">Bugs</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" data-toggle="tab" href="#feature-results" role="tab" aria-selected="true">Features</a>
+  </li>
+</ul>
 
-    </div>
+<div class="tab-content">
+  <div id="bug-results" class="tab-pane fade show active" role="tabpanel" aria-labelledby="bug-tab">
+    <h3>Bugs</h3>
+    {% for bug in bug_tickets %}
+      <div class="col-12 result">
+        <div class="card">
+          <h5 class="card-header">{{ bug.title }}</h5>
+          <div class="card-body">
+            <p class="card-text">{{ bug.description }}</p>
+            <a href="{{ bug.get_absolute_url }}" class="card-link">Open</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  <div id="feature-results" class="tab-pane fade" role="tabpanel" aria-labelledby="features-tab">
+    <h3>Suggested Features</h3>
+      {% for feature in new_features %}
+      <div class="col-12 result">
+          <div class="card">
+            <h5 class="card-header">{{ feature.title }}</h5>
+            <div class="card-body">
+              <p class="card-text">{{ feature.description }}</p>
+              <a href="{{ feature.get_absolute_url }}" class="card-link">Open</a>
+            </div>
+          </div>
+      </div>
+      {% endfor %}
+  </div>
 </div>
 
 

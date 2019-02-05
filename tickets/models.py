@@ -51,3 +51,12 @@ class NewFeatureTicket(models.Model):
 
 	def get_absolute_url(self):
 		return f"tickets/features/{self.id}"
+
+	class Meta:
+		verbose_name = 'newfeatureticket'
+
+	@property
+	def get_content_type(self):
+		instance = self
+		content_type = ContentType.objects.get_for_model(instance.__class__)
+		return content_type
