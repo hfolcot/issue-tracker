@@ -1,12 +1,15 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+<div class="row mb-5">
+	<a href="{% url 'news' %}" class="btn btn-outline-secondary"><i class="fas fa-angle-double-left"></i> Back to Latest News</a>
+</div>
 <div class="article-heading">
 	<h2>{{ article.title }}</h2>
 </div>
 <div class="col-12 d-flex justify-content-end align-items-end">
 	
-	<small>By {{ article.author|capfirst }} on {{ article.timestamp }}</small>
+	<small>By {{ profile.first_name|capfirst }} {{ profile.last_name|capfirst }} on {{ article.timestamp }}</small>
 	<img src="{{ profile.get_image_url }}" class="profile-pic rounded-circle" style='align-self: center'/>
 </div>
 <hr>
@@ -14,20 +17,24 @@
 <p>{{ article.content }}</p>
 </div>
 <div class="row">
-	<div class="col-12 col-sm-6 offset-sm-3">
+	<div class="col-12 col-sm-6">
 		<h5>Add a comment:</h5>
 		<form method="POST">{% csrf_token %}
 			{{ comment_form|crispy }}
 			<input type="submit" value="Post" class="btn btn-outline-dark">
 		</form>
 		<div class="comments">
-			<h6>Previous comments:</h6>
+		{% if not comments %}
+		<h6>No comments yet</h6>
+		{% else %}
+		<h6>Previous comments:</h6>
+		{% endif %}
 		{% for comment in comments %}
 		<div class="row card mt-1">
 			<div class="col-12 mt-1">
 				<img class="profile-pic rounded-circle" src="{{ comment.user.profile.image.url }}"/>
 				<span>
-					<strong>{{ comment.user }}</strong> 
+					<strong>{{ comment.user.profile.first_name }} {{ comment.user.profile.last_name }}</strong> 
 					<small>on {{ comment.timestamp.date }} at {{ comment.timestamp.time }}</small>
 				</span>
 			</div>
