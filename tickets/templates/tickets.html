@@ -2,51 +2,58 @@
 
 {% block content %}
 
-    <div class="row">
-      <div class="col-3 offset-3">
-        <a href="{% url 'new_bug' %}"><button class="btn btn-primary">Report a Bug</button></a>
-      </div>
-      <div class="col-3">
-        <a href="{% url 'new_feature' %}"><button class="btn btn-success">Suggest a New Feature</button></a>
-      </div>
-    </div>
-<ul class="nav nav-tabs">
-  <li class="nav-item">
-    <a class="nav-link active"  data-toggle="tab" href="#bug-results" role="tab" aria-selected="true">Bugs</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" data-toggle="tab" href="#feature-results" role="tab" aria-selected="false">Features</a>
-  </li>
-</ul>
-
+<div class="row">
+  <div class="col-3 offset-3">
+    <a href="{% url 'new_bug' %}"><button class="btn btn-primary">Report a Bug</button></a>
+  </div>
+  <div class="col-3">
+    <a href="{% url 'new_feature' %}"><button class="btn btn-success">Suggest a New Feature</button></a>
+  </div>
+</div>
+<div role="tablist">
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link active"  data-toggle="tab" href="#bug-results" role="tab" aria-selected="true">Bugs</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#feature-results" role="tab" aria-selected="false">Features</a>
+    </li>
+  </ul>
+</div>
 <div class="tab-content">
   <div id="bug-results" class="tab-pane fade show active" role="tabpanel" aria-labelledby="bug-tab">
     <h3>Bugs</h3>
-    <div id="accordion">
+    <div id="accordion-bugs">
       {% for bug in bug_tickets %}
-      <div class="card mt-1">
-        <div class="card-header d-flex justify-content-between">
-          <h6 class="mt-2" data-toggle="collapse" data-target="#description{{ bug.id }}" aria-expanded="false" aria-controls="collapseBug"><i class="fas fa-caret-down"></i>   {{ bug.title }}</h6>    
-          <a href="{{ bug.get_absolute_url }}" class="btn btn-primary">Open</a>
+        {% ifnotequal bug.status 'Fixed' %}
+        <div class="card mt-1">
+          <div class="card-header d-flex justify-content-between">
+            <h6 class="mt-1" data-toggle="collapse" data-target="#description{{ bug.id }}" aria-expanded="false" aria-controls="collapseBug"><i class="fas fa-caret-down"></i>   {{ bug.title }}</h6>    
+            {% if bug.priority == 'Critical' %}
+            <h6 class='mt-2 text-danger'>Critical Priority</h6>
+            {% elif bug.priority == 'High' %}
+            <h6 class='mt-2 text-warning'>High Priority</h6>
+            {% endif %}
+            <a href="{{ bug.get_absolute_url }}" class="btn btn-primary">Open</a>
+          </div>
+          <div class="card-body collapse" id="bugdescription{{ bug.id }}" aria-labelledby="bug{{ bug.id }}" data-parent="#accordion-bugs">
+            <p class="card-text">{{ bug.description }}</p>
+          </div>
         </div>
-        <div class="card-body collapse" id="description{{ bug.id }}" aria-labelledby="bug{{ bug.id }}" data-parent="#accordion">
-          <p class="card-text">{{ bug.description }}</p>
-
-        </div>
-      </div>
+        {% endifnotequal %}
       {% endfor %}
     </div>
   </div>
   <div id="feature-results" class="tab-pane fade" role="tabpanel" aria-labelledby="features-tab">
     <h3>Suggested Features</h3>
-    <div id="accordion">
+    <div id="accordion-features">
       {% for feature in new_features %}
       <div class="card mt-1">
         <div class="card-header d-flex justify-content-between">
           <h6 class="mt-2" data-toggle="collapse" data-target="#description{{ feature.id }}" aria-expanded="false" aria-controls="collapseFeature"><i class="fas fa-caret-down"></i>   {{ feature.title }}</h6>    
           <a href="{{ feature.get_absolute_url }}" class="btn btn-primary">Open</a>
         </div>
-        <div class="card-body collapse" id="description{{ feature.id }}" aria-labelledby="feature{{ feature.id }}" data-parent="#accordion">
+        <div class="card-body collapse" id="featuredescription{{ feature.id }}" aria-labelledby="feature{{ feature.id }}" data-parent="#accordion-features">
           <p class="card-text">{{ feature.description }}</p>
 
         </div>
@@ -54,7 +61,7 @@
       {% endfor %}
     </div>
   </div>
-
+</div>
 
 
 {% endblock %}

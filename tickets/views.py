@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, reverse
@@ -27,6 +28,7 @@ def bug_ticket_view(request, id):
 	update_form = BugUpdateForm(request.POST or None, instance=bug)
 	if update_form.is_valid():
 		update_form.save()
+		messages.success(request, f"Ticket Updated")
 
 	#Adding a new comment
 	initial_data = {

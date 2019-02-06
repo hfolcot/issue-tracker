@@ -5,9 +5,21 @@ from django.db import models
 
 class Profile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
+	first_name = models.CharField(max_length=50)
+	last_name = models.CharField(max_length=50)
 	image = models.ImageField(default='profile_pics/default.jpg', upload_to='profile_pics')
-	developer = models.BooleanField(default=False)
 	rating = models.IntegerField(default=0)
 
 	def __str__(self):
-		return f'{self.user.username}'
+		return f'%s %s' % (self.first_name, self.last_name)
+
+	def get_image_url(self):
+		return f"{self.image.url}"
+
+class DeveloperProfile(models.Model):
+	user = models.OneToOneField(User, on_delete=models.CASCADE)
+	first_name = models.CharField(max_length=50)
+	last_name = models.CharField(max_length=50)
+
+	def __str__(self):
+		return f'%s %s' % (self.first_name, self.last_name)

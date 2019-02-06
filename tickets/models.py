@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
+from accounts.models import DeveloperProfile
 
 # Create your models here.
 
@@ -30,6 +31,8 @@ class BugTicket(models.Model):
 		(INPROGRESS, 'In Progress'),
 		(FIXED, 'Fixed'))
 
+
+
 	customer = models.ForeignKey(settings.AUTH_USER_MODEL, 
 					default=1,
         			on_delete=models.CASCADE,)
@@ -39,8 +42,8 @@ class BugTicket(models.Model):
 	screenshot = models.ImageField(upload_to='images', blank=True)
 	upvotes = models.IntegerField(default=0)
 	downvotes = models.IntegerField(default=0)
-	assignedto = models.CharField(max_length=150)
-	status = models.CharField(choices=STATUS_CHOICES, default=1, max_length=150)
+	assigned = models.ForeignKey(DeveloperProfile, on_delete=models.SET('Unassigned'))
+	status = models.CharField(choices=STATUS_CHOICES, default=PENDING, max_length=150, blank=True)
 	priority = models.CharField(choices=PRIORITY_CHOICES, default='Medium', max_length=8, blank=True)
 
 	def __str__(self):
@@ -51,6 +54,7 @@ class BugTicket(models.Model):
 
 	class Meta:
 		verbose_name = 'bugticket'
+		ordering = 	['priority']
 
 	@property
 	def get_content_type(self):
