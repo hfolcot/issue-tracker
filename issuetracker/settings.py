@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     #custom
     'accounts',
     'comments',
+    'news',
     'storages',
     'tickets',
 

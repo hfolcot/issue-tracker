@@ -47,7 +47,7 @@
             About
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarAboutDropdown">
-            <a class="dropdown-item" href="#">Latest News</a>
+            <a class="dropdown-item" href="{% url 'news' %}">Latest News</a>
             <a class="dropdown-item" href="#">What is UnicornAttractor?</a>
             <a class="dropdown-item" href="#">Statistics</a>
             <a class="dropdown-item" href="#">Contact</a>
@@ -69,11 +69,11 @@
     </div>
   {% endif %}
 
-<div class="row">
-  <div class="col-12 col-md-8 offset-md-2 main-section">
-    {% block content %} {% endblock %}
+  <div class="row">
+    <div class="col-12 col-md-8 offset-md-2 main-section">
+      {% block content %} {% endblock %}
+    </div>
   </div>
-</div>
 
 </div>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

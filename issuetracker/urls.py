@@ -19,10 +19,12 @@ from django.urls import path
 from tickets import urls as tickets_urls
 from tickets.views import all_tickets_view
 from accounts import urls as accounts_urls
+from news import urls as blog_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', all_tickets_view, name='home'),
     path('tickets/', include(tickets_urls)),
-    path('accounts/', include(accounts_urls))
+    path('accounts/', include(accounts_urls)),
+    path('blog/', include(blog_urls))
 ]
