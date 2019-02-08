@@ -3,8 +3,9 @@
 {% block content %}
 
 <form method="POST">
-{% csrf_token %}
-{{ form|crispy }}
-<button type="submit" class="btn btn-success">Publish</button>
+	{% csrf_token %}
+	{{ form|crispy }}
+	<small>Article content can be written in either <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet"><strong>markdown</strong></a> (recommended) or <strong>plain text</strong>.</small><br>
+	<button type="submit" class="btn btn-success mt-2">Publish</button>
 </form>
 {% endblock %}

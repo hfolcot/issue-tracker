@@ -4,6 +4,11 @@
 <div class="row mb-5">
 	<a href="{% url 'news' %}" class="btn btn-outline-secondary"><i class="fas fa-angle-double-left"></i> Back to Latest News</a>
 </div>
+{% if user.is_staff %}
+	<div class="d-flex flex-row-reverse">
+		<a href="{% url 'edit_article' article.id %}" class="btn btn-secondary"><i class="fas fa-plus"></i>  Edit Article</a>
+	</div>
+{% endif %}
 <div class="article-heading">
 	<h2>{{ article.title }}</h2>
 </div>
@@ -14,8 +19,9 @@
 </div>
 <hr>
 <div class="article-content">
-<p>{{ article.content }}</p>
+{{ article.content }}
 </div>
+<hr>
 <div class="row">
 	<div class="col-12 col-sm-6">
 		<h5>Add a comment:</h5>

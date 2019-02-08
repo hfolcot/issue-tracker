@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404, reverse
+from django.shortcuts import render, get_object_or_404, reverse, redirect
 
 from accounts.models import Profile
 from comments.forms import CommentForm
@@ -42,8 +42,13 @@ def article_view(request, id):
 
 	return render(request, 'article.html', {'article': article, 'profile': profile, 'comments': comments, 'comment_form':comment_form})
 
-def new_article_view(request):
-	form = NewArticleForm(request.POST or None)
-	if form.is_valid():
-		form.save()
+def new_edit_article_view(request, id=None):
+	article = get_object_or_404(Article, id=id) if id else None
+	if request.method == 'POST':
+		form = NewArticleForm(request.POST)
+		if form.is_valid():
+			article = form.save()
+			return redirect(article_view, article.id)
+	else:
+		form = NewArticleForm(instance=article)
 	return render(request, 'new_article.html', {'form':form})
