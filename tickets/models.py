@@ -22,6 +22,8 @@ class BugTicket(models.Model):
 	INPROGRESS = 'In Progress'
 	FIXED = 'Fixed'
 
+	UNASSIGNED = 4 # ID of record in DeveloperProfile objects named 'Unassigned'
+
 	PRIORITY_CHOICES = ((CRITICAL, 'Critical'), 
 		(HIGH, 'High'), 
 		(MEDIUM, 'Medium'), 
@@ -42,7 +44,7 @@ class BugTicket(models.Model):
 	screenshot = models.ImageField(upload_to='images', blank=True)
 	upvotes = models.IntegerField(default=0)
 	downvotes = models.IntegerField(default=0)
-	assigned = models.ForeignKey(DeveloperProfile, on_delete=models.SET('Unassigned'))
+	assigned = models.ForeignKey(DeveloperProfile, default=UNASSIGNED, on_delete=models.SET('Unassigned'))
 	status = models.CharField(choices=STATUS_CHOICES, default=PENDING, max_length=150, blank=True)
 	priority = models.CharField(choices=PRIORITY_CHOICES, default='Medium', max_length=8, blank=True)
 

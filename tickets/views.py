@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404, reverse
+from django.shortcuts import render, get_object_or_404, reverse, redirect
 
 from comments.forms import CommentForm
 from comments.models import Comment
@@ -59,7 +59,8 @@ def new_bug_view(request):
 	"""
 	new_bug_form = NewBugForm(request.POST or None, request.FILES or None)
 	if new_bug_form.is_valid():
-		new_bug_form.save()
+		bug = new_bug_form.save()
+		return redirect(bug_ticket_view, bug.id)
 	return render(request, 'new_ticket.html', {'form' : new_bug_form})
 
 def feature_ticket_view(request, id):
@@ -85,7 +86,7 @@ def feature_ticket_view(request, id):
 							object_id=oid,
 							content=content_data
 							)
-		return HttpResponseRedirect(reverse('feature', args=(feature.id,)))
+		return HttpResponseRedirect('feature', args=(feature.id,))
 
 	#Get comments
 	comments = Comment.get_comments(NewFeatureTicket, feature.id)
@@ -98,5 +99,6 @@ def new_feature_view(request):
 	"""
 	new_feature_form = NewFeatureForm(request.POST or None, request.FILES or None)
 	if new_feature_form.is_valid():
-		new_feature_form.save()
+		feature = new_feature_form.save()
+		return redirect(feature_ticket_view, feature.id)
 	return render(request, 'new_ticket.html', {'form' : new_feature_form})

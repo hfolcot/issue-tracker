@@ -28,16 +28,18 @@
         {% ifnotequal bug.status 'Fixed' %}
         <div class="card mt-1">
           <div class="card-header d-flex justify-content-between">
-            <h6 class="mt-1" data-toggle="collapse" data-target="#description{{ bug.id }}" aria-expanded="false" aria-controls="collapseBug"><i class="fas fa-caret-down"></i>   {{ bug.title }}</h6>    
+            <h6 class="mt-1" data-toggle="collapse" data-target="#bugdescription{{ bug.id }}" aria-expanded="false" aria-controls="collapseBug"><i class="fas fa-caret-down"></i>   {{ bug.title }}</h6>    
             {% if bug.priority == 'Critical' %}
             <h6 class='mt-2 text-danger'>Critical Priority</h6>
             {% elif bug.priority == 'High' %}
             <h6 class='mt-2 text-warning'>High Priority</h6>
+            {% else %}
+            <h6 class='mt-2 text-secondary'>{{ bug.priority }} Priority</h6>
             {% endif %}
             <a href="{{ bug.get_absolute_url }}" class="btn btn-primary">Open</a>
           </div>
           <div class="card-body collapse" id="bugdescription{{ bug.id }}" aria-labelledby="bug{{ bug.id }}" data-parent="#accordion-bugs">
-            <p class="card-text">{{ bug.description }}</p>
+            <p class="card-text">{{ bug.description|truncatewords:100 }}</p>
           </div>
         </div>
         {% endifnotequal %}
@@ -50,7 +52,7 @@
       {% for feature in new_features %}
       <div class="card mt-1">
         <div class="card-header d-flex justify-content-between">
-          <h6 class="mt-2" data-toggle="collapse" data-target="#description{{ feature.id }}" aria-expanded="false" aria-controls="collapseFeature"><i class="fas fa-caret-down"></i>   {{ feature.title }}</h6>    
+          <h6 class="mt-2" data-toggle="collapse" data-target="#featuredescription{{ feature.id }}" aria-expanded="false" aria-controls="collapseFeature"><i class="fas fa-caret-down"></i>   {{ feature.title }}</h6>    
           <a href="{{ feature.get_absolute_url }}" class="btn btn-primary">Open</a>
         </div>
         <div class="card-body collapse" id="featuredescription{{ feature.id }}" aria-labelledby="feature{{ feature.id }}" data-parent="#accordion-features">
