@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import auth, messages
 from django.contrib.auth.decorators import login_required
-from .forms import UserRegistrationForm
+from .forms import UserRegistrationForm, UpdateProfilePicture
 from tickets.models import BugTicket, NewFeatureTicket
 
 # Create your views here.
@@ -35,4 +35,17 @@ def profile_view(request):
 	"""
 	bug_tickets = BugTicket.objects.all()
 	new_features = NewFeatureTicket.objects.all()
-	return render(request, 'profile.html', {'bugs' : bug_tickets, 'features' : NewFeatureTicket})
+	if request.method == 'POST':
+		img_upload_form = UpdateProfilePicture(request.POST, request.FILES, instance=request.user.profile)
+		if img_upload_form.is_valid():
+			img_upload_form.save()
+			messages.success(request, "Profile Updated")
+			return redirect('profile')
+
+	else:	
+		img_upload_form = UpdateProfilePicture()
+	context = {'bugs' : bug_tickets, 
+		'features' : NewFeatureTicket, 
+		'img_upload_form': img_upload_form
+	}
+	return render(request, 'profile.html', context)

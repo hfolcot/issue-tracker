@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load crispy_forms_tags %}
 {% block content %}
 
 
@@ -8,14 +8,13 @@
 		<div class="col-9">
 			<img class="rounded-circle" style="width: 30%" src="{{ user.profile.image.url }}"/>
 			<span>
-				<strong>{{ user|capfirst }}'s IssueTracker</strong>
+				<strong>{{ user.profile.first_name|capfirst }}'s IssueTracker</strong>
 			</span>
 		</div>
 	</div>
 	<div class="col-12 col-md-4 mt-2">
-		<a href="{% url 'reset_password' %}">
-			<button class="btn btn-success">Change Password</button>
-		</a>
+		<a href="{% url 'reset_password' %}"class="btn btn-secondary btn-sm mb-2">Change Password</a>
+		<button data-toggle="modal" data-target="#profileImgModal" class="btn btn-success btn-sm">Change Profile Picture</button>
 	</div>
 
 </div>
@@ -26,6 +25,30 @@
 				<p>{{ bug.customer }}</p><hr>
 			{% endif %}
 		{% endfor %}
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="profileImgModal" tabindex="-1" role="dialog" aria-labelledby="profileImgModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      	<div class="modal-header">
+        	<h5 class="modal-title" id="profileImgModalLabel">Select a File</h5>
+        	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          		<span aria-hidden="true">&times;</span>
+        	</button>
+      	</div>
+      	<form method="POST" enctype="multipart/form-data">
+	      	<div class="modal-body">
+	      		{% csrf_token %}
+	        	{{ img_upload_form|crispy }}
+	      	</div>
+	      	<div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+		        <button type="submit" class="btn btn-primary">Upload</button>
+	      	</div>
+  		</form>
+    </div>
+  </div>
 </div>
 
 {% endblock %}

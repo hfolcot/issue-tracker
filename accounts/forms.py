@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
 
+from .models import Profile
+
 class UserRegistrationForm(UserCreationForm):
 	"""
 	New user registration form
@@ -19,3 +21,11 @@ class UserRegistrationForm(UserCreationForm):
 		if User.objects.filter(email=email).exclude(username=username):
 			raise forms.ValidationError(u'Email address must be unique')
 		return email
+
+class UpdateProfilePicture(forms.ModelForm):
+	"""
+	Form to update the user's profile image
+	"""
+	class Meta:
+		model = Profile
+		fields = ['image']
