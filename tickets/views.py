@@ -11,29 +11,46 @@ from .forms import NewBugForm, NewFeatureForm, BugUpdateForm, FeatureUpdateForm
 
 # Create your views here.
 
-def all_tickets_view(request, query=None):
+def all_tickets_view(request):
 	"""
 	A home page showing all outstanding tickets
 	"""
-	bug_tickets = BugTicket.objects.all()
-	new_features = NewFeatureTicket.objects.all()
+	bug_tickets = BugTicket.objects.exclude(status='Fixed')
+	new_features = NewFeatureTicket.objects.exclude(status='Implemented')
+
+
 	#Search function
 	query = request.GET.get('query')
 	if query:
 		bug_tickets = bug_tickets.filter(
 				Q(title__icontains=query) |
 				Q(description__icontains=query) |
-				Q(customer__first_name__icontains=query)
+				Q(customer__first_name__icontains=query) |
+				Q(customer__last_name__icontains=query)
 				).distinct()
 			
 		new_features = new_features.filter(
 				Q(title__icontains=query) |
 				Q(description__icontains=query) |
-				Q(customer__first_name__icontains=query)
+				Q(customer__first_name__icontains=query) |
+				Q(customer__last_name__icontains=query)
 				).distinct()
 			
 	return render(request, 'tickets.html', {'bug_tickets' : bug_tickets, 'new_features' : new_features})
 
+def archives_view(request):
+	"""
+	Show all resolved tickets and new features
+	"""
+	bug_tickets = BugTicket.objects.filter(status='Fixed')
+	new_features = NewFeatureTicket.objects.filter(status='Implemented')
+	context = {
+		'bug_tickets' : bug_tickets, 
+		'new_features' : new_features,
+		'page_title' : "Archives"
+
+	}		
+	return render(request, 'tickets.html', context)
 
 def bug_ticket_view(request, id):
 	"""

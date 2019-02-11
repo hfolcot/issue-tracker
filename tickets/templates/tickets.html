@@ -3,12 +3,14 @@
 {% block content %}
 
 <div class="row">
-  <div class="col-3 offset-3">
-    <a href="{% url 'new_bug' %}"><button class="btn btn-danger">Report a Bug <i class="fas fa-bug"></i></button></a>
-  </div>
-  <div class="col-3">
-    <a href="{% url 'new_feature' %}"><button class="btn btn-success">Suggest a New Feature <i class="fas fa-star"></i></button></a>
-  </div>
+  {% if page_title %}
+    <div class="col-12 d-flex justify-content-center">
+    <h2>{{ page_title }}</h2>
+    </div>
+    <div class="col-12 d-flex justify-content-center">
+    <small>Tickets that have already been resolved</small>
+    </div>
+    {% endif %}
 </div>
 <div role="tablist">
   <ul class="nav nav-tabs">
@@ -25,10 +27,9 @@
     <h3>Bugs</h3>
     <div id="accordion-bugs">
       {% if not bug_tickets %}
-      <p>No bugs to show.</p>
+        <p>No bugs to show.</p>
       {% else %}
         {% for bug in bug_tickets %}
-          {% ifnotequal bug.status 'Fixed' %}
           <div class="card mt-1">
             <div class="card-header d-flex justify-content-between">
               <h6 class="mt-1" data-toggle="collapse" data-target="#bugdescription{{ bug.id }}" aria-expanded="false" aria-controls="collapseBug"><i class="fas fa-caret-down"></i>   {{ bug.title }}</h6>    
@@ -45,7 +46,6 @@
               <p class="card-text">{{ bug.description|truncatewords:100 }}</p>
             </div>
           </div>
-          {% endifnotequal %}
         {% endfor %}
       {% endif %}
     </div>

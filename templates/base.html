@@ -51,6 +51,18 @@
             <a class="dropdown-item" href="#">What is UnicornAttractor?</a>
             <a class="dropdown-item" href="#">Statistics</a>
             <a class="dropdown-item" href="#">Contact</a>
+            <a class="dropdown-item" href="{% url 'archives' %}">Archives</a>
+          </div>
+        </li>
+      </ul>
+      <ul class="navbar-nav mr-3">
+        <li class="nav-item dropdown active">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarNewTicketDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            New Ticket
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarNewTicketDropdown">
+            <a class="dropdown-item" href="{% url 'new_bug' %}">Report a Bug</a>
+            <a class="dropdown-item" href="{% url 'new_feature' %}">Suggest a New Feature</a>
           </div>
         </li>
       </ul>
