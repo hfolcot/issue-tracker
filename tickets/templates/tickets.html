@@ -40,6 +40,7 @@
               {% else %}
               <h6 class='mt-2 text-secondary'>{{ bug.priority }} Priority</h6>
               {% endif %}
+              <h6 class='mt-2 text-secondary'>{{ bug.get_last_comment.timestamp }}</h6>
               <a href="{{ bug.get_absolute_url }}" class="btn btn-primary">Open</a>
             </div>
             <div class="card-body collapse" id="bugdescription{{ bug.id }}" aria-labelledby="bug{{ bug.id }}" data-parent="#accordion-bugs">
@@ -47,6 +48,27 @@
             </div>
           </div>
         {% endfor %}
+        <ul class="pagination">
+          {% if bug_tickets.has_previous %}
+          <li class="page-item">
+            <a class='page-link' href="?page=1">&laquo; First</a>
+          </li>
+          <li class="page-item">
+            <a class='page-link' href="?page={{ bug_tickets.previous_page_number }}">Previous</a>
+          </li>
+          {% endif %}
+          <small class="mr-2 ml-2">
+              Page {{ bug_tickets.number }} of {{ bug_tickets.paginator.num_pages }}
+          </small>
+          {% if bug_tickets.has_next %}
+          <li class="page-item">
+            <a class='page-link' href="?page={{ bug_tickets.next_page_number }}">Next</a>
+          </li>
+          <li class="page-item">
+            <a class='page-link' href="?page={{ bug_tickets.paginator.num_pages }}">Last &raquo;</a>
+          </li>
+          {% endif %}
+        </ul>
       {% endif %}
     </div>
   </div>
@@ -68,6 +90,27 @@
           </div>
         </div>
         {% endfor %}
+        <ul class="pagination">
+          {% if new_features.has_previous %}
+          <li class="page-item">
+            <a class='page-link' href="?page=1">&laquo; First</a>
+          </li>
+          <li class="page-item">
+            <a class='page-link' href="?page={{ new_features.previous_page_number }}">Previous</a>
+          </li>
+          {% endif %}
+          <small class="mr-2 ml-2">
+              Page {{ new_features.number }} of {{ new_features.paginator.num_pages }}
+          </small>
+          {% if new_features.has_next %}
+          <li class="page-item">
+            <a class='page-link' href="?page={{ new_features.next_page_number }}">Next</a>
+          </li>
+          <li class="page-item">
+            <a class='page-link' href="?page={{ new_features.paginator.num_pages }}">Last &raquo;</a>
+          </li>
+          {% endif %}
+        </ul>
       {% endif %}
     </div>
   </div>

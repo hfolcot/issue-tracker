@@ -14,9 +14,42 @@
 			</form>
 		</div>
 		<div class="comments">
+			<h6>Previous comments:</h6>
 		{% for comment in comments %}
-			<div>{{ comment.content }}</div>
+		<div class="row card mt-1">
+			<div class="col-12 mt-1">
+				<img class="profile-pic rounded-circle" src="{{ comment.user.profile.image.url }}"/>
+				<span>
+					<strong>{{ comment.user.profile.first_name }} {{ comment.user.profile.last_name }}</strong> 
+					<small>on {{ comment.timestamp.date }} at {{ comment.timestamp.time }}</small>
+				</span>
+			</div>
+			<div class="col-12">
+				<p>{{ comment.content }}</p>
+			</div>
+		</div>
 		{% endfor %}
+		<ul class="pagination">
+          {% if comments.has_previous %}
+          <li class="page-item">
+            <a class='page-link' href="?page=1">&laquo; First</a>
+          </li>
+          <li class="page-item">
+            <a class='page-link' href="?page={{ comments.previous_page_number }}">Previous</a>
+          </li>
+          {% endif %}
+          <small class="mr-2 ml-2">
+              Page {{ comments.number }} of {{ comments.paginator.num_pages }}
+          </small>
+          {% if comments.has_next %}
+          <li class="page-item">
+            <a class='page-link' href="?page={{ comments.next_page_number }}">Next</a>
+          </li>
+          <li class="page-item">
+            <a class='page-link' href="?page={{ comments.paginator.num_pages }}">Last &raquo;</a>
+          </li>
+          {% endif %}
+        </ul>
 		</div>
 	</div>
 	<div class="col-12 col-md-4">

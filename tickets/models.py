@@ -5,6 +5,7 @@ from django.shortcuts import reverse
 from django.db import models
 
 from accounts.models import DeveloperProfile
+from comments.models import Comment
 from tickets import choices
 
 # Create your models here.
@@ -43,6 +44,13 @@ class BugTicket(models.Model):
 		content_type = ContentType.objects.get_for_model(instance.__class__)
 		return content_type
 
+	def get_last_comment(ticket_type, ticket_id):
+		#Get the most recent comment timestamp for the specified ticket
+		content_type = ContentType.objects.get_for_model(ticket_type)
+		oid = ticket_id
+		comment = Comment.objects.filter(content_type=content_type, object_id=oid).order_by('-id')[0]
+		return comment
+
 class NewFeatureTicket(models.Model):
 	customer = models.ForeignKey(settings.AUTH_USER_MODEL, null=True,
     			on_delete=models.CASCADE,)
@@ -64,6 +72,7 @@ class NewFeatureTicket(models.Model):
 
 	class Meta:
 		verbose_name = 'newfeatureticket'
+		ordering = 	['-contributions']
 
 	@property
 	def get_content_type(self):

@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
+from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, reverse, redirect
@@ -35,8 +36,20 @@ def all_tickets_view(request):
 				Q(customer__first_name__icontains=query) |
 				Q(customer__last_name__icontains=query)
 				).distinct()
-			
-	return render(request, 'tickets.html', {'bug_tickets' : bug_tickets, 'new_features' : new_features})
+
+	#Pagination
+	bug_paginator = Paginator(bug_tickets, 10) # Show 10 tickets per page
+	feature_paginator = Paginator(new_features, 10) # Show 10 tickets per page
+
+	page = request.GET.get('page')
+	bug_tickets = bug_paginator.get_page(page)
+	new_features = feature_paginator.get_page(page)
+	
+	context = {
+		'bug_tickets' : bug_tickets, 
+		'new_features' : new_features,
+	}
+	return render(request, 'tickets.html', context)
 
 def archives_view(request):
 	"""
@@ -44,6 +57,15 @@ def archives_view(request):
 	"""
 	bug_tickets = BugTicket.objects.filter(status='Fixed')
 	new_features = NewFeatureTicket.objects.filter(status='Implemented')
+
+	#Pagination
+	bug_paginator = Paginator(bug_tickets, 10) # Show 10 tickets per page
+	feature_paginator = Paginator(new_features, 10) # Show 10 tickets per page
+
+	page = request.GET.get('page')
+	bug_tickets = bug_paginator.get_page(page)
+	new_features = feature_paginator.get_page(page)
+
 	context = {
 		'bug_tickets' : bug_tickets, 
 		'new_features' : new_features,
@@ -83,8 +105,19 @@ def bug_ticket_view(request, id):
 		return HttpResponseRedirect(reverse('bug', args=(bug.id,)))
 	#Get comments to display
 	comments = Comment.get_comments(BugTicket, bug.id)
+	
+	#Pagination (comments)
+	comment_paginator = Paginator(comments, 10) # Show 10 tickets per page
+	page = request.GET.get('page')
+	comments = comment_paginator.get_page(page)
 
-	return render(request, 'bug.html', {'bug' : bug, 'comments' : comments, 'comment_form' : comment_form, 'update_form' : update_form})
+	#Context
+	context = {
+		'bug' : bug, 
+		'comments' : comments, 
+		'comment_form' : comment_form, 
+		'update_form' : update_form}
+	return render(request, 'bug.html', context)
 
 def new_bug_view(request):
 	"""
@@ -127,14 +160,21 @@ def feature_ticket_view(request, id):
 							object_id=oid,
 							content=content_data
 							)
-		return HttpResponseRedirect('feature', args=(feature.id,))
+		return HttpResponseRedirect(reverse('feature', args=(feature.id,)))
 
 	#Get comments
 	comments = Comment.get_comments(NewFeatureTicket, feature.id)
+
+	#Pagination (comments)
+	comment_paginator = Paginator(comments, 10) # Show 10 tickets per page
+	page = request.GET.get('page')
+	comments = comment_paginator.get_page(page)
+
 	context = {'feature' : feature, 
 		'comments' : comments, 
 		'comment_form' : form,
 		'update_form' : update_form}
+
 	return render(request, 'feature.html', context)
 
 def new_feature_view(request):
