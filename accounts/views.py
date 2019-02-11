@@ -33,8 +33,12 @@ def profile_view(request):
 	"""
 	See the profile page of the user currently logged in
 	"""
-	bug_tickets = BugTicket.objects.all()
-	new_features = NewFeatureTicket.objects.all()
+	if request.user.is_staff:
+		bug_tickets = BugTicket.objects.filter(assigned=request.user.developerprofile.id)
+		new_features = NewFeatureTicket.objects.filter(assigned=request.user.developerprofile.id)
+	else:
+		bug_tickets = BugTicket.objects.filter(customer=request.user)
+		new_features = NewFeatureTicket.objects.filter(customer=request.user)
 	if request.method == 'POST':
 		img_upload_form = UpdateProfilePicture(request.POST, request.FILES, instance=request.user.profile)
 		if img_upload_form.is_valid():
