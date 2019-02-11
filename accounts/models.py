@@ -6,8 +6,8 @@ from PIL import Image
 
 class Profile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
-	first_name = models.CharField(max_length=50)
-	last_name = models.CharField(max_length=50)
+	first_name = models.CharField(max_length=50, null=True)
+	last_name = models.CharField(max_length=50, null=True)
 	image = models.ImageField(default='profile_pics/default.jpg', upload_to='profile_pics')
 	rating = models.IntegerField(default=0)
 
@@ -20,8 +20,8 @@ class Profile(models.Model):
 
 class DeveloperProfile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
-	first_name = models.CharField(max_length=50)
-	last_name = models.CharField(max_length=50)
+	first_name = models.CharField(max_length=50, null=True)
+	last_name = models.CharField(max_length=50, null=True)
 
 	def __str__(self):
 		return f'%s %s' % (self.first_name, self.last_name)

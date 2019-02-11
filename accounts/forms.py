@@ -9,11 +9,10 @@ class UserRegistrationForm(UserCreationForm):
 	"""
 	New user registration form
 	"""
-	developer = forms.BooleanField(label="Tick this box if you are on the UnicornAttractor developer team!", required=False)
 
 	class Meta:
 		model = User
-		fields = ['username', 'email', 'password1', 'password2', 'developer']
+		fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
 
 	def clean_email(self):
 		email = self.cleaned_data.get('email')
