@@ -44,11 +44,15 @@ class BugTicket(models.Model):
 		content_type = ContentType.objects.get_for_model(instance.__class__)
 		return content_type
 
-	def get_last_comment(ticket_type, ticket_id):
+	def get_last_comment(self):
 		#Get the most recent comment timestamp for the specified ticket
-		content_type = ContentType.objects.get_for_model(ticket_type)
-		oid = ticket_id
-		comment = Comment.objects.filter(content_type=content_type, object_id=oid).order_by('-id')[0]
+		content_type = ContentType.objects.get_for_model(BugTicket)
+		oid = self.pk
+		try:
+			comment = Comment.objects.filter(content_type=content_type, object_id=oid).order_by('-id')[0]
+			comment = comment.timestamp
+		except:
+			comment = ''
 		return comment
 
 class NewFeatureTicket(models.Model):
@@ -79,3 +83,14 @@ class NewFeatureTicket(models.Model):
 		instance = self
 		content_type = ContentType.objects.get_for_model(instance.__class__)
 		return content_type
+
+	def get_last_comment(self):
+		#Get the most recent comment timestamp for the specified ticket
+		content_type = ContentType.objects.get_for_model(NewFeatureTicket)
+		oid = self.pk
+		try:
+			comment = Comment.objects.filter(content_type=content_type, object_id=oid).order_by('-id')[0]
+			comment = comment.timestamp
+		except:
+			comment = ''
+		return comment

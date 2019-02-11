@@ -40,7 +40,7 @@
               {% else %}
               <h6 class='mt-2 text-secondary'>{{ bug.priority }} Priority</h6>
               {% endif %}
-              <h6 class='mt-2 text-secondary'>{{ bug.get_last_comment.timestamp }}</h6>
+              <h6 class='mt-2 text-secondary'>{{ bug.get_last_comment }}</h6>
               <a href="{{ bug.get_absolute_url }}" class="btn btn-primary">Open</a>
             </div>
             <div class="card-body collapse" id="bugdescription{{ bug.id }}" aria-labelledby="bug{{ bug.id }}" data-parent="#accordion-bugs">
@@ -81,7 +81,8 @@
         {% for feature in new_features %}
         <div class="card mt-1">
           <div class="card-header d-flex justify-content-between">
-            <h6 class="mt-2" data-toggle="collapse" data-target="#featuredescription{{ feature.id }}" aria-expanded="false" aria-controls="collapseFeature"><i class="fas fa-caret-down"></i>   {{ feature.title }}</h6>    
+            <h6 class="mt-2" data-toggle="collapse" data-target="#featuredescription{{ feature.id }}" aria-expanded="false" aria-controls="collapseFeature"><i class="fas fa-caret-down"></i>   {{ feature.title }}</h6>
+            <h6 class='mt-2 text-secondary'>{{ feature.get_last_comment }}</h6>    
             <a href="{{ feature.get_absolute_url }}" class="btn btn-primary">Open</a>
           </div>
           <div class="card-body collapse" id="featuredescription{{ feature.id }}" aria-labelledby="feature{{ feature.id }}" data-parent="#accordion-features">
