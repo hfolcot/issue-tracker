@@ -1,30 +1,142 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-<div class="row">
-  {% if page_title %}
+  
+{% if page_title %}
+  <div class="row">
     <div class="col-12 d-flex justify-content-center">
     <h2>{{ page_title }}</h2>
     </div>
     <div class="col-12 d-flex justify-content-center">
     <small>Tickets that have already been resolved</small>
     </div>
-    {% endif %}
+  </div>
+{% endif %}
+
+<!-- Larger Screens Only -->
+<div class="d-none d-sm-block">
+  <div role="tablist">
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link active"  data-toggle="tab" href="#bug-results" role="tab" aria-selected="true">Bugs</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#feature-results" role="tab" aria-selected="false">Features</a>
+      </li>
+    </ul>
+  </div>
+  <div class="tab-content">
+    <div id="bug-results" class="tab-pane fade show active" role="tabpanel" aria-labelledby="bug-tab">
+      <h3>Bugs</h3>
+      <div id="accordion-bugs">
+        {% if not bug_tickets %}
+          <p>No bugs to show.</p>
+        {% else %}
+          <table class="table table-hover table-striped">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Customer</th>
+                <th scope="col">Title</th>
+                <th scope="col">Priority</th>
+                <th scope="col">Last Comment</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for bug in bug_tickets %}
+
+                <tr>
+                  <th scope="row">{{ bug.id }}</th>
+                  <td>{{ bug.customer.first_name }} {{ bug.customer.last_name }}</td>
+                  <td>{{ bug.title }}</td>
+                  {% if bug.priority == 'Critical' %}
+                  <td class='text-danger'>{{ bug.priority }}</td>
+                  {% elif bug.priority == 'High' %}
+                  <td class='text-warning'>{{ bug.priority }}</td>
+                  {% else %}
+                  <td class='text-secondary'>{{ bug.priority }}</td>
+                  {% endif %}  
+                  <td>{{ bug.get_last_comment }}</td>
+                  <td><a href="{{ bug.get_absolute_url }}" class="btn btn-primary">Open</a></td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% endif %}
+      </div>
+    </div>
+    <div id="feature-results" class="tab-pane fade" role="tabpanel" aria-labelledby="features-tab">
+      <h3>Suggested Features</h3>
+      <div id="accordion-features">
+        {% if not new_features %}
+        <p>No features to show.</p>
+        {% else %}
+          <table class="table table-hover table-striped">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Customer</th>
+                <th scope="col">Title</th>
+                <th scope="col">Last Comment</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for feature in new_features %}
+                <tr>
+                  <th scope="row">{{ feature.id }}</th>
+                  <td>{{ feature.customer.first_name }} {{ feature.customer.last_name }}</td>
+                  <td>{{ feature.title }}</td> 
+                  <td>{{ feature.get_last_comment }}</td>
+                  <td><a href="{{ feature.get_absolute_url }}" class="btn btn-primary">Open</a></td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% endif %}
+      </div>
+    </div>
+          <ul class="pagination">
+            {% if new_features.has_previous %}
+            <li class="page-item">
+              <a class='page-link' href="?page=1">&laquo; First</a>
+            </li>
+            <li class="page-item">
+              <a class='page-link' href="?page={{ new_features.previous_page_number }}">Previous</a>
+            </li>
+            {% endif %}
+            <small class="mr-2 ml-2">
+                Page {{ new_features.number }} of {{ new_features.paginator.num_pages }}
+            </small>
+            {% if new_features.has_next %}
+            <li class="page-item">
+              <a class='page-link' href="?page={{ new_features.next_page_number }}">Next</a>
+            </li>
+            <li class="page-item">
+              <a class='page-link' href="?page={{ new_features.paginator.num_pages }}">Last &raquo;</a>
+            </li>
+            {% endif %}
+          </ul>
+      </div>
+    </div>
+  </div>
 </div>
-<div role="tablist">
-  <ul class="nav nav-tabs">
-    <li class="nav-item">
-      <a class="nav-link active"  data-toggle="tab" href="#bug-results" role="tab" aria-selected="true">Bugs</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" data-toggle="tab" href="#feature-results" role="tab" aria-selected="false">Features</a>
-    </li>
-  </ul>
-</div>
-<div class="tab-content">
-  <div id="bug-results" class="tab-pane fade show active" role="tabpanel" aria-labelledby="bug-tab">
-    <h3>Bugs</h3>
+<!-- Mobile Only -->
+<div class="d-block d-sm-none">
+  <div role="tablist">
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link active"  data-toggle="tab" href="#bug-results" role="tab" aria-selected="true">Bugs</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#feature-results" role="tab" aria-selected="false">Features</a>
+      </li>
+    </ul>
+  </div>
+  <div class="tab-content">
+    <div id="bug-results" class="tab-pane fade show active" role="tabpanel" aria-labelledby="bug-tab">
+      <h3>Bugs</h3>
     <div id="accordion-bugs">
       {% if not bug_tickets %}
         <p>No bugs to show.</p>
@@ -40,7 +152,6 @@
               {% else %}
               <h6 class='mt-2 text-secondary'>{{ bug.priority }} Priority</h6>
               {% endif %}
-              <h6 class='mt-2 text-secondary'>{{ bug.get_last_comment }}</h6>
               <a href="{{ bug.get_absolute_url }}" class="btn btn-primary">Open</a>
             </div>
             <div class="card-body collapse" id="bugdescription{{ bug.id }}" aria-labelledby="bug{{ bug.id }}" data-parent="#accordion-bugs">
@@ -48,74 +159,71 @@
             </div>
           </div>
         {% endfor %}
-        <ul class="pagination">
-          {% if bug_tickets.has_previous %}
-          <li class="page-item">
-            <a class='page-link' href="?page=1">&laquo; First</a>
-          </li>
-          <li class="page-item">
-            <a class='page-link' href="?page={{ bug_tickets.previous_page_number }}">Previous</a>
-          </li>
-          {% endif %}
-          <small class="mr-2 ml-2">
-              Page {{ bug_tickets.number }} of {{ bug_tickets.paginator.num_pages }}
-          </small>
-          {% if bug_tickets.has_next %}
-          <li class="page-item">
-            <a class='page-link' href="?page={{ bug_tickets.next_page_number }}">Next</a>
-          </li>
-          <li class="page-item">
-            <a class='page-link' href="?page={{ bug_tickets.paginator.num_pages }}">Last &raquo;</a>
-          </li>
-          {% endif %}
-        </ul>
-      {% endif %}
+      <ul class="pagination">
+        {% if bug_tickets.has_previous %}
+        <li class="page-item">
+          <a class='page-link' href="?page=1">&laquo; First</a>
+        </li>
+        <li class="page-item">
+          <a class='page-link' href="?page={{ bug_tickets.previous_page_number }}">Previous</a>
+        </li>
+        {% endif %}
+        <small class="mr-2 ml-2">
+            Page {{ bug_tickets.number }} of {{ bug_tickets.paginator.num_pages }}
+        </small>
+        {% if bug_tickets.has_next %}
+        <li class="page-item">
+          <a class='page-link' href="?page={{ bug_tickets.next_page_number }}">Next</a>
+        </li>
+        <li class="page-item">
+          <a class='page-link' href="?page={{ bug_tickets.paginator.num_pages }}">Last &raquo;</a>
+        </li>
+        {% endif %}
+      </ul>
+    {% endif %}
     </div>
-  </div>
-  <div id="feature-results" class="tab-pane fade" role="tabpanel" aria-labelledby="features-tab">
-    <h3>Suggested Features</h3>
-    <div id="accordion-features">
-      {% if not new_features %}
-      <p>No features to show.</p>
-      {% else %}
-        {% for feature in new_features %}
-        <div class="card mt-1">
-          <div class="card-header d-flex justify-content-between">
-            <h6 class="mt-2" data-toggle="collapse" data-target="#featuredescription{{ feature.id }}" aria-expanded="false" aria-controls="collapseFeature"><i class="fas fa-caret-down"></i>   {{ feature.title }}</h6>
-            <h6 class='mt-2 text-secondary'>{{ feature.get_last_comment }}</h6>    
-            <a href="{{ feature.get_absolute_url }}" class="btn btn-primary">Open</a>
+    <div id="feature-results" class="tab-pane fade" role="tabpanel" aria-labelledby="features-tab">
+      <h3>Suggested Features</h3>
+      <div id="accordion-features">
+        {% if not new_features %}
+        <p>No features to show.</p>
+        {% else %}
+          {% for feature in new_features %}
+          <div class="card mt-1">
+            <div class="card-header d-flex justify-content-between">
+              <h6 class="mt-2" data-toggle="collapse" data-target="#featuredescription{{ feature.id }}" aria-expanded="false" aria-controls="collapseFeature"><i class="fas fa-caret-down"></i>   {{ feature.title }}</h6>
+              <h6 class='mt-2 text-secondary'>{{ feature.get_last_comment }}</h6>    
+              <a href="{{ feature.get_absolute_url }}" class="btn btn-primary">Open</a>
+            </div>
+            <div class="card-body collapse" id="featuredescription{{ feature.id }}" aria-labelledby="feature{{ feature.id }}" data-parent="#accordion-features">
+              <p class="card-text">{{ feature.description }}</p>
+            </div>
           </div>
-          <div class="card-body collapse" id="featuredescription{{ feature.id }}" aria-labelledby="feature{{ feature.id }}" data-parent="#accordion-features">
-            <p class="card-text">{{ feature.description }}</p>
-
-          </div>
-        </div>
-        {% endfor %}
-        <ul class="pagination">
-          {% if new_features.has_previous %}
-          <li class="page-item">
-            <a class='page-link' href="?page=1">&laquo; First</a>
-          </li>
-          <li class="page-item">
-            <a class='page-link' href="?page={{ new_features.previous_page_number }}">Previous</a>
-          </li>
-          {% endif %}
-          <small class="mr-2 ml-2">
-              Page {{ new_features.number }} of {{ new_features.paginator.num_pages }}
-          </small>
-          {% if new_features.has_next %}
-          <li class="page-item">
-            <a class='page-link' href="?page={{ new_features.next_page_number }}">Next</a>
-          </li>
-          <li class="page-item">
-            <a class='page-link' href="?page={{ new_features.paginator.num_pages }}">Last &raquo;</a>
-          </li>
-          {% endif %}
-        </ul>
-      {% endif %}
+          {% endfor %}
+          <ul class="pagination">
+            {% if new_features.has_previous %}
+            <li class="page-item">
+              <a class='page-link' href="?page=1">&laquo; First</a>
+            </li>
+            <li class="page-item">
+              <a class='page-link' href="?page={{ new_features.previous_page_number }}">Previous</a>
+            </li>
+            {% endif %}
+            <small class="mr-2 ml-2">
+                Page {{ new_features.number }} of {{ new_features.paginator.num_pages }}
+            </small>
+            {% if new_features.has_next %}
+            <li class="page-item">
+              <a class='page-link' href="?page={{ new_features.next_page_number }}">Next</a>
+            </li>
+            <li class="page-item">
+              <a class='page-link' href="?page={{ new_features.paginator.num_pages }}">Last &raquo;</a>
+            </li>
+            {% endif %}
+          </ul>
+        {% endif %}
+      </div>
     </div>
   </div>
 </div>
-
-
 {% endblock %}
