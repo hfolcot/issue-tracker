@@ -45,7 +45,7 @@ def profile_view(request):
 	else:	
 		img_upload_form = UpdateProfilePicture()
 	context = {'bugs' : bug_tickets, 
-		'features' : NewFeatureTicket, 
+		'features' : new_features, 
 		'img_upload_form': img_upload_form
 	}
 	return render(request, 'profile.html', context)

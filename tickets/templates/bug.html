@@ -3,6 +3,7 @@
 {% block content %}
 
 <h1>{{ bug.title }}</h1>
+
 <div class="row">
 	<div class="col-12 col-md-8">
 
@@ -42,6 +43,7 @@
 			</form>
 		</div>
 		{% else %}
+		<p>Customer: {{ bug.customer.profile }}</p>
 		<p>Status: {{ bug.status }}</p>
 		<p>Assigned to: {{ bug.assigned }}</p>
 		<p>Priority: {{ bug.priority }}</p>

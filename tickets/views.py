@@ -6,7 +6,7 @@ from django.shortcuts import render, get_object_or_404, reverse, redirect
 from comments.forms import CommentForm
 from comments.models import Comment
 from .models import BugTicket, NewFeatureTicket
-from .forms import NewBugForm, NewFeatureForm, BugUpdateForm
+from .forms import NewBugForm, NewFeatureForm, BugUpdateForm, FeatureUpdateForm
 
 # Create your views here.
 
@@ -60,6 +60,8 @@ def new_bug_view(request):
 	new_bug_form = NewBugForm(request.POST or None, request.FILES or None)
 	if new_bug_form.is_valid():
 		bug = new_bug_form.save()
+		bug.customer = request.user
+		bug.save()
 		return redirect(bug_ticket_view, bug.id)
 	return render(request, 'new_ticket.html', {'form' : new_bug_form})
 
@@ -68,6 +70,12 @@ def feature_ticket_view(request, id):
 	Opening the feature ticket to view specifics and add comments
 	"""
 	feature = get_object_or_404(NewFeatureTicket, id=id)
+
+	#Assigning to a developer, adding a quote and marking as implemented
+	update_form = FeatureUpdateForm(request.POST or None, instance=feature)
+	if update_form.is_valid():
+		update_form.save()
+		messages.success(request, f"Ticket Updated")
 
 	#Adding a new comment
 	initial_data = {
@@ -90,8 +98,11 @@ def feature_ticket_view(request, id):
 
 	#Get comments
 	comments = Comment.get_comments(NewFeatureTicket, feature.id)
-
-	return render(request, 'feature.html', {'feature' : feature, 'comments' : comments, 'comment_form' : form})
+	context = {'feature' : feature, 
+		'comments' : comments, 
+		'comment_form' : form,
+		'update_form' : update_form}
+	return render(request, 'feature.html', context)
 
 def new_feature_view(request):
 	"""
@@ -100,5 +111,7 @@ def new_feature_view(request):
 	new_feature_form = NewFeatureForm(request.POST or None, request.FILES or None)
 	if new_feature_form.is_valid():
 		feature = new_feature_form.save()
+		feature.customer = request.user
+		feature.save()
 		return redirect(feature_ticket_view, feature.id)
 	return render(request, 'new_ticket.html', {'form' : new_feature_form})

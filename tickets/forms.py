@@ -22,3 +22,8 @@ class BugUpdateForm(forms.ModelForm):
 	class Meta:
 		model = BugTicket
 		fields = ['priority', 'assigned', 'status']
+
+class FeatureUpdateForm(forms.ModelForm):
+	class Meta:
+		model = NewFeatureTicket
+		fields = ['assigned', 'quoted', 'cost', 'status']

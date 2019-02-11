@@ -1,9 +1,11 @@
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
+from django.shortcuts import reverse
 from django.db import models
 
 from accounts.models import DeveloperProfile
+from tickets import choices
 
 # Create your models here.
 
@@ -13,30 +15,7 @@ class BugTicket(models.Model):
 	"""
 	Model for a ticket describing a bug
 	"""
-	#Choices for priority and status
-	CRITICAL = 'Critical'
-	HIGH = 'High'
-	MEDIUM = 'Medium'
-	LOW = 'Low'
-	PENDING = 'Pending'
-	INPROGRESS = 'In Progress'
-	FIXED = 'Fixed'
-
-	UNASSIGNED = 4 # ID of record in DeveloperProfile objects named 'Unassigned'
-
-	PRIORITY_CHOICES = ((CRITICAL, 'Critical'), 
-		(HIGH, 'High'), 
-		(MEDIUM, 'Medium'), 
-		(LOW, 'Low'))
-
-	STATUS_CHOICES = ((PENDING,'Pending'),
-		(INPROGRESS, 'In Progress'),
-		(FIXED, 'Fixed'))
-
-
-
-	customer = models.ForeignKey(settings.AUTH_USER_MODEL, 
-					default=1,
+	customer = models.ForeignKey(User, null=True,
         			on_delete=models.CASCADE,)
 	title = models.CharField(max_length=300, blank=False)
 	description = models.TextField()
@@ -44,15 +23,15 @@ class BugTicket(models.Model):
 	screenshot = models.ImageField(upload_to='images', blank=True)
 	upvotes = models.IntegerField(default=0)
 	downvotes = models.IntegerField(default=0)
-	assigned = models.ForeignKey(DeveloperProfile, default=UNASSIGNED, on_delete=models.SET('Unassigned'))
-	status = models.CharField(choices=STATUS_CHOICES, default=PENDING, max_length=150, blank=True)
-	priority = models.CharField(choices=PRIORITY_CHOICES, default='Medium', max_length=8, blank=True)
+	assigned = models.ForeignKey(DeveloperProfile, default=choices.UNASSIGNED, on_delete=models.SET('Unassigned'))
+	status = models.CharField(choices=choices.STATUS_CHOICES, default=choices.PENDING, max_length=150, blank=True)
+	priority = models.CharField(choices=choices.PRIORITY_CHOICES, default='Medium', max_length=8, blank=True)
 
 	def __str__(self):
 		return self.title
 
 	def get_absolute_url(self):
-		return f"tickets/bugs/{self.id}"
+		return reverse('bug', kwargs={"id": self.id})
 
 	class Meta:
 		verbose_name = 'bugticket'
@@ -65,19 +44,23 @@ class BugTicket(models.Model):
 		return content_type
 
 class NewFeatureTicket(models.Model):
+	customer = models.ForeignKey(settings.AUTH_USER_MODEL, null=True,
+    			on_delete=models.CASCADE,)
 	title = models.CharField(max_length=300, blank=False)
 	description = models.TextField()
 	upvotes = models.IntegerField(default=0)
 	downvotes = models.IntegerField(default=0)
+	assigned = models.ForeignKey(DeveloperProfile, default=choices.UNASSIGNED, on_delete=models.SET('Unassigned'))
 	quoted = models.BooleanField(default=False)
 	cost = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
-	implemented = models.BooleanField(default=False)
+	status = models.CharField(choices=choices.FEATURE_STATUS_CHOICES, default=choices.PENDING, max_length=150, blank=True)
+	contributions = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
 
 	def __str__(self):
 		return self.title
 
 	def get_absolute_url(self):
-		return f"tickets/features/{self.id}"
+		return reverse('feature', kwargs={"id": self.id})
 
 	class Meta:
 		verbose_name = 'newfeatureticket'

@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from PIL import Image
 
 # Create your models here.
 
@@ -15,6 +16,7 @@ class Profile(models.Model):
 
 	def get_image_url(self):
 		return f"{self.image.url}"
+
 
 class DeveloperProfile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)

@@ -19,6 +19,28 @@
 		{% endfor %}
 		</div>
 	</div>
+	<div class="col-12 col-md-4">
+		{% if user.is_staff %}
+			<div class="update_ticket">
+				<form method="POST">
+					{% csrf_token %}
+					{{ update_form|crispy }}
+					<button type="submit" value="update" class="btn btn-success btn-sm">Update</button>
+				</form>
+			</div>
+		{% else %}
+			<p>Customer: {{ feature.customer.profile }}</p>
+			<p>Status: {{ feature.status }}</p>
+			<p>Assigned to: {{ feature.assigned }}</p>
+			<p>Quoted: {% if feature.quoted %}Yes{% else %} Awaiting Quote {% endif %}</p>
+			{% if feature.quoted %}
+				<p>Cost: £{{ feature.cost }}</p>
+			{% endif %}
+		{% endif %}
+		<p style="text-decoration: underline;">Screenshots</p>
+		<div class="screenshot" style="background-image: url('{{ MEDIA_URL }}{{ bug.screenshot }}')"></div>
+
+	</div>
 </div>
 
 
