@@ -53,7 +53,7 @@ class NewFeatureTicket(models.Model):
 	assigned = models.ForeignKey(DeveloperProfile, default=choices.UNASSIGNED, on_delete=models.SET('Unassigned'))
 	quoted = models.BooleanField(default=False)
 	cost = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
-	status = models.CharField(choices=choices.FEATURE_STATUS_CHOICES, default=choices.PENDING, max_length=150, blank=True)
+	status = models.CharField(choices=choices.FEATURE_STATUS_CHOICES, default=choices.AWAITINGQUOTE, max_length=150, blank=True)
 	contributions = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
 
 	def __str__(self):

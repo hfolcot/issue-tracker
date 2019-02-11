@@ -6,7 +6,9 @@ LOW = 'Low'
 PENDING = 'Pending'
 INPROGRESS = 'In Progress'
 FIXED = 'Fixed'
+AWAITINGQUOTE = 'Awaiting Quote'
 IMPLEMENTED = 'Implemented'
+AWAITINGFUNDS = 'Awaiting Funds'
 
 UNASSIGNED = 4 # ID of record in DeveloperProfile objects named 'Unassigned'
 
@@ -19,6 +21,7 @@ STATUS_CHOICES = ((PENDING,'Pending'),
 	(INPROGRESS, 'In Progress'),
 	(FIXED, 'Fixed'))
 
-FEATURE_STATUS_CHOICES = ((PENDING,'Pending'),
+FEATURE_STATUS_CHOICES = ((AWAITINGQUOTE,'Awaiting Quote'),
 	(INPROGRESS, 'In Progress'),
-	(IMPLEMENTED, 'Implemented'))
+	(IMPLEMENTED, 'Implemented'),
+	(AWAITINGFUNDS, 'Awaiting Funds'))
