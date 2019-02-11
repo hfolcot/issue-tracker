@@ -24,43 +24,51 @@
   <div id="bug-results" class="tab-pane fade show active" role="tabpanel" aria-labelledby="bug-tab">
     <h3>Bugs</h3>
     <div id="accordion-bugs">
-      {% for bug in bug_tickets %}
-        {% ifnotequal bug.status 'Fixed' %}
-        <div class="card mt-1">
-          <div class="card-header d-flex justify-content-between">
-            <h6 class="mt-1" data-toggle="collapse" data-target="#bugdescription{{ bug.id }}" aria-expanded="false" aria-controls="collapseBug"><i class="fas fa-caret-down"></i>   {{ bug.title }}</h6>    
-            {% if bug.priority == 'Critical' %}
-            <h6 class='mt-2 text-danger'>Critical Priority</h6>
-            {% elif bug.priority == 'High' %}
-            <h6 class='mt-2 text-warning'>High Priority</h6>
-            {% else %}
-            <h6 class='mt-2 text-secondary'>{{ bug.priority }} Priority</h6>
-            {% endif %}
-            <a href="{{ bug.get_absolute_url }}" class="btn btn-primary">Open</a>
+      {% if not bug_tickets %}
+      <p>No bugs to show.</p>
+      {% else %}
+        {% for bug in bug_tickets %}
+          {% ifnotequal bug.status 'Fixed' %}
+          <div class="card mt-1">
+            <div class="card-header d-flex justify-content-between">
+              <h6 class="mt-1" data-toggle="collapse" data-target="#bugdescription{{ bug.id }}" aria-expanded="false" aria-controls="collapseBug"><i class="fas fa-caret-down"></i>   {{ bug.title }}</h6>    
+              {% if bug.priority == 'Critical' %}
+              <h6 class='mt-2 text-danger'>Critical Priority</h6>
+              {% elif bug.priority == 'High' %}
+              <h6 class='mt-2 text-warning'>High Priority</h6>
+              {% else %}
+              <h6 class='mt-2 text-secondary'>{{ bug.priority }} Priority</h6>
+              {% endif %}
+              <a href="{{ bug.get_absolute_url }}" class="btn btn-primary">Open</a>
+            </div>
+            <div class="card-body collapse" id="bugdescription{{ bug.id }}" aria-labelledby="bug{{ bug.id }}" data-parent="#accordion-bugs">
+              <p class="card-text">{{ bug.description|truncatewords:100 }}</p>
+            </div>
           </div>
-          <div class="card-body collapse" id="bugdescription{{ bug.id }}" aria-labelledby="bug{{ bug.id }}" data-parent="#accordion-bugs">
-            <p class="card-text">{{ bug.description|truncatewords:100 }}</p>
-          </div>
-        </div>
-        {% endifnotequal %}
-      {% endfor %}
+          {% endifnotequal %}
+        {% endfor %}
+      {% endif %}
     </div>
   </div>
   <div id="feature-results" class="tab-pane fade" role="tabpanel" aria-labelledby="features-tab">
     <h3>Suggested Features</h3>
     <div id="accordion-features">
-      {% for feature in new_features %}
-      <div class="card mt-1">
-        <div class="card-header d-flex justify-content-between">
-          <h6 class="mt-2" data-toggle="collapse" data-target="#featuredescription{{ feature.id }}" aria-expanded="false" aria-controls="collapseFeature"><i class="fas fa-caret-down"></i>   {{ feature.title }}</h6>    
-          <a href="{{ feature.get_absolute_url }}" class="btn btn-primary">Open</a>
-        </div>
-        <div class="card-body collapse" id="featuredescription{{ feature.id }}" aria-labelledby="feature{{ feature.id }}" data-parent="#accordion-features">
-          <p class="card-text">{{ feature.description }}</p>
+      {% if not new_features %}
+      <p>No features to show.</p>
+      {% else %}
+        {% for feature in new_features %}
+        <div class="card mt-1">
+          <div class="card-header d-flex justify-content-between">
+            <h6 class="mt-2" data-toggle="collapse" data-target="#featuredescription{{ feature.id }}" aria-expanded="false" aria-controls="collapseFeature"><i class="fas fa-caret-down"></i>   {{ feature.title }}</h6>    
+            <a href="{{ feature.get_absolute_url }}" class="btn btn-primary">Open</a>
+          </div>
+          <div class="card-body collapse" id="featuredescription{{ feature.id }}" aria-labelledby="feature{{ feature.id }}" data-parent="#accordion-features">
+            <p class="card-text">{{ feature.description }}</p>
 
+          </div>
         </div>
-      </div>
-      {% endfor %}
+        {% endfor %}
+      {% endif %}
     </div>
   </div>
 </div>

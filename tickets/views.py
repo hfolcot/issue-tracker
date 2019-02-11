@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, reverse, redirect
 
@@ -10,12 +11,27 @@ from .forms import NewBugForm, NewFeatureForm, BugUpdateForm, FeatureUpdateForm
 
 # Create your views here.
 
-def all_tickets_view(request):
+def all_tickets_view(request, query=None):
 	"""
 	A home page showing all outstanding tickets
 	"""
 	bug_tickets = BugTicket.objects.all()
 	new_features = NewFeatureTicket.objects.all()
+	#Search function
+	query = request.GET.get('query')
+	if query:
+		bug_tickets = bug_tickets.filter(
+				Q(title__icontains=query) |
+				Q(description__icontains=query) |
+				Q(customer__first_name__icontains=query)
+				).distinct()
+			
+		new_features = new_features.filter(
+				Q(title__icontains=query) |
+				Q(description__icontains=query) |
+				Q(customer__first_name__icontains=query)
+				).distinct()
+			
 	return render(request, 'tickets.html', {'bug_tickets' : bug_tickets, 'new_features' : new_features})
 
 
