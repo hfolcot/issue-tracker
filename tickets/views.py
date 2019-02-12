@@ -132,7 +132,12 @@ def new_bug_view(request):
 		bug.customer = request.user
 		bug.save()
 		return redirect(bug_ticket_view, bug.id)
-	return render(request, 'new_ticket.html', {'form' : new_bug_form})
+	context = {
+		'form' : new_bug_form,
+		'title' : 'New Bug Report',
+		'caption' : 'Any bugs reported will be fixed for free.'
+	}
+	return render(request, 'new_ticket.html', context)
 
 def feature_ticket_view(request, id):
 	"""
@@ -193,4 +198,9 @@ def new_feature_view(request):
 		feature.customer = request.user
 		feature.save()
 		return redirect(feature_ticket_view, feature.id)
-	return render(request, 'new_ticket.html', {'form' : new_feature_form})
+	context = {
+		'form' : new_feature_form,
+		'title' : "Suggest a New Feature",
+		'caption' : "Ideas will be quoted and contributions can then be made towards implementing."
+	}
+	return render(request, 'new_ticket.html', context)
