@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import auth, messages
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from .forms import UserRegistrationForm, UpdateProfilePicture
 from tickets.models import BugTicket, NewFeatureTicket
 
@@ -50,6 +51,19 @@ def profile_view(request):
 
 	else:	
 		img_upload_form = UpdateProfilePicture()
+
+	#Pagination
+	bug_paginator = Paginator(bug_tickets, 10) # Show 10 tickets per page
+	feature_paginator = Paginator(new_features, 10) # Show 10 tickets per page
+	fixed_bug_paginator = Paginator(fixed_bugs, 10) # Show 10 tickets per page
+	completed_feature_paginator = Paginator(completed_features, 10) # Show 10 tickets per page
+
+	page = request.GET.get('page')
+	bug_tickets = bug_paginator.get_page(page)
+	new_features = feature_paginator.get_page(page)	
+	fixed_bugs = fixed_bug_paginator.get_page(page)
+	completed_features = completed_feature_paginator.get_page(page)
+
 	context = {'bugs' : bug_tickets, 
 		'features' : new_features,
 		'fixed_bugs': fixed_bugs,
