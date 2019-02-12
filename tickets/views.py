@@ -44,7 +44,7 @@ def all_tickets_view(request):
 	page = request.GET.get('page')
 	bug_tickets = bug_paginator.get_page(page)
 	new_features = feature_paginator.get_page(page)
-	
+
 	context = {
 		'bug_tickets' : bug_tickets, 
 		'new_features' : new_features,
@@ -140,7 +140,10 @@ def feature_ticket_view(request, id):
 	#Assigning to a developer, adding a quote and marking as implemented
 	update_form = FeatureUpdateForm(request.POST or None, instance=feature)
 	if update_form.is_valid():
-		update_form.save()
+		updates = update_form.save()
+		if updates.cost > 0:
+			updates.quoted = True
+			updates.save()
 		messages.success(request, f"Ticket Updated")
 
 	#Adding a new comment

@@ -18,7 +18,7 @@ class BugTicket(models.Model):
 	"""
 	customer = models.ForeignKey(User, null=True,
         			on_delete=models.CASCADE,)
-	title = models.CharField(max_length=300, blank=False)
+	title = models.CharField(max_length=100, blank=False)
 	description = models.TextField()
 	timestamp = models.DateTimeField(auto_now=True)
 	screenshot = models.ImageField(upload_to='images', blank=True)
@@ -52,13 +52,13 @@ class BugTicket(models.Model):
 			comment = Comment.objects.filter(content_type=content_type, object_id=oid).order_by('-id')[0]
 			comment = comment.timestamp
 		except:
-			comment = ''
+			comment = 'Awaiting Response'
 		return comment
 
 class NewFeatureTicket(models.Model):
 	customer = models.ForeignKey(settings.AUTH_USER_MODEL, null=True,
     			on_delete=models.CASCADE,)
-	title = models.CharField(max_length=300, blank=False)
+	title = models.CharField(max_length=100, blank=False)
 	description = models.TextField()
 	upvotes = models.IntegerField(default=0)
 	downvotes = models.IntegerField(default=0)
@@ -92,5 +92,5 @@ class NewFeatureTicket(models.Model):
 			comment = Comment.objects.filter(content_type=content_type, object_id=oid).order_by('-id')[0]
 			comment = comment.timestamp
 		except:
-			comment = ''
+			comment = 'Awaiting Response'
 		return comment
