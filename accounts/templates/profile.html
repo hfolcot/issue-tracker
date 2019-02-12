@@ -29,39 +29,51 @@
     <li class="nav-item">
       <a class="nav-link" data-toggle="tab" href="#feature-results" role="tab" aria-selected="false">My Features</a>
     </li>
+    <li class="nav-item">
+      <a class="nav-link"  data-toggle="tab" href="#fixed-bugs" role="tab" aria-selected="false">Fixed Bugs</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#completed-features" role="tab" aria-selected="false">Completed Features</a>
+    </li>
   </ul>
 </div>
 <div class="tab-content">
   <div id="bug-results" class="tab-pane fade show active" role="tabpanel" aria-labelledby="bug-tab">
     <h3>Bugs</h3>
+    <small>Active issues raised by you</small>
     <div id="accordion-bugs">
-      {% for bug in bugs %}
-        {% ifnotequal bug.status 'Fixed' %}
-        <div class="card mt-1">
-          <div class="card-header d-flex justify-content-between">
-            <h6 class="mt-1" data-toggle="collapse" data-target="#bugdescription{{ bug.id }}" aria-expanded="false" aria-controls="collapseBug"><i class="fas fa-caret-down"></i>   {{ bug.title }}</h6>    
-            {% if bug.priority == 'Critical' %}
-            <h6 class='mt-2 text-danger'>Critical Priority</h6>
-            {% elif bug.priority == 'High' %}
-            <h6 class='mt-2 text-warning'>High Priority</h6>
-            {% else %}
-            <h6 class='mt-2 text-secondary'>{{ bug.priority }} Priority</h6>
-            {% endif %}
-            <a href="{{ bug.get_absolute_url }}" class="btn btn-primary">Open</a>
+      {% if not bugs %}
+        <p>No bugs to show.</p>
+      {% else %}
+        {% for bug in bugs %}
+          <div class="card mt-1">
+            <div class="card-header d-flex justify-content-between">
+              <h6 class="mt-1" data-toggle="collapse" data-target="#bugdescription{{ bug.id }}" aria-expanded="false" aria-controls="collapseBug"><i class="fas fa-caret-down"></i>   {{ bug.title }}</h6>    
+              {% if bug.priority == 'Critical' %}
+              <h6 class='mt-2 text-danger'>Critical Priority</h6>
+              {% elif bug.priority == 'High' %}
+              <h6 class='mt-2 text-warning'>High Priority</h6>
+              {% else %}
+              <h6 class='mt-2 text-secondary'>{{ bug.priority }} Priority</h6>
+              {% endif %}
+              <a href="{{ bug.get_absolute_url }}" class="btn btn-primary">Open</a>
+            </div>
+            <div class="card-body collapse" id="bugdescription{{ bug.id }}" aria-labelledby="bug{{ bug.id }}" data-parent="#accordion-bugs">
+              <p class="card-text">{{ bug.description|truncatewords:100 }}</p>
+            </div>
           </div>
-          <div class="card-body collapse" id="bugdescription{{ bug.id }}" aria-labelledby="bug{{ bug.id }}" data-parent="#accordion-bugs">
-            <p class="card-text">{{ bug.description|truncatewords:100 }}</p>
-          </div>
-        </div>
-        {% endifnotequal %}
-      {% endfor %}
+        {% endfor %}
+      {% endif %}
     </div>
   </div>
   <div id="feature-results" class="tab-pane fade" role="tabpanel" aria-labelledby="features-tab">
     <h3>Suggested Features</h3>
+    <small>New features suggested by you</small>
     <div id="accordion-features">
-      	{% for feature in features %}
-      		{% ifnotequal feature.status 'Fixed' %}        		
+      {% if not new_features %}
+        <p>No features to show.</p>
+      {% else %}
+      	{% for feature in features %}     		
 		      <div class="card mt-1">
 		        <div class="card-header d-flex justify-content-between">
 		          <h6 class="mt-2" data-toggle="collapse" data-target="#featuredescription{{ feature.id }}" aria-expanded="false" aria-controls="collapseFeature"><i class="fas fa-caret-down"></i>   {{ feature.title }}</h6>    
@@ -72,10 +84,46 @@
 
 		        </div>
 		      </div>
-			{% endifnotequal %}
-      {% endfor %}
+        {% endfor %}
+      {% endif %}
     </div>
   </div>
+  <div id="fixed-bugs" class="tab-pane fade" role="tabpanel" aria-labelledby="fixed-bugs-tab">
+      <h3>Fixed Bugs</h3>
+      <small>Bugs that have been <strike>squashed</strike> fixed</small>
+      <div id="accordion-fixed-bugs">
+          {% for fb in fixed_bugs %}         
+            <div class="card mt-1">
+              <div class="card-header d-flex justify-content-between">
+                <h6 class="mt-2" data-toggle="collapse" data-target="#fixedbug{{ fb.id }}" aria-expanded="false" aria-controls="collapsefixedbug"><i class="fas fa-caret-down"></i>   {{ fb.title }}</h6>    
+                <a href="{{ fb.get_absolute_url }}" class="btn btn-primary">Open</a>
+              </div>
+              <div class="card-body collapse" id="fixedbug{{ fb.id }}" aria-labelledby="fixedbug{{ fb.id }}" data-parent="#accordion-fixed-bugs">
+                <p class="card-text">{{ fb.description }}</p>
+
+              </div>
+            </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div id="completed-features" class="tab-pane fade" role="tabpanel" aria-labelledby="completed-features-tab">
+      <h3>Completed Features</h3>
+      <small>Features that have been applied to the app</small>
+      <div id="accordion-completed-features">
+          {% for cf in completed_features %}         
+            <div class="card mt-1">
+              <div class="card-header d-flex justify-content-between">
+                <h6 class="mt-2" data-toggle="collapse" data-target="#completedfeature{{ cf.id }}" aria-expanded="false" aria-controls="collapsecompletedfeature"><i class="fas fa-caret-down"></i>   {{ cf.title }}</h6>    
+                <a href="{{ cf.get_absolute_url }}" class="btn btn-primary">Open</a>
+              </div>
+              <div class="card-body collapse" id="completedfeature{{ cf.id }}" aria-labelledby="completedfeature{{ cf.id }}" data-parent="#accordion-completed-features">
+                <p class="card-text">{{ cf.description }}</p>
+
+              </div>
+            </div>
+        {% endfor %}
+      </div>
+    </div>
 </div>
 
 

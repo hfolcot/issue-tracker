@@ -18,7 +18,8 @@ def all_tickets_view(request):
 	"""
 	bug_tickets = BugTicket.objects.exclude(status='Fixed')
 	new_features = NewFeatureTicket.objects.exclude(status='Implemented')
-
+	fixed_bugs = BugTicket.objects.filter(status='Fixed')
+	completed_features = NewFeatureTicket.objects.filter(status='Implemented')
 
 	#Search function
 	query = request.GET.get('query')
@@ -27,36 +28,54 @@ def all_tickets_view(request):
 				Q(title__icontains=query) |
 				Q(description__icontains=query) |
 				Q(customer__first_name__icontains=query) |
-				Q(customer__last_name__icontains=query)
+				Q(customer__last_name__icontains=query) |
+				Q(id__icontains=query)
 				).distinct()
 			
 		new_features = new_features.filter(
 				Q(title__icontains=query) |
 				Q(description__icontains=query) |
 				Q(customer__first_name__icontains=query) |
-				Q(customer__last_name__icontains=query)
+				Q(customer__last_name__icontains=query) |
+				Q(id__icontains=query)
+				).distinct()
+
+		fixed_bugs = fixed_bugs.filter(
+				Q(title__icontains=query) |
+				Q(description__icontains=query) |
+				Q(customer__first_name__icontains=query) |
+				Q(customer__last_name__icontains=query) |
+				Q(id__icontains=query)
+				).distinct()
+		
+		completed_features = completed_features.filter(
+				Q(title__icontains=query) |
+				Q(description__icontains=query) |
+				Q(customer__first_name__icontains=query) |
+				Q(customer__last_name__icontains=query) |
+				Q(id__icontains=query)
 				).distinct()
 
 	#Pagination
 	bug_paginator = Paginator(bug_tickets, 10) # Show 10 tickets per page
 	feature_paginator = Paginator(new_features, 10) # Show 10 tickets per page
+	fixed_bug_paginator = Paginator(fixed_bugs, 10) # Show 10 tickets per page
+	completed_feature_paginator = Paginator(completed_features, 10) # Show 10 tickets per page
 
 	page = request.GET.get('page')
 	bug_tickets = bug_paginator.get_page(page)
-	new_features = feature_paginator.get_page(page)
+	new_features = feature_paginator.get_page(page)	
+	fixed_bugs = fixed_bug_paginator.get_page(page)
+	completed_features = completed_feature_paginator.get_page(page)
 
 	context = {
 		'bug_tickets' : bug_tickets, 
 		'new_features' : new_features,
+		'fixed_bugs' : fixed_bugs,
+		'completed_features' : completed_features
 	}
 	return render(request, 'tickets.html', context)
 
-def archives_view(request):
-	"""
-	Show all resolved tickets and new features
-	"""
-	bug_tickets = BugTicket.objects.filter(status='Fixed')
-	new_features = NewFeatureTicket.objects.filter(status='Implemented')
 
 	#Pagination
 	bug_paginator = Paginator(bug_tickets, 10) # Show 10 tickets per page

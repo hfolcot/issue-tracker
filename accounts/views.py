@@ -37,8 +37,10 @@ def profile_view(request):
 		bug_tickets = BugTicket.objects.filter(assigned=request.user.developerprofile.id)
 		new_features = NewFeatureTicket.objects.filter(assigned=request.user.developerprofile.id)
 	else:
-		bug_tickets = BugTicket.objects.filter(customer=request.user)
-		new_features = NewFeatureTicket.objects.filter(customer=request.user)
+		bug_tickets = BugTicket.objects.filter(customer=request.user).exclude(status='Fixed')
+		new_features = NewFeatureTicket.objects.filter(customer=request.user).exclude(status='Implemented')
+		fixed_bugs = BugTicket.objects.filter(customer=request.user)
+		completed_features = NewFeatureTicket.objects.filter(customer=request.user)
 	if request.method == 'POST':
 		img_upload_form = UpdateProfilePicture(request.POST, request.FILES, instance=request.user.profile)
 		if img_upload_form.is_valid():
@@ -49,7 +51,9 @@ def profile_view(request):
 	else:	
 		img_upload_form = UpdateProfilePicture()
 	context = {'bugs' : bug_tickets, 
-		'features' : new_features, 
+		'features' : new_features,
+		'fixed_bugs': fixed_bugs,
+		'completed_features': completed_features, 
 		'img_upload_form': img_upload_form
 	}
 	return render(request, 'profile.html', context)

@@ -51,7 +51,6 @@
             <a class="dropdown-item" href="#">What is UnicornAttractor?</a>
             <a class="dropdown-item" href="#">Statistics</a>
             <a class="dropdown-item" href="#">Contact</a>
-            <a class="dropdown-item" href="{% url 'archives' %}">Archives</a>
           </div>
         </li>
       </ul>
@@ -67,7 +66,7 @@
         </li>
       </ul>
       <form class="form-inline my-2 my-lg-0" action="{% url 'home' %}">
-        <input class="form-control mr-sm-2" type="text" name="query" value="{{ request.GET.query}}" placeholder="Search" aria-label="Search">
+        <input class="form-control mr-sm-2" type="text" name="query" value="{{ request.GET.query}}" placeholder="Search all tickets" aria-label="Search">
         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
       </form>
     </div>

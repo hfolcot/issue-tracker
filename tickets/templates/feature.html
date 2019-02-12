@@ -63,16 +63,19 @@
 				</form>
 			</div>
 		{% else %}
+			{% if feature.quoted %}
+				<p>This feature has been quoted at £{{ feature.cost }}.</p>
+				{% if feature.cost == feature.contributions %}
+				<p class="text-success">Target reached!</p>
+				{% else %}
+				<a href="" class="btn btn-success">Donate!</a>
+				{% endif %}
+			{% endif %}
 			<p>Customer: {{ feature.customer.profile }}</p>
 			<p>Status: {{ feature.status }}</p>
 			<p>Assigned to: {{ feature.assigned }}</p>
-			<p>Quoted: {% if feature.quoted %}Yes{% else %} Awaiting Quote {% endif %}</p>
-			{% if feature.quoted %}
-				<p>Cost: £{{ feature.cost }}</p>
-			{% endif %}
 		{% endif %}
-		<p style="text-decoration: underline;">Screenshots</p>
-		<div class="screenshot" style="background-image: url('{{ MEDIA_URL }}{{ bug.screenshot }}')"></div>
+
 
 	</div>
 </div>
