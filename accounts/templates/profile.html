@@ -43,7 +43,11 @@
     <!-- New Features -->
     <div id="feature-results" class="tab-pane fade show active" role="tabpanel" aria-labelledby="features-tab">
       <h3>Suggested Features</h3>
+      {% if user.is_staff %}
+      <small>New features assigned to you</small>
+      {% else %}
       <small>New features suggested by you</small>
+      {% endif %}
       <div>
         {% if not new_features %}
         <p>No features to show.</p>
@@ -133,7 +137,11 @@
     <!--Open Bugs-->
     <div id="bug-results" class="tab-pane fade" role="tabpanel" aria-labelledby="bug-tab">
       <h3>Bugs</h3>
-      <small>Active issues raised by you (fixed for free!)</small>
+      {% if user.is_staff %}
+      <small>Bugs assigned to you</small>
+      {% else %}
+      <small>Bugs suggested by you</small>
+      {% endif %}
       <small class="text-danger">*Critical Priority</small>
       <small class="text-warning">*High Priority</small>
 
@@ -227,8 +235,12 @@
     <!--Resolved Bugs-->
     <div id="fixed-bugs" class="tab-pane fade" role="tabpanel" aria-labelledby="fixed-bugs-tab">
       <h3>Fixed Bugs</h3>
+      {% if user.is_staff %}
+      <small>Bugs that have been <strike>squashed</strike> fixed by you</small>
+      {% else %}
       <small>Bugs that have been <strike>squashed</strike> fixed</small>
-
+      {% endif %}
+      
 
       <div>
         {% if not fixed_bugs %}
@@ -317,8 +329,11 @@
     <!--Completed Features-->
     <div id="completed-features" class="tab-pane fade" role="tabpanel" aria-labelledby="completed-features-tab">
       <h3>Completed Features</h3>
+      {% if user.is_staff %}
+      <small>Features you have implemented</small>
+      {% else %}
       <small>Features that have been applied to UA</small>
-
+      {% endif %}
       <div>
         {% if not completed_features %}
         <p>No features to show.</p>

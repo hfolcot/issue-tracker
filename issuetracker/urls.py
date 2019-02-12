@@ -16,15 +16,18 @@ Including another URLconf
 from django.contrib import admin
 from django.conf.urls import include
 from django.urls import path
+from accounts import urls as accounts_urls
+from company.views import about_view, contact_view
+from news import urls as blog_urls
 from tickets import urls as tickets_urls
 from tickets.views import all_tickets_view
-from accounts import urls as accounts_urls
-from news import urls as blog_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', all_tickets_view, name='home'),
     path('tickets/', include(tickets_urls)),
     path('accounts/', include(accounts_urls)),
-    path('blog/', include(blog_urls))
+    path('blog/', include(blog_urls)),
+    path('about', about_view, name='about'),
+    path('contact', contact_view, name='contact'),
 ]

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="row">
+	<div class="col-12">
+		<p>If you wish to report a bug in UnicornAttractor, <a href="{% url 'new_bug' %}">do it here!</a></p>
+		<p>If you wish to suggest a new feature for the app, <a href="{% url 'new_feature' %}">do it here!</a></p>	
+		<p>If you would have a query that is not related to the UnicornAttractor app, let us know here!</p>
+	</div>	
+	<div class="col-12" id="contactForm">
+		<form onsubmit="return sendMail(this);" method="POST">
+			{% csrf_token %}
+			{{ contact_form|crispy }}
+			<input type="submit" class="btn btn-outline-success" value="Submit" />
+		</form>
+		<div id="emailJsErrors"></div>
+	</div>
+</div>
+
+{% endblock content %}

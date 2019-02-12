@@ -35,13 +35,16 @@ def profile_view(request):
 	See the profile page of the user currently logged in
 	"""
 	if request.user.is_staff:
-		bug_tickets = BugTicket.objects.filter(assigned=request.user.developerprofile.id)
-		new_features = NewFeatureTicket.objects.filter(assigned=request.user.developerprofile.id)
+		bug_tickets = BugTicket.objects.filter(assigned=request.user.developerprofile).exclude(status='Fixed')
+		new_features = NewFeatureTicket.objects.filter(assigned=request.user.developerprofile).exclude(status='Implemented')
+		fixed_bugs = BugTicket.objects.filter(assigned=request.user.developerprofile.id, status="Fixed")
+		completed_features = NewFeatureTicket.objects.filter(assigned=request.user.developerprofile.id, status='Implemented')
 	else:
 		bug_tickets = BugTicket.objects.filter(customer=request.user).exclude(status='Fixed')
 		new_features = NewFeatureTicket.objects.filter(customer=request.user).exclude(status='Implemented')
-		fixed_bugs = BugTicket.objects.filter(customer=request.user)
-		completed_features = NewFeatureTicket.objects.filter(customer=request.user)
+		fixed_bugs = BugTicket.objects.filter(customer=request.user, status='Fixed')
+		completed_features = NewFeatureTicket.objects.filter(customer=request.user, status='Implemented')
+
 	if request.method == 'POST':
 		img_upload_form = UpdateProfilePicture(request.POST, request.FILES, instance=request.user.profile)
 		if img_upload_form.is_valid():
@@ -64,8 +67,8 @@ def profile_view(request):
 	fixed_bugs = fixed_bug_paginator.get_page(page)
 	completed_features = completed_feature_paginator.get_page(page)
 
-	context = {'bugs' : bug_tickets, 
-		'features' : new_features,
+	context = {'bug_tickets' : bug_tickets, 
+		'new_features' : new_features,
 		'fixed_bugs': fixed_bugs,
 		'completed_features': completed_features, 
 		'img_upload_form': img_upload_form
