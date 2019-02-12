@@ -10,3 +10,7 @@ Uses S3 for image storage.
 
 ## Left to implement
 Links to next and previous articles in the latest news blog
+
+
+
+contact form python snippet from https://wsvincent.com/django-contact-form/
