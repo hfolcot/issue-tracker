@@ -15,23 +15,11 @@ $(document).ready(function() {
 
 	if(typeof sessionStorage.getItem("activePane") != null && sessionStorage.getItem("clickedTab") != "undefined") {
 		$("#feature-results").removeClass("show active");
-		console.log("removed class from feature-results")
 		$('#featuresTab').removeClass("active");
-		console.log("removed class from featuresTab")
-		console.log(sessionStorage.getItem("clickedTab"));
 		activeTabId = "#" + sessionStorage.getItem("clickedTab")
-		console.log(activeTabId);
 		activePaneId = sessionStorage.getItem("activePane")
-		console.log(activePaneId)
     	$(activeTabId).addClass("active");
-    	console.log("added class to active tab");
     	$(activePaneId).addClass("show active");
-    	console.log("added class to active pane")
-
-	} else {
-		$("#feature-results").addClass("show active");
-		$('#featuresTab').addClass("active");
-		console.log("no item to get")
 	}
 
 })
