@@ -7,6 +7,7 @@ from django.db import models
 from accounts.models import DeveloperProfile
 from comments.models import Comment
 from tickets import choices
+from voting.models import Vote
 
 # Create your models here.
 
@@ -22,8 +23,6 @@ class BugTicket(models.Model):
 	description = models.TextField()
 	timestamp = models.DateTimeField(auto_now=True)
 	screenshot = models.ImageField(upload_to='images', blank=True)
-	upvotes = models.IntegerField(default=0)
-	downvotes = models.IntegerField(default=0)
 	assigned = models.ForeignKey(DeveloperProfile, default=choices.UNASSIGNED, on_delete=models.SET('Unassigned'))
 	status = models.CharField(choices=choices.STATUS_CHOICES, default=choices.PENDING, max_length=150, blank=True)
 	priority = models.CharField(choices=choices.PRIORITY_CHOICES, default='Medium', max_length=8, blank=True)
@@ -44,6 +43,28 @@ class BugTicket(models.Model):
 		content_type = ContentType.objects.get_for_model(instance.__class__)
 		return content_type
 
+	@property
+	def get_upvotes(self):
+		#Retrieve the number of positive votes for the bug
+		instance = self
+		votes = Vote.get_votes(BugTicket, self.id)
+		upvotes = 0
+		for vote in votes:
+			if vote.positive_vote == True:
+				upvotes += 1
+		return upvotes	
+
+	@property
+	def get_downvotes(self):
+		#Retrieve the number of negative votes for the bug
+		instance = self
+		votes = Vote.get_votes(BugTicket, self.id)
+		downvotes = 0
+		for vote in votes:
+			if vote.positive_vote == False:
+				downvotes += 1
+		return downvotes
+
 	def get_last_comment(self):
 		#Get the most recent comment timestamp for the specified ticket
 		content_type = ContentType.objects.get_for_model(BugTicket)
@@ -60,8 +81,6 @@ class NewFeatureTicket(models.Model):
     			on_delete=models.CASCADE,)
 	title = models.CharField(max_length=100, blank=False)
 	description = models.TextField()
-	upvotes = models.IntegerField(default=0)
-	downvotes = models.IntegerField(default=0)
 	assigned = models.ForeignKey(DeveloperProfile, default=choices.UNASSIGNED, on_delete=models.SET('Unassigned'))
 	quoted = models.BooleanField(default=False)
 	cost = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
@@ -83,6 +102,7 @@ class NewFeatureTicket(models.Model):
 		instance = self
 		content_type = ContentType.objects.get_for_model(instance.__class__)
 		return content_type
+
 
 	def get_last_comment(self):
 		#Get the most recent comment timestamp for the specified ticket

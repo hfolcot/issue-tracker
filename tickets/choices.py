@@ -10,7 +10,7 @@ AWAITINGQUOTE = 'Awaiting Quote'
 IMPLEMENTED = 'Implemented'
 AWAITINGFUNDS = 'Awaiting Funds'
 
-UNASSIGNED = 4 # ID of record in DeveloperProfile objects named 'Unassigned'
+UNASSIGNED = 1 # ID of record in DeveloperProfile objects named 'Unassigned'
 
 PRIORITY_CHOICES = ((CRITICAL, 'Critical'), 
 	(HIGH, 'High'), 

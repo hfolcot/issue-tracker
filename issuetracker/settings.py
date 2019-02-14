@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     #third party
-    'crispy_forms',   
+    'crispy_forms',  
     
     #custom
     'accounts',
@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'news',
     'storages',
     'tickets',
+    'voting',
 
 ]
 

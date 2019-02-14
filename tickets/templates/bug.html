@@ -6,12 +6,20 @@
 
 <div class="row">
 	<div class="col-12 col-md-8">
-
+		{% if user_voted %}
+			<small>You have already voted!</small> 
+			<p><i class="far fa-thumbs-up"></i> {{upvotes}} | <i class="far fa-thumbs-down"></i> {{ downvotes }}</p>
+		{% else %}
+			<a href="{% url 'bug_vote' 'bugticket' bug.id 1 %}" class="btn btn-success btn-sm" type="submit" name="upvote"><i class="far fa-thumbs-up"></i>({{ upvotes }}) I have this too!</a>
+			<a href="{% url 'bug_vote' 'bugticket' bug.id 0 %}" class="btn btn-danger btn-sm" type="submit" name="downvote"><i class="far fa-thumbs-down"></i>({{ downvotes }}) Hasn't been a problem!</a>
+			{% endif %}
 		<p>{{ bug.description }}</p>
+
 		<h5>Add a comment:</h5>
+
 		<form method="POST">{% csrf_token %}
 			{{ comment_form|crispy }}
-			<input type="submit" value="Post" class="btn btn-outline-dark">
+			<input type="submit" value="Post" name="comment" class="btn btn-outline-dark">
 		</form>
 		<div class="comments">
 			<h6>Previous comments:</h6>
@@ -61,7 +69,7 @@
 			<form method="POST">
 				{% csrf_token %}
 				{{ update_form|crispy }}
-				<button type="submit" value="update" class="btn btn-success btn-sm">Update</button>
+				<button type="submit" value="update" name="update" class="btn btn-success btn-sm">Update</button>
 			</form>
 		</div>
 		{% else %}

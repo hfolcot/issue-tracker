@@ -1,3 +1,4 @@
+import ast
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator
@@ -9,6 +10,8 @@ from comments.forms import CommentForm
 from comments.models import Comment
 from .models import BugTicket, NewFeatureTicket
 from .forms import NewBugForm, NewFeatureForm, BugUpdateForm, FeatureUpdateForm
+from voting.forms import VotingForm
+from voting.models import Vote
 
 # Create your views here.
 
@@ -79,48 +82,98 @@ def all_tickets_view(request):
 
 def bug_ticket_view(request, id):
 	"""
-	Opening the bug ticket to view specifics and add comments
+	Opening the bug ticket to view specifics and add comments/vote
 	"""
 	bug = get_object_or_404(BugTicket, id=id)
-	#Assigning the bug and marking as resolved
-	update_form = BugUpdateForm(request.POST or None, instance=bug)
-	if update_form.is_valid():
-		update_form.save()
-		messages.success(request, f"Ticket Updated")
 
-	#Adding a new comment
+	#Initial data for forms
 	initial_data = {
 		"content_type": bug.get_content_type,
 		"object_id": bug.id
 	}
-	comment_form = CommentForm(request.POST or None, initial=initial_data)
-	if comment_form.is_valid():
-		c_type = comment_form.cleaned_data.get("content_type")
-		content_type = ContentType.objects.get(model=c_type)
-		oid = comment_form.cleaned_data.get("object_id")
-		content_data = comment_form.cleaned_data.get("content")
-		new_comment, created = Comment.objects.get_or_create(
+	
+	if request.method == 'POST':
+	#Assigning the bug and marking as resolved
+		if 'update' in request.POST:
+			update_form = BugUpdateForm(request.POST, instance=bug)
+			if update_form.is_valid():
+				update_form.save()
+				messages.success(request, f"Ticket Updated")
+				return HttpResponseRedirect(reverse('bug', args=(bug.id,)))
+
+	#Commenting
+		elif 'comment' in request.POST:
+			comment_form = CommentForm(request.POST, initial=initial_data)
+			if comment_form.is_valid():
+				c_type = comment_form.cleaned_data.get("content_type")
+				content_type = ContentType.objects.get(model=c_type)
+				oid = comment_form.cleaned_data.get("object_id")
+				content_data = comment_form.cleaned_data.get("content")
+				new_comment, created = Comment.objects.get_or_create(
 							user=request.user,
 							content_type=content_type,
 							object_id=oid,
 							content=content_data
 							)
 		return HttpResponseRedirect(reverse('bug', args=(bug.id,)))
-	#Get comments to display
-	comments = Comment.get_comments(BugTicket, bug.id)
-	
-	#Pagination (comments)
-	comment_paginator = Paginator(comments, 10) # Show 10 tickets per page
-	page = request.GET.get('page')
-	comments = comment_paginator.get_page(page)
+	else:
+		#Blank forms:
+		update_form = BugUpdateForm(instance=bug)
+		comment_form = CommentForm(initial=initial_data)
 
-	#Context
-	context = {
-		'bug' : bug, 
-		'comments' : comments, 
-		'comment_form' : comment_form, 
-		'update_form' : update_form}
+		#Retrieve the votes for the specific bug
+		upvotes = bug.get_upvotes
+		print(upvotes)
+		downvotes = bug.get_downvotes
+		print(downvotes)
+
+		#check if user has already voted
+		votes = Vote.objects.filter(content_type = bug.get_content_type, object_id=bug.id)
+		if votes:
+			for vote in votes:
+				if request.user.profile == vote.user:
+					user_voted = True
+				else:
+					user_voted = False
+		else:
+			user_voted = False
+
+		#Get comments to display
+		comments = Comment.get_comments(BugTicket, bug.id)
+		
+		#Pagination (comments)
+		comment_paginator = Paginator(comments, 10) # Show 10 tickets per page
+		page = request.GET.get('page')
+		comments = comment_paginator.get_page(page)
+
+		#Context
+		context = {
+			'bug' : bug, 
+			'comments' : comments, 
+			'comment_form' : comment_form, 
+			'update_form' : update_form,
+			'upvotes' : upvotes,
+			'downvotes': downvotes,
+			'user_voted' : user_voted}
 	return render(request, 'bug.html', context)
+
+def voting_view(request, object_id, vote_type, content_type):
+	"""
+	Rate the current ticket
+	"""
+	if vote_type == 1:
+		vote_boolean = True
+	else:
+		vote_boolean = False
+	c_type = ContentType.objects.get(model=content_type)
+	new_vote, created = Vote.objects.get_or_create(
+							positive_vote=vote_boolean,
+							user=request.user.profile,
+							object_id=object_id,
+							content_type=c_type
+							)
+	messages.success(request, f"Thank you for voting")
+	return redirect(bug_ticket_view, object_id)
 
 def new_bug_view(request):
 	"""
