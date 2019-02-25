@@ -1,14 +1,16 @@
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Q, F
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, reverse, redirect
+
+import datetime
 
 from checkout.models import Order
 from comments.forms import CommentForm
 from comments.models import Comment
-from .models import BugTicket, NewFeatureTicket
+from .models import BugTicket, NewFeatureTicket, Update
 from .forms import NewBugForm, NewFeatureForm, BugUpdateForm, FeatureUpdateForm
 from voting.models import Vote
 
@@ -94,14 +96,31 @@ def bug_ticket_view(request, id):
 		"content_type": bug.get_content_type,
 		"object_id": bug.id
 	}
+	bug_data = {
+		'priority' : bug.priority,
+		'assigned' : bug.assigned,
+		'status' : bug.status,
+		'time_spent' : 0
+	}
 	
 	if request.method == 'POST':
 	#Assigning the bug and marking as resolved
 		if 'update' in request.POST:
 			update_form = BugUpdateForm(request.POST, instance=bug)
+			time_spent = bug.time_spent + int(request.POST['time_spent'])
 			if update_form.is_valid():
-				update_form.save()
+				new_update, created = Update.objects.get_or_create(
+							content_type=bug.get_content_type,
+							object_id=bug.id,
+							timestamp=datetime.datetime.now()
+							)
+				update = update_form.save()
+				update.time_spent = time_spent
+				update.save()
 				messages.success(request, f"Ticket Updated")
+				return HttpResponseRedirect(reverse('bug', args=(bug.id,)))
+			else:
+				messages.error(request, f"There was a problem")
 				return HttpResponseRedirect(reverse('bug', args=(bug.id,)))
 
 	#Commenting
@@ -118,11 +137,17 @@ def bug_ticket_view(request, id):
 							object_id=oid,
 							content=content_data
 							)
+				new_update, created = Update.objects.get_or_create(
+							content_type=content_type,
+							object_id=oid,
+							timestamp=datetime.datetime.now()
+							)
 		return HttpResponseRedirect(reverse('bug', args=(bug.id,)))
 	else:
 		#Blank forms:
-		update_form = BugUpdateForm(instance=bug)
+		update_form = BugUpdateForm(initial=bug_data)
 		comment_form = CommentForm(initial=initial_data)
+		#log_update_form = LogUpdateForm(initial=initial_data)
 
 		#Retrieve the votes for the specific bug
 		upvotes = bug.get_upvotes
@@ -132,18 +157,13 @@ def bug_ticket_view(request, id):
 		votes = Vote.objects.filter(content_type = bug.get_content_type, object_id=bug.id)
 		if votes:
 			for vote in votes:
-				print(request.user)
-				print("then")
-				print(vote.user)
 				if request.user == vote.user:
-					print("is equal")
 					user_voted = True
 				else:
 					user_voted = False
 		else:
 			user_voted = False
-		print("User voted")
-		print(user_voted)
+
 
 		#Get comments to display
 		comments = Comment.get_comments(BugTicket, bug.id)
@@ -212,6 +232,13 @@ def feature_ticket_view(request, id):
 	update_form = FeatureUpdateForm(request.POST or None, instance=feature)
 	if update_form.is_valid():
 		updates = update_form.save()
+		feature.last_update = datetime.datetime.now()
+		feature.save()
+		# new_update, created = Update.objects.get_or_create(
+		# 	content_type=feature.get_content_type,
+		# 	object_id=feature.id,
+		# 	timestamp=datetime.datetime.now()
+		# 	)
 		if updates.cost > 0:
 			updates.quoted = True
 			updates.save()
@@ -219,18 +246,10 @@ def feature_ticket_view(request, id):
 
 	# Calculate the amount contributed
 	orders = Order.objects.filter(item=feature)
-	donations = 0
-	if orders:
-		for order in orders:
-			donations += order.donation
-		percentage = round((donations / feature.cost)*100, 0)
-		remaining = round(feature.cost - donations, 2)
-	else:
-		percentage = 0
-		if feature.cost:
-			remaining = feature.cost
-		else:
-			remaining = 0
+	donations = feature.total_donations
+	percentage = round((donations / feature.cost)*100, 0)
+	remaining = round(feature.cost - donations, 2)
+
 
 	#Adding a new comment
 	initial_data = {
@@ -249,6 +268,11 @@ def feature_ticket_view(request, id):
 							object_id=oid,
 							content=content_data
 							)
+		new_update, created = Update.objects.get_or_create(
+			content_type=feature.get_content_type,
+			object_id=feature.id,
+			timestamp=datetime.datetime.now()
+			)
 		return HttpResponseRedirect(reverse('feature', args=(feature.id,)))
 
 	#Get comments

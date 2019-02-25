@@ -69,6 +69,7 @@
 			<form method="POST">
 				{% csrf_token %}
 				{{ update_form|crispy }}
+				{{ log_update_form }}
 				<button type="submit" value="update" name="update" class="btn btn-success btn-sm">Update</button>
 			</form>
 		</div>

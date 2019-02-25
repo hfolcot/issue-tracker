@@ -20,7 +20,7 @@
         <div class="alert-message block-message error" id="stripe-error-message"></div>
     </div>
     <div class="d-flex justify-content-center">
-    <h3>Please donate any amount up to <span class="text-primary">£{{ max_amount }}</span></h3>
+    <h3>Please donate any amount from <span class="text-primary">£5.00</span> to <span class="text-primary">£{{ max_amount }}</span></h3>
 	</div>
 	<div>
 	<div id="div_id_donation" class="form-group"> 
@@ -28,7 +28,7 @@
         	Donation<span class="asteriskField">*</span> 
         </label> 
 	    <div class=""> 
-	    	<input type="number" name="donation" min="0.30" max="{{ max_amount }}" step="any" class="numberinput form-control" required id="id_donation"> 
+	    	<input type="number" name="donation" min="5.00" max="{{ max_amount }}" step="any" class="numberinput form-control" required id="id_donation"> 
 	    </div> 
 	</div>
 	{{ order_form|crispy }}

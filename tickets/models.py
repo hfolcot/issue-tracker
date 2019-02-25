@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import reverse
 from django.db import models
@@ -26,6 +27,7 @@ class BugTicket(models.Model):
 	assigned = models.ForeignKey(DeveloperProfile, default=choices.UNASSIGNED, on_delete=models.SET('Unassigned'))
 	status = models.CharField(choices=choices.STATUS_CHOICES, default=choices.PENDING, max_length=150, blank=True)
 	priority = models.CharField(choices=choices.PRIORITY_CHOICES, default='Medium', max_length=8, blank=True)
+	time_spent = models.IntegerField(default=0)
 
 	def __str__(self):
 		return self.title
@@ -65,16 +67,16 @@ class BugTicket(models.Model):
 				downvotes += 1
 		return downvotes
 
-	def get_last_comment(self):
-		#Get the most recent comment timestamp for the specified ticket
+	def get_last_update(self):
+		#Get the most recent update timestamp for the specified ticket
 		content_type = ContentType.objects.get_for_model(BugTicket)
 		oid = self.pk
 		try:
-			comment = Comment.objects.filter(content_type=content_type, object_id=oid).order_by('-id')[0]
-			comment = comment.timestamp
+			update = Update.objects.filter(content_type=content_type, object_id=oid).order_by('-id')[0]
+			update = update.timestamp
 		except:
-			comment = 'Awaiting Response'
-		return comment
+			update = 'Awaiting Response'
+		return update
 
 class NewFeatureTicket(models.Model):
 	customer = models.ForeignKey(User, null=True,
@@ -85,6 +87,10 @@ class NewFeatureTicket(models.Model):
 	quoted = models.BooleanField(default=False)
 	cost = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
 	status = models.CharField(choices=choices.FEATURE_STATUS_CHOICES, default=choices.AWAITINGQUOTE, max_length=150, blank=True)
+	time_spent = models.PositiveIntegerField(default=0)
+	number_of_donations = models.PositiveIntegerField(default=0)
+	total_donations = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
+	last_update = models.DateTimeField(null=True)
 
 	def __str__(self):
 		return self.title
@@ -104,13 +110,22 @@ class NewFeatureTicket(models.Model):
 		return content_type
 
 
-	def get_last_comment(self):
-		#Get the most recent comment timestamp for the specified ticket
+	def get_last_update(self):
+		#Get the most recent update timestamp for the specified ticket
 		content_type = ContentType.objects.get_for_model(NewFeatureTicket)
 		oid = self.pk
 		try:
-			comment = Comment.objects.filter(content_type=content_type, object_id=oid).order_by('-id')[0]
-			comment = comment.timestamp
+			update = Update.objects.filter(content_type=content_type, object_id=oid).order_by('-id')[0]
+			update = update.timestamp
 		except:
-			comment = 'Awaiting Response'
-		return comment
+			update = 'Awaiting Response'
+		return update
+
+class Update(models.Model):
+	"""
+	A model for each update on a ticket
+	"""
+	timestamp = models.DateTimeField()
+	object_id = models.PositiveIntegerField()
+	content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+	content_object = GenericForeignKey('content_type', 'object_id')

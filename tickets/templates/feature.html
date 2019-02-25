@@ -70,7 +70,7 @@
 				<p>{{ percentage }}% of target</p>
 				<p>£{{ remaining }} remaining</p>
 				<p>This feature has been quoted at £{{ feature.cost }}.</p>
-				{% if percentage == 100 %}
+				{% if remaining == 0 %}
 				<p class="text-success">Target reached!</p>
 				{% else %}
 				<a href="{% url 'checkout' feature.id %}" class="btn btn-success">Donate!</a>

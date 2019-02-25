@@ -21,9 +21,25 @@ class NewFeatureForm(forms.ModelForm):
 class BugUpdateForm(forms.ModelForm):
 	class Meta:
 		model = BugTicket
-		fields = ['priority', 'assigned', 'status']
+		fields = [
+			'priority', 
+			'assigned', 
+			'status',
+			'time_spent'
+		]
+		labels = {
+			'time_spent' : 'Time Spent (mins)'
+		}
 
 class FeatureUpdateForm(forms.ModelForm):
 	class Meta:
 		model = NewFeatureTicket
-		fields = ['assigned', 'cost', 'status']
+		fields = [
+			'assigned', 
+			'cost', 
+			'status',
+			'time_spent'
+		]
+		labels = {
+			'time_spent' : 'Time Spent (mins)'
+		}

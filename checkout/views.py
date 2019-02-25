@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import F
 from django.utils import timezone
 import stripe
 
@@ -17,15 +18,7 @@ stripe.api_key = settings.STRIPE_SECRET
 def checkout(request, id):
 	feature = get_object_or_404(NewFeatureTicket, pk=id)
 
-	# Calculate the max amount the user should contribute
-	orders = Order.objects.filter(item=feature)
-	if orders:
-		donations = 0
-		for order in orders:
-			donations += order.donation
-			max_amount = round(feature.cost - donations, 2)
-	else:
-		max_amount = feature.cost
+	max_amount = feature.cost - feature.total_donations
 
 	if request.method == 'POST':
 		order_form = OrderForm(request.POST)
@@ -34,8 +27,6 @@ def checkout(request, id):
 
 		if order_form.is_valid() and payment_form.is_valid():
 			total = donation * 100
-			print("total:")
-			print(total)
 			order = order_form.save(commit=False)
 			order.donation = donation
 			order.date = timezone.now()
@@ -54,7 +45,12 @@ def checkout(request, id):
 
 			if customer.paid:
 				messages.success(request, "You have successfully paid")
-				return redirect(reverse('home'))
+				feature.number_of_donations = F('number_of_donations') + 1
+				feature.total_donations = F('total_donations') + donation
+				feature.save()
+				request.user.profile.total_contributed = F('total_contributed') + donation
+				request.user.profile.save()
+				return redirect(reverse('feature', args=(feature.id,)))
 			else:
 				messages.error(request, "Unable to take payment")
 

@@ -65,7 +65,7 @@
                 <th scope="col">#</th>
                 <th scope="col">Customer</th>
                 <th scope="col">Title</th>
-                <th scope="col">Last Comment</th>
+                <th scope="col">Last Updated</th>
                 <th scope="col">Status</th>
                 <th scope="col"></th>
               </tr>
@@ -76,7 +76,7 @@
                   <th scope="row">{{ feature.id }}</th>
                   <td>{{ feature.customer.first_name }} {{ feature.customer.last_name }}</td>
                   <td><small>{{ feature.title }}</small></td> 
-                  <td>{{ feature.get_last_comment }}</td>
+                  <td>{{ feature.last_update }}</td>
                   <td>{{ feature.status }}</td>
                   <td><a href="{{ feature.get_absolute_url }}" class="btn btn-primary">Open</a></td>
                 </tr>
@@ -153,7 +153,7 @@
                   <th scope="col">#</th>
                   <th scope="col">Customer</th>
                   <th scope="col">Title</th>
-                  <th scope="col">Last Comment</th>
+                  <th scope="col">Last Updated</th>
                   <th scope="col"></th>
                 </tr>
               </thead>
@@ -169,7 +169,7 @@
                     <th scope="row">{{ bug.id }}</th>
                     <td>{{ bug.customer.first_name }} {{ bug.customer.last_name }}</td>
                     <td><small>{{ bug.title }}</small></td>
-                    <td>{{ bug.get_last_comment }}</td>
+                    <td>{{ bug.get_last_update }}</td>
                     <td><a href="{{ bug.get_absolute_url }}" class="btn btn-primary">Open</a></td>
                   </tr>
                 {% endfor %}
