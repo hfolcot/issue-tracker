@@ -1,8 +1,5 @@
-.screenshot {
-    background-size: contain;
-    background-position: center center;
-	background-repeat: no-repeat;
-	height: 300px;
+.screenshot-thumbnail {
+    height: 250px;
 }
 
 .result {

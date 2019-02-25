@@ -13,49 +13,51 @@
 			<input type="submit" value="Post" class="btn btn-outline-dark">
 			</form>
 		</div>
-		<div class="comments">
-			<h6>Previous comments:</h6>
-		{% for comment in comments %}
-		<div class="row card mt-1">
-			<div class="col-12 mt-1">
-				<img class="profile-pic rounded-circle" src="{{ comment.user.profile.image.url }}"/>
-				<span>
-					<strong>{{ comment.user.profile.first_name }} {{ comment.user.profile.last_name }}</strong> 
-					<small>on {{ comment.timestamp.date }} at {{ comment.timestamp.time }}</small>
-				</span>
+		{% if comments %}
+			<div class="comments">
+				<h6>Previous comments:</h6>
+			{% for comment in comments %}
+			<div class="row card mt-1">
+				<div class="col-12 mt-1">
+					<img class="profile-pic rounded-circle" src="{{ comment.user.profile.image.url }}"/>
+					<span>
+						<strong>{{ comment.user.first_name }} {{ comment.user.last_name }}</strong> 
+						<small>on {{ comment.timestamp.date }} at {{ comment.timestamp.time }}</small>
+					</span>
+				</div>
+				<div class="col-12">
+					<p>{{ comment.content }}</p>
+				</div>
 			</div>
-			<div class="col-12">
-				<p>{{ comment.content }}</p>
+			{% endfor %}
+			<ul class="pagination">
+	          {% if comments.has_previous %}
+	          <li class="page-item">
+	            <a class='page-link' href="?page=1">&laquo; First</a>
+	          </li>
+	          <li class="page-item">
+	            <a class='page-link' href="?page={{ comments.previous_page_number }}">Previous</a>
+	          </li>
+	          {% endif %}
+	          <small class="mr-2 ml-2">
+	              Page {{ comments.number }} of {{ comments.paginator.num_pages }}
+	          </small>
+	          {% if comments.has_next %}
+	          <li class="page-item">
+	            <a class='page-link' href="?page={{ comments.next_page_number }}">Next</a>
+	          </li>
+	          <li class="page-item">
+	            <a class='page-link' href="?page={{ comments.paginator.num_pages }}">Last &raquo;</a>
+	          </li>
+	          {% endif %}
+	        </ul>
 			</div>
-		</div>
-		{% endfor %}
-		<ul class="pagination">
-          {% if comments.has_previous %}
-          <li class="page-item">
-            <a class='page-link' href="?page=1">&laquo; First</a>
-          </li>
-          <li class="page-item">
-            <a class='page-link' href="?page={{ comments.previous_page_number }}">Previous</a>
-          </li>
-          {% endif %}
-          <small class="mr-2 ml-2">
-              Page {{ comments.number }} of {{ comments.paginator.num_pages }}
-          </small>
-          {% if comments.has_next %}
-          <li class="page-item">
-            <a class='page-link' href="?page={{ comments.next_page_number }}">Next</a>
-          </li>
-          <li class="page-item">
-            <a class='page-link' href="?page={{ comments.paginator.num_pages }}">Last &raquo;</a>
-          </li>
-          {% endif %}
-        </ul>
-		</div>
+		{% endif %}
 	</div>
 	<div class="col-12 col-md-4">
 		{% if user.is_staff %}
 			<div class="update_ticket">
-				<p>Customer: {{ feature.customer.profile }}</p>
+				<p>Customer: {{ feature.customer.first_name }} {{ feature.customer.last_name }}</p>
 				<form method="POST">
 					{% csrf_token %}
 					{{ update_form|crispy }}
@@ -64,14 +66,17 @@
 			</div>
 		{% else %}
 			{% if feature.quoted %}
+				<p>£{{ donations }} donated</p>
+				<p>{{ percentage }}% of target</p>
+				<p>£{{ remaining }} remaining</p>
 				<p>This feature has been quoted at £{{ feature.cost }}.</p>
-				{% if feature.cost == feature.contributions %}
+				{% if percentage == 100 %}
 				<p class="text-success">Target reached!</p>
 				{% else %}
-				<a href="" class="btn btn-success">Donate!</a>
+				<a href="{% url 'checkout' feature.id %}" class="btn btn-success">Donate!</a>
 				{% endif %}
 			{% endif %}
-			<p>Customer: {{ feature.customer.profile }}</p>
+			<p>Customer: {{ feature.customer.first_name }} {{ feature.customer.last_name }}</p>
 			<p>Status: {{ feature.status }}</p>
 			<p>Assigned to: {{ feature.assigned }}</p>
 		{% endif %}

@@ -28,7 +28,7 @@
 			<div class="col-12 mt-1">
 				<img class="profile-pic rounded-circle" src="{{ comment.user.profile.image.url }}"/>
 				<span>
-					<strong>{{ comment.user.profile.first_name }} {{ comment.user.profile.last_name }}</strong> 
+					<strong>{{ comment.user.first_name }} {{ comment.user.last_name }}</strong> 
 					<small>on {{ comment.timestamp.date }} at {{ comment.timestamp.time }}</small>
 				</span>
 			</div>
@@ -65,7 +65,7 @@
 	<div class="col-12 col-md-4">
 		{% if user.is_staff %}
 		<div class="update_ticket">
-			<p>Customer: {{ bug.customer.profile }}</p>
+			<p>Customer: {{ bug.customer.first_name }} {{ bug.customer.last_name }}</p>
 			<form method="POST">
 				{% csrf_token %}
 				{{ update_form|crispy }}
@@ -73,13 +73,13 @@
 			</form>
 		</div>
 		{% else %}
-		<p>Customer: {{ bug.customer.profile }}</p>
+		<p>Customer: {{ bug.customer.first_name }} {{ bug.customer.last_name }}</p>
 		<p>Status: {{ bug.status }}</p>
 		<p>Assigned to: {{ bug.assigned }}</p>
 		<p>Priority: {{ bug.priority }}</p>
 		{% endif %}
 		<p style="text-decoration: underline;">Screenshots</p>
-		<div class="screenshot" style="background-image: url('{{ MEDIA_URL }}{{ bug.screenshot }}')"></div>
+		<a href="{{ MEDIA_URL }}{{ bug.screenshot }}" target="blank"><img class="screenshot-thumbnail" src="{{ MEDIA_URL }}{{ bug.screenshot }}" /></a>
 
 	</div>
 </div>

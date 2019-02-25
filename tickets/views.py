@@ -1,4 +1,3 @@
-import ast
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator
@@ -6,11 +5,11 @@ from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, reverse, redirect
 
+from checkout.models import Order
 from comments.forms import CommentForm
 from comments.models import Comment
 from .models import BugTicket, NewFeatureTicket
 from .forms import NewBugForm, NewFeatureForm, BugUpdateForm, FeatureUpdateForm
-from voting.forms import VotingForm
 from voting.models import Vote
 
 # Create your views here.
@@ -82,7 +81,11 @@ def all_tickets_view(request):
 
 def bug_ticket_view(request, id):
 	"""
-	Opening the bug ticket to view specifics and add comments/vote
+	Opening the bug ticket to view specifics and add 
+	comments/update/vote.
+	All users can vote and comment but only those with
+	staff access can update the status, priority and 
+	assigned fields.
 	"""
 	bug = get_object_or_404(BugTicket, id=id)
 
@@ -123,20 +126,24 @@ def bug_ticket_view(request, id):
 
 		#Retrieve the votes for the specific bug
 		upvotes = bug.get_upvotes
-		print(upvotes)
 		downvotes = bug.get_downvotes
-		print(downvotes)
 
 		#check if user has already voted
 		votes = Vote.objects.filter(content_type = bug.get_content_type, object_id=bug.id)
 		if votes:
 			for vote in votes:
-				if request.user.profile == vote.user:
+				print(request.user)
+				print("then")
+				print(vote.user)
+				if request.user == vote.user:
+					print("is equal")
 					user_voted = True
 				else:
 					user_voted = False
 		else:
 			user_voted = False
+		print("User voted")
+		print(user_voted)
 
 		#Get comments to display
 		comments = Comment.get_comments(BugTicket, bug.id)
@@ -154,8 +161,10 @@ def bug_ticket_view(request, id):
 			'update_form' : update_form,
 			'upvotes' : upvotes,
 			'downvotes': downvotes,
-			'user_voted' : user_voted}
+			'user_voted' : user_voted
+			}
 	return render(request, 'bug.html', context)
+
 
 def voting_view(request, object_id, vote_type, content_type):
 	"""
@@ -166,9 +175,10 @@ def voting_view(request, object_id, vote_type, content_type):
 	else:
 		vote_boolean = False
 	c_type = ContentType.objects.get(model=content_type)
+	print(c_type)
 	new_vote, created = Vote.objects.get_or_create(
 							positive_vote=vote_boolean,
-							user=request.user.profile,
+							user=request.user,
 							object_id=object_id,
 							content_type=c_type
 							)
@@ -207,6 +217,21 @@ def feature_ticket_view(request, id):
 			updates.save()
 		messages.success(request, f"Ticket Updated")
 
+	# Calculate the amount contributed
+	orders = Order.objects.filter(item=feature)
+	donations = 0
+	if orders:
+		for order in orders:
+			donations += order.donation
+		percentage = round((donations / feature.cost)*100, 0)
+		remaining = round(feature.cost - donations, 2)
+	else:
+		percentage = 0
+		if feature.cost:
+			remaining = feature.cost
+		else:
+			remaining = 0
+
 	#Adding a new comment
 	initial_data = {
 		"content_type": feature.get_content_type,
@@ -237,7 +262,10 @@ def feature_ticket_view(request, id):
 	context = {'feature' : feature, 
 		'comments' : comments, 
 		'comment_form' : form,
-		'update_form' : update_form}
+		'update_form' : update_form,
+		'donations' : donations,
+		'percentage' : percentage,
+		'remaining' : remaining}
 
 	return render(request, 'feature.html', context)
 

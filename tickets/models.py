@@ -77,15 +77,14 @@ class BugTicket(models.Model):
 		return comment
 
 class NewFeatureTicket(models.Model):
-	customer = models.ForeignKey(settings.AUTH_USER_MODEL, null=True,
-    			on_delete=models.CASCADE,)
+	customer = models.ForeignKey(User, null=True,
+        			on_delete=models.CASCADE,)
 	title = models.CharField(max_length=100, blank=False)
 	description = models.TextField()
 	assigned = models.ForeignKey(DeveloperProfile, default=choices.UNASSIGNED, on_delete=models.SET('Unassigned'))
 	quoted = models.BooleanField(default=False)
 	cost = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
 	status = models.CharField(choices=choices.FEATURE_STATUS_CHOICES, default=choices.AWAITINGQUOTE, max_length=150, blank=True)
-	contributions = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
 
 	def __str__(self):
 		return self.title
@@ -95,10 +94,11 @@ class NewFeatureTicket(models.Model):
 
 	class Meta:
 		verbose_name = 'newfeatureticket'
-		ordering = 	['-contributions']
+		ordering = 	['-quoted']
 
 	@property
 	def get_content_type(self):
+		#Gets the content type for use by the comments model
 		instance = self
 		content_type = ContentType.objects.get_for_model(instance.__class__)
 		return content_type

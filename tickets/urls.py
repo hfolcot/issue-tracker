@@ -1,4 +1,3 @@
-from django.contrib import admin
 from django.urls import path
 from .views import bug_ticket_view, new_bug_view, new_feature_view, feature_ticket_view, voting_view
 

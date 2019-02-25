@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
     <link rel="icon" type="image/png" href="{{ MEDIA_URL }}images/favicon.ico">
+    {% block js %} {% endblock js %}
     <title>UnicornAttractor Issue Tracker</title>
 </head>
 
@@ -94,4 +95,5 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.6.0/marked.min.js"></script>
 <script type="text/javascript" src="https://cdn.emailjs.com/sdk/2.3.2/email.min.js"></script>
 <script src="{% static 'js/script.js' %}"></script>
+
 </body>

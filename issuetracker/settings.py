@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     
     #custom
     'accounts',
+    'checkout',
     'comments',
     'company',
     'news',
@@ -132,25 +133,25 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-AWS_S3_OBJECT_PARAMETERS = {
-    'Expires' : 'Thu, 31 Dec 2099 20:00:00 GMT',
-    'CacheControl': 'max-age=94608000',
-}
+# AWS_S3_OBJECT_PARAMETERS = {
+#     'Expires' : 'Thu, 31 Dec 2099 20:00:00 GMT',
+#     'CacheControl': 'max-age=94608000',
+# }
 
-AWS_STORAGE_BUCKET_NAME = "issue-tracker-hev"
-AWS_S3_REGION_NAME = "eu-west-2"
-AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+# AWS_STORAGE_BUCKET_NAME = "issue-tracker-hev"
+# AWS_S3_REGION_NAME = "eu-west-2"
+# AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
+# AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
 
-AWS_S3_CUSTOM_DOMAIN = "%s.s3.amazonaws.com" % AWS_STORAGE_BUCKET_NAME
+# AWS_S3_CUSTOM_DOMAIN = "%s.s3.amazonaws.com" % AWS_STORAGE_BUCKET_NAME
 
 STATICFILES_LOCATION = 'static'
-STATICFILES_STORAGE = 'custom_storages.StaticStorage'
+# STATICFILES_STORAGE = 'custom_storages.StaticStorage'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-MEDIAFILES_LOCATION = 'media'
-DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
+# MEDIAFILES_LOCATION = 'media'
+# DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
@@ -158,7 +159,8 @@ STATICFILES_DIRS = [
     ]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
+# MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
+MEDIA_URL = '/media/' # Development Only
 
 MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"
 
@@ -172,3 +174,8 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
+
+# Stripe settings
+
+STRIPE_PUBLISHABLE = os.getenv('STRIPE_PUBLISHABLE')
+STRIPE_SECRET = os.getenv('STRIPE_SECRET')

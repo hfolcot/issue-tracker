@@ -22,7 +22,7 @@ def registration_view(request):
 			if user:
 				auth.login(user=user, request=request)
 				messages.success(request, f"Welcome {user}! Your account has been created.")
-				return redirect('home')
+				return redirect('profile')
 			else:
 				messages.error("Account registration failed")
 	else:
