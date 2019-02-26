@@ -5,6 +5,16 @@
 <h1>{{ feature.title }}</h1>
 <div class="row">
 	<div class="col-xs-12 col-md-8">
+		{% if user_voted %}
+			<small>You have already voted!</small> 
+			<p><i class="far fa-thumbs-up text-success"></i> {{upvotes}} | <i class="far fa-thumbs-down text-danger"></i> {{ downvotes }}</p>
+		{% else %}
+		<form method="POST">
+			{% csrf_token %}
+			<input type="submit" class="btn btn-success btn-sm" value="({{ upvotes }}) I have this too!" name="upvote">
+			<input type="submit" class="btn btn-danger btn-sm" value="({{downvotes}}) Hasn't been a problem!" name="downvote">
+		</form>
+		{% endif %}
 		<p>{{ feature.description }}</p>
 		<h5>Comments:</h5>
 		<div>

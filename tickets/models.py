@@ -27,6 +27,7 @@ class BugTicket(models.Model):
 	assigned = models.ForeignKey(DeveloperProfile, default=choices.UNASSIGNED, on_delete=models.SET('Unassigned'))
 	status = models.CharField(choices=choices.STATUS_CHOICES, default=choices.PENDING, max_length=150, blank=True)
 	priority = models.CharField(choices=choices.PRIORITY_CHOICES, default='Medium', max_length=8, blank=True)
+	votes = models.ManyToManyField(Vote)
 	time_spent = models.IntegerField(default=0)
 	last_update = models.DateTimeField(null=True)
 
@@ -46,27 +47,27 @@ class BugTicket(models.Model):
 		content_type = ContentType.objects.get_for_model(instance.__class__)
 		return content_type
 
-	@property
-	def get_upvotes(self):
-		#Retrieve the number of positive votes for the bug
-		instance = self
-		votes = Vote.get_votes(BugTicket, self.id)
-		upvotes = 0
-		for vote in votes:
-			if vote.positive_vote == True:
-				upvotes += 1
-		return upvotes	
+	# @property
+	# def get_upvotes(self):
+	# 	#Retrieve the number of positive votes for the bug
+	# 	instance = self
+	# 	votes = Vote.get_votes(BugTicket, self.id)
+	# 	upvotes = 0
+	# 	for vote in votes:
+	# 		if vote.positive_vote == True:
+	# 			upvotes += 1
+	# 	return upvotes	
 
-	@property
-	def get_downvotes(self):
-		#Retrieve the number of negative votes for the bug
-		instance = self
-		votes = Vote.get_votes(BugTicket, self.id)
-		downvotes = 0
-		for vote in votes:
-			if vote.positive_vote == False:
-				downvotes += 1
-		return downvotes
+	# @property
+	# def get_downvotes(self):
+	# 	#Retrieve the number of negative votes for the bug
+	# 	instance = self
+	# 	votes = Vote.get_votes(BugTicket, self.id)
+	# 	downvotes = 0
+	# 	for vote in votes:
+	# 		if vote.positive_vote == False:
+	# 			downvotes += 1
+	# 	return downvotes
 
 	# def get_last_update(self):
 	# 	#Get the most recent update timestamp for the specified ticket
@@ -92,6 +93,7 @@ class NewFeatureTicket(models.Model):
 	number_of_donations = models.PositiveIntegerField(default=0)
 	total_donations = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
 	last_update = models.DateTimeField(null=True)
+	votes = models.ManyToManyField(Vote)
 
 	def __str__(self):
 		return self.title
@@ -122,11 +124,11 @@ class NewFeatureTicket(models.Model):
 	# 		update = 'Awaiting Response'
 	# 	return update
 
-class Update(models.Model):
-	"""
-	A model for each update on a ticket
-	"""
-	timestamp = models.DateTimeField()
-	object_id = models.PositiveIntegerField()
-	content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-	content_object = GenericForeignKey('content_type', 'object_id')
+# class Update(models.Model):
+# 	"""
+# 	A model for each update on a ticket
+# 	"""
+# 	timestamp = models.DateTimeField()
+# 	object_id = models.PositiveIntegerField()
+# 	content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+# 	content_object = GenericForeignKey('content_type', 'object_id')

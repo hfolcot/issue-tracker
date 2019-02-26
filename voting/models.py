@@ -14,10 +14,3 @@ class Vote(models.Model):
 	content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
 	object_id = models.PositiveIntegerField()
 	content_object = GenericForeignKey('content_type', 'object_id')
-
-	def get_votes(ticket_type, ticket_id):
-		#Get votes for a specific ticket or post
-		content_type = ContentType.objects.get_for_model(ticket_type)
-		oid = ticket_id
-		votes = Vote.objects.filter(content_type=content_type, object_id=oid)
-		return votes

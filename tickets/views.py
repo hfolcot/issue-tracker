@@ -12,7 +12,7 @@ from accounts.models import DeveloperProfile
 from checkout.models import Order
 from comments.forms import CommentForm
 from comments.models import Comment
-from .models import BugTicket, NewFeatureTicket, Update
+from .models import BugTicket, NewFeatureTicket
 from .forms import NewBugForm, NewFeatureForm, BugUpdateForm, FeatureUpdateForm
 from voting.models import Vote
 
@@ -126,6 +126,7 @@ def bug_ticket_view(request, id):
 				return HttpResponseRedirect(reverse('bug', args=(bug.id,)))
 
 	#Commenting
+	#All Users
 		elif 'comment' in request.POST:
 			comment_form = CommentForm(request.POST, initial=initial_data)
 			if comment_form.is_valid():
@@ -142,7 +143,35 @@ def bug_ticket_view(request, id):
 				bug.last_update = datetime.datetime.now()
 				bug.save()
 
-		return HttpResponseRedirect(reverse('bug', args=(bug.id,)))
+			return HttpResponseRedirect(reverse('bug', args=(bug.id,)))
+
+	#Voting (All Users)
+		elif 'upvote' in request.POST:
+			bug.upvotes = F('upvotes') + 1
+			bug.save()
+			new_vote, created = Vote.objects.get_or_create(
+					positive_vote=True,
+					user=request.user,
+					object_id=bug.id,
+					content_type=bug.get_content_type
+						)
+			user.profile.votes.add(new_vote)
+			bug.votes.add(new_vote)
+			messages.success(request, f'Thanks for voting')
+			return HttpResponseRedirect(reverse('bug', args=(bug.id,)))
+		elif 'downvote' in request.POST:
+			bug.downvotes = F('downvotes') + 1
+			bug.save()
+			new_vote, created = Vote.objects.get_or_create(
+					positive_vote=False,
+					user=request.user,
+					object_id=bug.id,
+					content_type=bug.get_content_type
+						)
+			user.profile.votes.add(new_vote)
+			bug.votes.add(new_vote)
+			messages.success(request, f'Thanks for voting')
+			return HttpResponseRedirect(reverse('bug', args=(bug.id,)))
 	else:
 		#Blank forms:
 		update_form = BugUpdateForm(initial=bug_data)
@@ -153,17 +182,18 @@ def bug_ticket_view(request, id):
 		mins_worked_on = bug.time_spent%60
 
 		#Retrieve the votes for the specific bug
-		upvotes = bug.get_upvotes
-		downvotes = bug.get_downvotes
+		upvotes_list = bug.votes.filter(positive_vote=True)
+		upvotes = upvotes_list.count()
+		downvotes_list = bug.votes.filter(positive_vote=False)
+		downvotes = downvotes_list.count()
 
 		#check if user has already voted
-		votes = Vote.objects.filter(content_type = bug.get_content_type, object_id=bug.id)
-		if votes:
-			for vote in votes:
-				if request.user == vote.user:
+		user_votes = user.profile.votes.all()
+		bug_votes = bug.votes.all()
+		if bug_votes:
+			for vote in bug_votes:
+				if vote in user_votes:
 					user_voted = True
-				else:
-					user_voted = False
 		else:
 			user_voted = False
 
@@ -182,33 +212,14 @@ def bug_ticket_view(request, id):
 			'comments' : comments, 
 			'comment_form' : comment_form, 
 			'update_form' : update_form,
-			'upvotes' : upvotes,
-			'downvotes': downvotes,
-			'user_voted' : user_voted,
 			'hours' : hours_worked_on,
-			'mins' : mins_worked_on
+			'mins' : mins_worked_on,
+			'user_voted' : user_voted,
+			'upvotes' : upvotes,
+			'downvotes' : downvotes
 			}
 	return render(request, 'bug.html', context)
 
-
-def voting_view(request, object_id, vote_type, content_type):
-	"""
-	Rate the current ticket
-	"""
-	if vote_type == 1:
-		vote_boolean = True
-	else:
-		vote_boolean = False
-	c_type = ContentType.objects.get(model=content_type)
-	print(c_type)
-	new_vote, created = Vote.objects.get_or_create(
-							positive_vote=vote_boolean,
-							user=request.user,
-							object_id=object_id,
-							content_type=c_type
-							)
-	messages.success(request, f"Thank you for voting")
-	return redirect(bug_ticket_view, object_id)
 
 def new_bug_view(request):
 	"""
@@ -281,6 +292,34 @@ def feature_ticket_view(request, id):
 									content=content_data
 									)
 			return HttpResponseRedirect(reverse('feature', args=(feature.id,)))
+
+	#Voting (All Users)
+		elif 'upvote' in request.POST:
+			feature.upvotes = F('upvotes') + 1
+			feature.save()
+			new_vote, created = Vote.objects.get_or_create(
+					positive_vote=True,
+					user=request.user,
+					object_id=feature.id,
+					content_type=feature.get_content_type
+						)
+			user.profile.votes.add(new_vote)
+			feature.votes.add(new_vote)
+			messages.success(request, f'Thanks for voting')
+			return HttpResponseRedirect(reverse('feature', args=(feature.id,)))
+		elif 'downvote' in request.POST:
+			feature.downvotes = F('downvotes') + 1
+			feature.save()
+			new_vote, created = Vote.objects.get_or_create(
+					positive_vote=False,
+					user=request.user,
+					object_id=feature.id,
+					content_type=feature.get_content_type
+						)
+			user.profile.votes.add(new_vote)
+			feature.votes.add(new_vote)
+			messages.success(request, f'Thanks for voting')
+			return HttpResponseRedirect(reverse('feature', args=(feature.id,)))
 	else:
 		#Initial Forms
 		update_form = FeatureUpdateForm(initial=feature_data)
@@ -292,6 +331,22 @@ def feature_ticket_view(request, id):
 		remaining = round(feature.cost - donations, 2)
 		hours_worked_on = math.floor(feature.time_spent/60)
 		mins_worked_on = feature.time_spent%60
+
+		#Retrieve the number votes for the specific feature
+		upvotes_list = feature.votes.filter(positive_vote=True)
+		upvotes = upvotes_list.count()
+		downvotes_list = feature.votes.filter(positive_vote=False)
+		downvotes = downvotes_list.count()
+
+		#check if user has already voted
+		user_votes = user.profile.votes.all()
+		feature_votes = feature.votes.all()
+		if feature_votes:
+			for vote in feature_votes:
+				if vote in user_votes:
+					user_voted = True
+		else:
+			user_voted = False
 
 		#Get comments
 		comments = Comment.get_comments(NewFeatureTicket, feature.id)
@@ -310,7 +365,10 @@ def feature_ticket_view(request, id):
 			'percentage' : percentage,
 			'remaining' : remaining,
 			'hours' : hours_worked_on,
-			'mins' : mins_worked_on}
+			'mins' : mins_worked_on,
+			'upvotes' : upvotes,
+			'downvotes': downvotes,
+			'user_voted' : user_voted}
 
 		return render(request, 'feature.html', context)
 

@@ -10,9 +10,12 @@
 			<small>You have already voted!</small> 
 			<p><i class="far fa-thumbs-up"></i> {{upvotes}} | <i class="far fa-thumbs-down"></i> {{ downvotes }}</p>
 		{% else %}
-			<a href="{% url 'bug_vote' 'bugticket' bug.id 1 %}" class="btn btn-success btn-sm" type="submit" name="upvote"><i class="far fa-thumbs-up"></i>({{ upvotes }}) I have this too!</a>
-			<a href="{% url 'bug_vote' 'bugticket' bug.id 0 %}" class="btn btn-danger btn-sm" type="submit" name="downvote"><i class="far fa-thumbs-down"></i>({{ downvotes }}) Hasn't been a problem!</a>
-			{% endif %}
+		<form method="POST">
+			{% csrf_token %}
+			<input type="submit" class="btn btn-success btn-sm" value="({{ upvotes }}) I have this too!" name="upvote">
+			<input type="submit" class="btn btn-danger btn-sm" value="({{ downvotes }}) Hasn't been a problem!" name="downvote">
+		</form>
+		{% endif %}
 		<p>{{ bug.description }}</p>
 
 		<h5>Add a comment:</h5>
