@@ -345,8 +345,8 @@ def feature_ticket_view(request, id):
 			for vote in feature_votes:
 				if vote in user_votes:
 					user_voted = True
-		else:
-			user_voted = False
+				else:
+					user_voted = False
 
 		#Get comments
 		comments = Comment.get_comments(NewFeatureTicket, feature.id)

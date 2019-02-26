@@ -4,6 +4,7 @@ HIGH = 'High'
 MEDIUM = 'Medium'
 LOW = 'Low'
 PENDING = 'Pending'
+AWAITINGCUSTOMER = 'Awaiting Customer'
 INPROGRESS = 'In Progress'
 FIXED = 'Fixed'
 AWAITINGQUOTE = 'Awaiting Quote'
@@ -18,6 +19,7 @@ PRIORITY_CHOICES = ((CRITICAL, 'Critical'),
 	(LOW, 'Low'))
 
 STATUS_CHOICES = ((PENDING,'Pending'),
+	(AWAITINGCUSTOMER, 'Awaiting Customer'),
 	(INPROGRESS, 'In Progress'),
 	(FIXED, 'Fixed'))
 

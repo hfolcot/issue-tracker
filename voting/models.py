@@ -14,3 +14,6 @@ class Vote(models.Model):
 	content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
 	object_id = models.PositiveIntegerField()
 	content_object = GenericForeignKey('content_type', 'object_id')
+
+	def __str__(self):
+		return '{0} - {1} - {2}'.format(self.positive_vote, self.content_type, self.object_id)

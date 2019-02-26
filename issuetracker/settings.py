@@ -164,7 +164,7 @@ MEDIA_URL = '/media/' # Development Only
 
 MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"
 
-LOGIN_REDIRECT_URL = 'profile'
+LOGIN_REDIRECT_URL = 'dashboard'
 LOGIN_URL = 'login'
 
 

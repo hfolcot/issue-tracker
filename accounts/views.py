@@ -1,7 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import auth, messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+
+import math
+
+from accounts.models import Profile
 from .forms import UserRegistrationForm, UpdateProfilePicture
 from tickets.models import BugTicket, NewFeatureTicket
 
@@ -30,10 +34,11 @@ def registration_view(request):
 	return render(request, 'register.html', {'form' : registration_form})
 
 @login_required
-def profile_view(request):
+def dashboard_view(request):
 	"""
-	See the profile page of the user currently logged in
+	See the dashboard of the logged in user
 	"""
+	profile = request.user.profile
 	if request.user.is_staff:
 		bug_tickets = BugTicket.objects.filter(assigned=request.user.developerprofile).exclude(status='Fixed')
 		new_features = NewFeatureTicket.objects.filter(assigned=request.user.developerprofile).exclude(status='Implemented')
@@ -71,6 +76,43 @@ def profile_view(request):
 		'new_features' : new_features,
 		'fixed_bugs': fixed_bugs,
 		'completed_features': completed_features, 
-		'img_upload_form': img_upload_form
+		'img_upload_form': img_upload_form,
+		'profile' : profile
 	}
 	return render(request, 'profile.html', context)
+
+
+
+def other_profile_view(request, id):
+	"""
+	View the profile of a selected user
+	"""
+	profile = get_object_or_404(Profile, id=id)
+	if profile.user.is_staff:
+		dev = profile.user.developerprofile
+		bug_days = math.floor(dev.time_spent_on_bugs / 1440)
+		bug_hours = math.floor((dev.time_spent_on_bugs % 1440) / 60)
+		bug_mins = dev.time_spent_on_bugs % 60
+		feature_days = math.floor(dev.time_spent_on_features / 1440)
+		feature_hours = math.floor((dev.time_spent_on_features % 1440) / 60)
+		feature_mins = dev.time_spent_on_features % 60
+		total_days = math.floor((dev.time_spent_on_bugs + dev.time_spent_on_features) / 1440)
+		total_hours = math.floor(((dev.time_spent_on_bugs + dev.time_spent_on_features) % 1440) / 60)
+		total_mins = (dev.time_spent_on_bugs + dev.time_spent_on_features) % 60
+		context = {
+			'profile' : profile,
+			'bug_days' : bug_days,
+			'bug_mins' : bug_mins,
+			'bug_hours' : bug_hours,
+			'feature_days' : feature_days,
+			'feature_mins' : feature_mins,
+			'feature_hours' : feature_hours,
+			'total_days' : total_days,
+			'total_hours' : total_hours,
+			'total_mins' : total_mins
+		}
+	else:
+		context = {
+		'profile' : profile
+		}
+	return render(request, 'other_profile.html', context)

@@ -31,7 +31,7 @@
 			<div class="col-12 mt-1">
 				<img class="profile-pic rounded-circle" src="{{ comment.user.profile.image.url }}"/>
 				<span>
-					<strong>{{ comment.user.first_name }} {{ comment.user.last_name }}</strong> 
+					<a href="{% url 'other_profile' id=comment.user.profile.id %}"><strong>{{ comment.user.first_name }} {{ comment.user.last_name }}</strong></a>
 					<small>on {{ comment.timestamp.date }} at {{ comment.timestamp.time }}</small>
 				</span>
 			</div>
