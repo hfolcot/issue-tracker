@@ -66,6 +66,8 @@
 		{% if user.is_staff %}
 		<div class="update_ticket">
 			<p>Customer: {{ bug.customer.first_name }} {{ bug.customer.last_name }}</p>
+			<p>Time spent so far:</p>
+			<p>{{ hours }} hrs {{ mins }} mins</p>
 			<form method="POST">
 				{% csrf_token %}
 				{{ update_form|crispy }}

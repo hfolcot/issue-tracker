@@ -6,7 +6,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, reverse, redirect
 
 import datetime
+import math
 
+from accounts.models import DeveloperProfile
 from checkout.models import Order
 from comments.forms import CommentForm
 from comments.models import Comment
@@ -90,7 +92,7 @@ def bug_ticket_view(request, id):
 	assigned fields.
 	"""
 	bug = get_object_or_404(BugTicket, id=id)
-
+	user = request.user
 	#Initial data for forms
 	initial_data = {
 		"content_type": bug.get_content_type,
@@ -104,19 +106,19 @@ def bug_ticket_view(request, id):
 	}
 	
 	if request.method == 'POST':
-	#Assigning the bug and marking as resolved
+	#Assigning the bug, adding time spent and marking as resolved
+	#Staff only
 		if 'update' in request.POST:
 			update_form = BugUpdateForm(request.POST, instance=bug)
 			time_spent = bug.time_spent + int(request.POST['time_spent'])
 			if update_form.is_valid():
-				new_update, created = Update.objects.get_or_create(
-							content_type=bug.get_content_type,
-							object_id=bug.id,
-							timestamp=datetime.datetime.now()
-							)
-				update = update_form.save()
-				update.time_spent = time_spent
-				update.save()
+				updated_bug = update_form.save()
+				updated_bug.time_spent = time_spent
+				updated_bug.last_update = datetime.datetime.now()
+				updated_bug.save()
+				dev = get_object_or_404(DeveloperProfile, user=user.id)
+				dev.time_spent_on_bugs = F('time_spent_on_bugs') + int(request.POST['time_spent'])
+				dev.save()
 				messages.success(request, f"Ticket Updated")
 				return HttpResponseRedirect(reverse('bug', args=(bug.id,)))
 			else:
@@ -137,17 +139,18 @@ def bug_ticket_view(request, id):
 							object_id=oid,
 							content=content_data
 							)
-				new_update, created = Update.objects.get_or_create(
-							content_type=content_type,
-							object_id=oid,
-							timestamp=datetime.datetime.now()
-							)
+				bug.last_update = datetime.datetime.now()
+				bug.save()
+
 		return HttpResponseRedirect(reverse('bug', args=(bug.id,)))
 	else:
 		#Blank forms:
 		update_form = BugUpdateForm(initial=bug_data)
 		comment_form = CommentForm(initial=initial_data)
-		#log_update_form = LogUpdateForm(initial=initial_data)
+
+		#Current Information on Bug
+		hours_worked_on = math.floor(bug.time_spent/60)
+		mins_worked_on = bug.time_spent%60
 
 		#Retrieve the votes for the specific bug
 		upvotes = bug.get_upvotes
@@ -181,7 +184,9 @@ def bug_ticket_view(request, id):
 			'update_form' : update_form,
 			'upvotes' : upvotes,
 			'downvotes': downvotes,
-			'user_voted' : user_voted
+			'user_voted' : user_voted,
+			'hours' : hours_worked_on,
+			'mins' : mins_worked_on
 			}
 	return render(request, 'bug.html', context)
 
@@ -213,6 +218,7 @@ def new_bug_view(request):
 	if new_bug_form.is_valid():
 		bug = new_bug_form.save()
 		bug.customer = request.user
+		bug.last_update = datetime.datetime.now()
 		bug.save()
 		return redirect(bug_ticket_view, bug.id)
 	context = {
@@ -227,71 +233,86 @@ def feature_ticket_view(request, id):
 	Opening the feature ticket to view specifics and add comments
 	"""
 	feature = get_object_or_404(NewFeatureTicket, id=id)
+	user = request.user
 
-	#Assigning to a developer, adding a quote and marking as implemented
-	update_form = FeatureUpdateForm(request.POST or None, instance=feature)
-	if update_form.is_valid():
-		updates = update_form.save()
-		feature.last_update = datetime.datetime.now()
-		feature.save()
-		# new_update, created = Update.objects.get_or_create(
-		# 	content_type=feature.get_content_type,
-		# 	object_id=feature.id,
-		# 	timestamp=datetime.datetime.now()
-		# 	)
-		if updates.cost > 0:
-			updates.quoted = True
-			updates.save()
-		messages.success(request, f"Ticket Updated")
-
-	# Calculate the amount contributed
-	orders = Order.objects.filter(item=feature)
-	donations = feature.total_donations
-	percentage = round((donations / feature.cost)*100, 0)
-	remaining = round(feature.cost - donations, 2)
-
-
-	#Adding a new comment
-	initial_data = {
+	#Initial data for forms
+	comment_data = {
 		"content_type": feature.get_content_type,
 		"object_id": feature.id
 	}
-	form = CommentForm(request.POST or None, initial=initial_data)
-	if form.is_valid():
-		c_type = form.cleaned_data.get("content_type")
-		content_type = ContentType.objects.get(model=c_type)
-		oid = form.cleaned_data.get("object_id")
-		content_data = form.cleaned_data.get("content")
-		new_comment, created = Comment.objects.get_or_create(
-							user=request.user,
-							content_type=content_type,
-							object_id=oid,
-							content=content_data
-							)
-		new_update, created = Update.objects.get_or_create(
-			content_type=feature.get_content_type,
-			object_id=feature.id,
-			timestamp=datetime.datetime.now()
-			)
-		return HttpResponseRedirect(reverse('feature', args=(feature.id,)))
+	feature_data = {
+		'cost' : feature.cost,
+		'assigned' : feature.assigned,
+		'status' : feature.status,
+		'time_spent' : 0
+	}
+	if request.method == 'POST':
+		if 'update' in request.POST:
+		#Assigning to a developer, adding a quote and marking as implemented
+		#Staff only
+			update_form = FeatureUpdateForm(request.POST, instance=feature)
+			time_spent = feature.time_spent + int(request.POST['time_spent'])
+			dev = get_object_or_404(DeveloperProfile, user=user.id)
+			if update_form.is_valid():
+				updated_feature = update_form.save()
+				updated_feature.last_update = datetime.datetime.now()
+				updated_feature.time_spent = time_spent
+				updated_feature.save()
+				dev.time_spent_on_features = F('time_spent_on_features') + int(request.POST['time_spent'])
+				dev.save()
+				if updated_feature.cost > 0:
+					updated_feature.quoted = True
+					updated_feature.save()
+				messages.success(request, f"Ticket Updated")
+			return HttpResponseRedirect(reverse('feature', args=(feature.id,)))
+		elif 'comment' in request.POST:
+			#Adding a new comment
+			#All Users
+			form = CommentForm(request.POST)
+			if form.is_valid():
+				c_type = form.cleaned_data.get("content_type")
+				content_type = ContentType.objects.get(model=c_type)
+				oid = form.cleaned_data.get("object_id")
+				content_data = form.cleaned_data.get("content")
+				new_comment, created = Comment.objects.get_or_create(
+									user=request.user,
+									content_type=content_type,
+									object_id=oid,
+									content=content_data
+									)
+			return HttpResponseRedirect(reverse('feature', args=(feature.id,)))
+	else:
+		#Initial Forms
+		update_form = FeatureUpdateForm(initial=feature_data)
+		comment_form = CommentForm(initial = comment_data)
 
-	#Get comments
-	comments = Comment.get_comments(NewFeatureTicket, feature.id)
+		# Calculate the feature details
+		donations = feature.total_donations
+		percentage = round((donations / feature.cost)*100, 0)
+		remaining = round(feature.cost - donations, 2)
+		hours_worked_on = math.floor(feature.time_spent/60)
+		mins_worked_on = feature.time_spent%60
 
-	#Pagination (comments)
-	comment_paginator = Paginator(comments, 10) # Show 10 tickets per page
-	page = request.GET.get('page')
-	comments = comment_paginator.get_page(page)
+		#Get comments
+		comments = Comment.get_comments(NewFeatureTicket, feature.id)
 
-	context = {'feature' : feature, 
-		'comments' : comments, 
-		'comment_form' : form,
-		'update_form' : update_form,
-		'donations' : donations,
-		'percentage' : percentage,
-		'remaining' : remaining}
+		#Pagination (comments)
+		comment_paginator = Paginator(comments, 10) # Show 10 tickets per page
+		page = request.GET.get('page')
+		comments = comment_paginator.get_page(page)
 
-	return render(request, 'feature.html', context)
+		#Context
+		context = {'feature' : feature, 
+			'comments' : comments, 
+			'comment_form' : comment_form,
+			'update_form' : update_form,
+			'donations' : donations,
+			'percentage' : percentage,
+			'remaining' : remaining,
+			'hours' : hours_worked_on,
+			'mins' : mins_worked_on}
+
+		return render(request, 'feature.html', context)
 
 def new_feature_view(request):
 	"""
@@ -301,6 +322,7 @@ def new_feature_view(request):
 	if new_feature_form.is_valid():
 		feature = new_feature_form.save()
 		feature.customer = request.user
+		feature.last_update = datetime.datetime.now()
 		feature.save()
 		return redirect(feature_ticket_view, feature.id)
 	context = {

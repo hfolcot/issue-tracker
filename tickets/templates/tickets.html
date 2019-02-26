@@ -169,7 +169,7 @@
                     <th scope="row">{{ bug.id }}</th>
                     <td>{{ bug.customer.first_name }} {{ bug.customer.last_name }}</td>
                     <td><small>{{ bug.title }}</small></td>
-                    <td>{{ bug.get_last_update }}</td>
+                    <td>{{ bug.last_update }}</td>
                     <td><a href="{{ bug.get_absolute_url }}" class="btn btn-primary">Open</a></td>
                   </tr>
                 {% endfor %}
@@ -253,7 +253,7 @@
                   <th scope="row">{{ fb.id }}</th>
                   <td>{{ fb.customer.first_name }} {{ fb.customer.last_name }}</td>
                   <td><small>{{ fb.title }}</small></td>
-                  <td>{{ fb.get_last_comment }}</td>
+                  <td>{{ fb.last_update }}</td>
                   <td><a href="{{ fb.get_absolute_url }}" class="btn btn-primary">Open</a></td>
                 </tr>
               {% endfor %}
@@ -337,7 +337,7 @@
                   <th scope="row">{{ cf.id }}</th>
                   <td>{{ cf.customer.first_name }} {{ cf.customer.last_name }}</td>
                   <td><small>{{ cf.title }}</small></td> 
-                  <td>{{ cf.get_last_comment }}</td>
+                  <td>{{ cf.last_update }}</td>
                   <td><a href="{{ cf.get_absolute_url }}" class="btn btn-primary">Open</a></td>
                 </tr>
               {% endfor %}
@@ -396,7 +396,7 @@
         {% if not bug_tickets %}
           <p>No bugs to show.</p>
         {% else %}
-          <ul class="pagination">
+          <ul class="pagination d-flex justify-content-end">
             {% if bug_tickets.has_previous %}
             <li class="page-item">
               <a class='page-link' href="?page=1">&laquo; First</a>
@@ -490,7 +490,7 @@
           <div class="card mt-1">
             <div class="card-header d-flex justify-content-between">
               <h6 class="mt-2" data-toggle="collapse" data-target="#featuredescription{{ feature.id }}" aria-expanded="false" aria-controls="collapseFeature"><i class="fas fa-caret-down"></i>   {{ feature.title }}</h6>
-              <h6 class='mt-2 text-secondary'>{{ feature.get_last_comment }}</h6>    
+              <h6 class='mt-2 text-secondary'>{{ feature.last_update }}</h6>    
               <a href="{{ feature.get_absolute_url }}" class="btn btn-primary">Open</a>
             </div>
             <div class="card-body collapse" id="featuredescription{{ feature.id }}" aria-labelledby="feature{{ feature.id }}" data-parent="#xs-accordion-features">

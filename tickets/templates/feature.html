@@ -10,7 +10,7 @@
 		<div>
 			<form method="POST">{% csrf_token %}
 				{{ comment_form|crispy }}
-			<input type="submit" value="Post" class="btn btn-outline-dark">
+			<input type="submit" value="Post" name="comment" class="btn btn-outline-dark">
 			</form>
 		</div>
 		{% if comments %}
@@ -58,10 +58,12 @@
 		{% if user.is_staff %}
 			<div class="update_ticket">
 				<p>Customer: {{ feature.customer.first_name }} {{ feature.customer.last_name }}</p>
+				<p>Time spent so far:</p>
+				<p>{{ hours }} hrs {{ mins }} mins</p>
 				<form method="POST">
 					{% csrf_token %}
 					{{ update_form|crispy }}
-					<button type="submit" value="update" class="btn btn-success btn-sm">Update</button>
+					<button type="submit" value="update" name="update" class="btn btn-success btn-sm">Update</button>
 				</form>
 			</div>
 		{% else %}

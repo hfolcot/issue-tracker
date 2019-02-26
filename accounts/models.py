@@ -19,6 +19,8 @@ class DeveloperProfile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
 	first_name = models.CharField(max_length=50, null=True)
 	last_name = models.CharField(max_length=50, null=True)
+	time_spent_on_bugs = models.IntegerField(default=0)
+	time_spent_on_features = models.IntegerField(default=0)
 
 	def __str__(self):
 		return f'%s %s' % (self.first_name, self.last_name)
