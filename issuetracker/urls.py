@@ -20,7 +20,7 @@ from django.conf.urls.static import static
 from django.urls import path
 from accounts import urls as accounts_urls
 from checkout import urls as checkout_urls
-from company.views import about_view, contact_view
+from company.views import about_view, contact_view, statistics_view
 from news import urls as blog_urls
 from tickets import urls as tickets_urls
 from tickets.views import all_tickets_view
@@ -34,4 +34,5 @@ urlpatterns = [
     path('about', about_view, name='about'),
     path('contact', contact_view, name='contact'),
     path('checkout/', include(checkout_urls)),
+    path('statistics/', statistics_view, name='statistics')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

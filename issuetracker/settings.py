@@ -40,7 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     #third party
-    'crispy_forms',  
+    'crispy_forms',
+    'storages',
+    'rest_framework', 
     
     #custom
     'accounts',
@@ -48,7 +50,6 @@ INSTALLED_APPS = [
     'comments',
     'company',
     'news',
-    'storages',
     'tickets',
     'voting',
 
@@ -175,6 +176,9 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
 
+REST_FRAMEWORK = {
+'DEFAULT_PERMISSION_CLASSES' : ('rest_framework.permissions.IsAuthenticatedOrReadOnly',)
+}
 # Stripe settings
 
 STRIPE_PUBLISHABLE = os.getenv('STRIPE_PUBLISHABLE')

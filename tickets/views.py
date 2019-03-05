@@ -4,6 +4,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q, F
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, reverse, redirect
+from rest_framework import viewsets, permissions
 
 import datetime
 import math
@@ -12,8 +13,9 @@ from accounts.models import DeveloperProfile
 from checkout.models import Order
 from comments.forms import CommentForm
 from comments.models import Comment
-from .models import BugTicket, NewFeatureTicket
+from .models import BugTicket, NewFeatureTicket, TicketUpdate
 from .forms import NewBugForm, NewFeatureForm, BugUpdateForm, FeatureUpdateForm
+from .serializers import BugSerializer, FeatureSerializer, TicketUpdateSerializer
 from voting.models import Vote
 
 # Create your views here.
@@ -115,10 +117,19 @@ def bug_ticket_view(request, id):
 				updated_bug = update_form.save()
 				updated_bug.time_spent = time_spent
 				updated_bug.last_update = datetime.datetime.now()
+				if updated_bug.status == 'Fixed':
+					updated_bug.fixed_date = datetime.datetime.now()
 				updated_bug.save()
 				dev = get_object_or_404(DeveloperProfile, user=user.id)
 				dev.time_spent_on_bugs = F('time_spent_on_bugs') + int(request.POST['time_spent'])
 				dev.save()
+				TicketUpdate.objects.get_or_create(
+					timestamp = datetime.datetime.now(),
+					object_id = bug.id,
+					content_type = bug.get_content_type,
+					time_spent = int(request.POST['time_spent']),
+					user = request.user
+					)
 				messages.success(request, f"Ticket Updated")
 				return HttpResponseRedirect(reverse('bug', args=(bug.id,)))
 			else:
@@ -140,6 +151,12 @@ def bug_ticket_view(request, id):
 							object_id=oid,
 							content=content_data
 							)
+				TicketUpdate.objects.get_or_create(
+					timestamp = datetime.datetime.now(),
+					object_id = bug.id,
+					content_type = bug.get_content_type,
+					user = request.user
+					)
 				bug.last_update = datetime.datetime.now()
 				bug.save()
 
@@ -147,8 +164,6 @@ def bug_ticket_view(request, id):
 
 	#Voting (All Users)
 		elif 'upvote' in request.POST:
-			bug.upvotes = F('upvotes') + 1
-			bug.save()
 			new_vote, created = Vote.objects.get_or_create(
 					positive_vote=True,
 					user=request.user,
@@ -157,11 +172,11 @@ def bug_ticket_view(request, id):
 						)
 			user.profile.votes.add(new_vote)
 			bug.votes.add(new_vote)
+			bug.rating = F('rating') + 1
+			bug.save()
 			messages.success(request, f'Thanks for voting')
 			return HttpResponseRedirect(reverse('bug', args=(bug.id,)))
 		elif 'downvote' in request.POST:
-			bug.downvotes = F('downvotes') + 1
-			bug.save()
 			new_vote, created = Vote.objects.get_or_create(
 					positive_vote=False,
 					user=request.user,
@@ -170,6 +185,8 @@ def bug_ticket_view(request, id):
 						)
 			user.profile.votes.add(new_vote)
 			bug.votes.add(new_vote)
+			bug.rating = F('rating') - 1
+			bug.save()
 			messages.success(request, f'Thanks for voting')
 			return HttpResponseRedirect(reverse('bug', args=(bug.id,)))
 	else:
@@ -190,10 +207,15 @@ def bug_ticket_view(request, id):
 		#check if user has already voted
 		user_votes = user.profile.votes.all()
 		bug_votes = bug.votes.all()
-		if bug_votes:
+		print(user_votes)
+		print(bug_votes)
+		if bug_votes and user_votes:
 			for vote in bug_votes:
 				if vote in user_votes:
 					user_voted = True
+					break
+				else:
+					user_voted = False
 		else:
 			user_voted = False
 
@@ -268,12 +290,20 @@ def feature_ticket_view(request, id):
 				updated_feature = update_form.save()
 				updated_feature.last_update = datetime.datetime.now()
 				updated_feature.time_spent = time_spent
+				if updated_feature.cost > 0:
+					updated_feature.quoted = True
+				if updated_feature.status == 'Implemented':
+					updated_feature.implemented_date = datetime.datetime.now()
 				updated_feature.save()
 				dev.time_spent_on_features = F('time_spent_on_features') + int(request.POST['time_spent'])
 				dev.save()
-				if updated_feature.cost > 0:
-					updated_feature.quoted = True
-					updated_feature.save()
+				TicketUpdate.objects.get_or_create(
+					timestamp = datetime.datetime.now(),
+					object_id = feature.id,
+					content_type = feature.get_content_type,
+					time_spent = int(request.POST['time_spent']),
+					user = request.user
+					)
 				messages.success(request, f"Ticket Updated")
 			return HttpResponseRedirect(reverse('feature', args=(feature.id,)))
 		elif 'comment' in request.POST:
@@ -295,8 +325,6 @@ def feature_ticket_view(request, id):
 
 	#Voting (All Users)
 		elif 'upvote' in request.POST:
-			feature.upvotes = F('upvotes') + 1
-			feature.save()
 			new_vote, created = Vote.objects.get_or_create(
 					positive_vote=True,
 					user=request.user,
@@ -305,11 +333,11 @@ def feature_ticket_view(request, id):
 						)
 			user.profile.votes.add(new_vote)
 			feature.votes.add(new_vote)
+			feature.rating = F('rating') + 1
+			feature.save()
 			messages.success(request, f'Thanks for voting')
 			return HttpResponseRedirect(reverse('feature', args=(feature.id,)))
 		elif 'downvote' in request.POST:
-			feature.downvotes = F('downvotes') + 1
-			feature.save()
 			new_vote, created = Vote.objects.get_or_create(
 					positive_vote=False,
 					user=request.user,
@@ -318,6 +346,8 @@ def feature_ticket_view(request, id):
 						)
 			user.profile.votes.add(new_vote)
 			feature.votes.add(new_vote)
+			feature.rating = F('rating') - 1
+			feature.save()
 			messages.success(request, f'Thanks for voting')
 			return HttpResponseRedirect(reverse('feature', args=(feature.id,)))
 	else:
@@ -345,8 +375,11 @@ def feature_ticket_view(request, id):
 			for vote in feature_votes:
 				if vote in user_votes:
 					user_voted = True
+					break
 				else:
 					user_voted = False
+		else:
+			user_voted = False
 
 		#Get comments
 		comments = Comment.get_comments(NewFeatureTicket, feature.id)
@@ -389,3 +422,15 @@ def new_feature_view(request):
 		'caption' : "Ideas will be quoted and contributions can then be made towards implementing."
 	}
 	return render(request, 'new_ticket.html', context)
+
+class BugTicketApiView(viewsets.ModelViewSet):
+	queryset = BugTicket.objects.all()
+	serializer_class = BugSerializer
+
+class FeatureTicketApiView(viewsets.ModelViewSet):
+	queryset = NewFeatureTicket.objects.all()
+	serializer_class = FeatureSerializer
+
+class TicketUpdateApiView(viewsets.ModelViewSet):
+	queryset = TicketUpdate.objects.all()
+	serializer_class = TicketUpdateSerializer

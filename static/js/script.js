@@ -12,8 +12,7 @@ $(document).ready(function() {
     sessionStorage.setItem("clickedTab", $(this).attr('id'));
     sessionStorage.setItem("activePane", $(this).attr('href'));
   });
-
-  if(typeof sessionStorage.getItem("activePane") != null && sessionStorage.getItem("clickedTab") != "undefined") {
+  if(sessionStorage.length > 0) {
     $("#feature-results").removeClass("show active");
     $('#featuresTab').removeClass("active");
     activeTabId = "#" + sessionStorage.getItem("clickedTab")
@@ -24,5 +23,7 @@ $(document).ready(function() {
     $("#feature-results").addClass("show active");
     $('#featuresTab').addClass("active");
   }
+
+
 
 })

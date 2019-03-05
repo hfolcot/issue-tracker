@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static from staticfiles %}
+
+
+{% block content %}
+<div class="row">
+	<h1>Statistics</h1>
+</div>
+
+<div class="row">
+	<h6>Choose your dataset: </h6>
+	<button class="btn btn-primary btn-small ml-2" id='bugDataset'>Bugs</button>
+	<button class="btn btn-primary btn-small ml-2" id='featureDataset'>Features</button>
+	<button class="btn btn-primary btn-small ml-2" id='staffDataset'>Staff</button>
+</div>
+<div class="row">
+	<div class='col-12 col-md-6' style='display: none' id='bugsFixedToday'>
+		<table class="table">
+			<thead>
+				<th scope="col">Bug ID</th>
+				<th scope="col">Title</th>
+				<th scope="col">Customer</th>
+			</thead>
+			<tbody>
+			{% for bug in fixed_bugs %}
+			<tr>
+				<td>{{ bug.id }}</td>
+				<td>{{ bug.title }}</td>
+				<td>{{ bug.customer }}</td>
+			</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	<div class='col-12 col-md-6' style='display: none' id='featuresImplementedToday'>
+		<table class="table" id="fImpTod">
+			<thead>
+				<th scope="col">Feature ID</th>
+				<th scope="col">Title</th>
+				<th scope="col">Amount Paid</th>
+			</thead>
+			<tbody>
+			{% for feature in implemented_features %}
+			<tr>
+				<td>{{ feature.id }}</td>
+				<td>{{ feature.title }}</td>
+				<td>{{ feature.total_donations }}</td>
+			</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+<div class="row">
+	<div id="charts" class="col-12" style='display: none'>
+		<canvas id="voteChart"></canvas>
+		<canvas id="byMonth"></canvas>
+		<canvas id="last28Days"></canvas>
+		<canvas id="last7Days"></canvas>
+	</div>
+</div>
+<div class="row" id="staff">
+	<div class="col-12  col-md-6" id="staffFeatures" style='display: none'>
+		<table class="table">
+			<thead>
+				<th scope="col">Developer</th>
+				<th scope="col">Total Minutes Spent On Features</th>
+			</thead>
+			<tbody>
+				{% for dev in devs_by_features %}
+				<tr>
+					<td>{{ dev.first_name }} {{ dev.last_name}}</td>
+					<td>{{ dev.time_spent_on_features }}</td>
+				</tr>
+				{% endfor %}
+				
+			</tbody>
+		</table>
+	</div>
+	<div class="col-12 col-md-6" id="staffBugs" style='display: none'>
+		<table class="table">
+			<thead>
+				<th scope="col">Developer</th>
+				<th scope="col">Total Minutes Spent On Bugs</th>
+			</thead>
+			<tbody>
+				{% for dev in devs_by_bugs %}
+				<tr>
+					<td>{{ dev.first_name }} {{ dev.last_name}}</td>
+					<td>{{ dev.time_spent_on_bugs }}</td>
+				</tr>
+				{% endfor %}
+				
+			</tbody>
+		</table>
+	</div>
+</div>
+{% endblock %}
+{% block bodyjs %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+<script src="{% static 'js/statistics.js' %}"></script>
+{% endblock bodyjs %}
