@@ -14,7 +14,7 @@
 </div>
 <div class="col-12 d-flex justify-content-end align-items-end">
 	
-	<small>By {{ profile.first_name|capfirst }} {{ profile.last_name|capfirst }} on {{ article.timestamp }}</small>
+	<small>By {{ article.author.first_name|capfirst }} {{ article.author.last_name|capfirst }} on {{ article.timestamp }}</small>
 	<img src="{{ profile.get_image_url }}" class="profile-pic rounded-circle" style='align-self: center'/>
 </div>
 <hr>
