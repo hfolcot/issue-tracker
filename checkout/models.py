@@ -1,4 +1,6 @@
 from django.shortcuts import get_object_or_404
+from django.conf import settings
+from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from django.db import models
 from tickets.models import NewFeatureTicket
@@ -6,6 +8,7 @@ from tickets.models import NewFeatureTicket
 # Create your models here.
 
 class Order(models.Model):
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	full_name = models.CharField(max_length=50, blank=False)
 	phone_number = models.CharField(max_length=20, blank=False)
 	country = models.CharField(max_length=40, blank=False)
@@ -19,7 +22,7 @@ class Order(models.Model):
 	item = models.ForeignKey(NewFeatureTicket, on_delete=models.PROTECT, null=False)
 
 	def __str__(self):
-		return "{0} - {1} - {2}".format(self.id, self.date, self.full_name)
+		return "{0} - {1} - {2}".format(self.id, self.date, self.user)
 
 	# def get_item(self):
 	# 	return self.item

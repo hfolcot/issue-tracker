@@ -17,13 +17,14 @@ stripe.api_key = settings.STRIPE_SECRET
 @login_required
 def checkout(request, id):
 	feature = get_object_or_404(NewFeatureTicket, pk=id)
-
+	current_total = float(feature.total_donations)
 	max_amount = feature.cost - feature.total_donations
 
 	if request.method == 'POST':
 		order_form = OrderForm(request.POST)
 		payment_form = MakePaymentForm(request.POST)
 		donation = float(request.POST['donation'])
+		
 
 		if order_form.is_valid() and payment_form.is_valid():
 			total = donation * 100
@@ -31,6 +32,7 @@ def checkout(request, id):
 			order.donation = donation
 			order.date = timezone.now()
 			order.item = feature
+			order.user = request.user
 			order.save()
 			
 			try:
@@ -47,6 +49,9 @@ def checkout(request, id):
 				messages.success(request, "You have successfully paid")
 				feature.number_of_donations = F('number_of_donations') + 1
 				feature.total_donations = F('total_donations') + donation
+				total_donated = current_total + donation
+				if int(total_donated) == int(feature.cost):
+					feature.status = 'In Progress'
 				feature.save()
 				request.user.profile.total_contributed = F('total_contributed') + donation
 				request.user.profile.save()
