@@ -13,6 +13,7 @@ from accounts.models import DeveloperProfile
 from checkout.models import Order
 from comments.forms import CommentForm
 from comments.models import Comment
+from .choices import PRIORITY_CHOICES, STATUS_CHOICES, FEATURE_STATUS_CHOICES
 from .models import BugTicket, NewFeatureTicket, TicketUpdate
 from .forms import NewBugForm, NewFeatureForm, BugUpdateForm, FeatureUpdateForm
 from .serializers import BugSerializer, FeatureSerializer, TicketUpdateSerializer
@@ -24,10 +25,19 @@ def all_tickets_view(request):
 	"""
 	A home page showing all outstanding tickets
 	"""
-	bug_tickets = BugTicket.objects.exclude(status='Fixed')
-	new_features = NewFeatureTicket.objects.exclude(status='Implemented')
-	fixed_bugs = BugTicket.objects.filter(status='Fixed')
-	completed_features = NewFeatureTicket.objects.filter(status='Implemented')
+	order=request.GET.get('order')
+	feature_status = request.GET.get('feature_status')
+	bug_status = request.GET.get('bug_status')
+	bug_tickets = BugTicket.objects.exclude(status='Fixed').order_by(order if order else 'priority')
+	new_features = NewFeatureTicket.objects.exclude(status='Implemented').order_by(order if order else '-last_update')
+	fixed_bugs = BugTicket.objects.filter(status='Fixed').order_by(order if order else '-fixed_date')
+	completed_features = NewFeatureTicket.objects.filter(status='Implemented').order_by(order if order else '-implemented_date')
+
+	if feature_status:
+		new_features = new_features.filter(status=feature_status)
+
+	if bug_status:
+		bug_tickets = bug_tickets.filter(status=bug_status)
 
 	#Search function
 	query = request.GET.get('query')
@@ -38,7 +48,7 @@ def all_tickets_view(request):
 				Q(customer__first_name__icontains=query) |
 				Q(customer__last_name__icontains=query) |
 				Q(id__icontains=query)
-				).distinct()
+				).distinct().order_by(order if order else 'last_update')
 			
 		new_features = new_features.filter(
 				Q(title__icontains=query) |
@@ -46,7 +56,7 @@ def all_tickets_view(request):
 				Q(customer__first_name__icontains=query) |
 				Q(customer__last_name__icontains=query) |
 				Q(id__icontains=query)
-				).distinct()
+				).distinct().order_by(order if order else 'last_update')
 
 		fixed_bugs = fixed_bugs.filter(
 				Q(title__icontains=query) |
@@ -54,7 +64,7 @@ def all_tickets_view(request):
 				Q(customer__first_name__icontains=query) |
 				Q(customer__last_name__icontains=query) |
 				Q(id__icontains=query)
-				).distinct()
+				).distinct().order_by(order if order else '-fixed_date')
 		
 		completed_features = completed_features.filter(
 				Q(title__icontains=query) |
@@ -62,7 +72,8 @@ def all_tickets_view(request):
 				Q(customer__first_name__icontains=query) |
 				Q(customer__last_name__icontains=query) |
 				Q(id__icontains=query)
-				).distinct()
+				).distinct().order_by(order if order else '-implemented_date')
+
 
 	#Pagination
 	bug_paginator = Paginator(bug_tickets, 10) # Show 10 tickets per page
@@ -75,12 +86,14 @@ def all_tickets_view(request):
 	new_features = feature_paginator.get_page(page)	
 	fixed_bugs = fixed_bug_paginator.get_page(page)
 	completed_features = completed_feature_paginator.get_page(page)
-
 	context = {
 		'bug_tickets' : bug_tickets, 
 		'new_features' : new_features,
 		'fixed_bugs' : fixed_bugs,
-		'completed_features' : completed_features
+		'completed_features' : completed_features,
+		'priorities' : PRIORITY_CHOICES,
+		'bug_status' : STATUS_CHOICES,
+		'feature_status' : FEATURE_STATUS_CHOICES
 
 	}		
 	return render(request, 'tickets.html', context)
@@ -207,8 +220,6 @@ def bug_ticket_view(request, id):
 		#check if user has already voted
 		user_votes = user.profile.votes.all()
 		bug_votes = bug.votes.all()
-		print(user_votes)
-		print(bug_votes)
 		if bug_votes and user_votes:
 			for vote in bug_votes:
 				if vote in user_votes:

@@ -14,3 +14,7 @@ Links to next and previous articles in the latest news blog
 
 
 contact form python snippet from https://wsvincent.com/django-contact-form/
+
+
+## Issues
+Filtering doesn't work on search results

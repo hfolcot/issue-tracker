@@ -33,3 +33,10 @@
 	text-decoration: none;
 }
 
+.order-arrow {
+	font-size: 0.6em;
+}
+
+a {
+    color: inherit;
+}
