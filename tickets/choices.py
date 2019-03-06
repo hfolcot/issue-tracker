@@ -24,6 +24,6 @@ STATUS_CHOICES = ((PENDING,'Pending'),
 	(FIXED, 'Fixed'))
 
 FEATURE_STATUS_CHOICES = ((AWAITINGQUOTE,'Awaiting Quote'),
+	(AWAITINGFUNDS, 'Awaiting Funds'),
 	(INPROGRESS, 'In Progress'),
-	(IMPLEMENTED, 'Implemented'),
-	(AWAITINGFUNDS, 'Awaiting Funds'))
+	(IMPLEMENTED, 'Implemented'))

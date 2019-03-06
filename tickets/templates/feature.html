@@ -11,18 +11,22 @@
 		{% else %}
 		<form method="POST">
 			{% csrf_token %}
-			<input type="submit" class="btn btn-success btn-sm" value="({{ upvotes }}) I have this too!" name="upvote">
-			<input type="submit" class="btn btn-danger btn-sm" value="({{downvotes}}) Hasn't been a problem!" name="downvote">
+			<input type="submit" class="btn btn-success btn-sm" value="({{ upvotes }}) This would be great!" name="upvote">
+			<input type="submit" class="btn btn-danger btn-sm" value="({{downvotes}}) Nah, not interested!" name="downvote">
 		</form>
 		{% endif %}
 		<p>{{ feature.description }}</p>
 		<h5>Comments:</h5>
+		{% if user_can_comment or user.is_staff %}
 		<div>
 			<form method="POST">{% csrf_token %}
 				{{ comment_form|crispy }}
 			<input type="submit" value="Post" name="comment" class="btn btn-outline-dark">
 			</form>
 		</div>
+		{% else %}
+		<small>You must <strong><a href="{% url 'checkout' feature.id %}">donate</a></strong> to be able to comment</small>
+		{% endif %}
 		{% if comments %}
 			<div class="comments">
 				<h6>Previous comments:</h6>

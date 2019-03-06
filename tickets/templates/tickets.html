@@ -15,12 +15,6 @@
       <li class="nav-item">
         <a class="nav-tabs-item nav-link" id="bugsTab"  data-toggle="tab" href="#bug-results" role="tab" aria-selected="false">Bugs</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-tabs-item nav-link" id="fixedBugsTab"  data-toggle="tab" href="#fixed-bugs" role="tab" aria-selected="false">Fixed Bugs</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-tabs-item nav-link" id="completedFeaturesTab" data-toggle="tab" href="#completed-features" role="tab" aria-selected="false">Completed Features</a>
-      </li>
     </ul>
   </div>
 
@@ -31,21 +25,20 @@
     <div id="feature-results" class="tab-pane fade show active" role="tabpanel" aria-labelledby="features-tab">
       <h3>Suggested Features</h3>
       <small>New features suggested by UA users</small>
-      
       <div class="col-12">
         <form class="form-inline">
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="feature_filter" id="all_open_tickets" value="all_open_tickets" {% if request.GET.feature_filter == 'all_open_tickets' or request.GET.feature_filter == None %}checked{% endif %}>
+            <label class="form-check-label" for="all_open_tickets">All Open Tickets</label>
+          </div>
           {% for status in feature_status %}
-            {% ifnotequal status.0 'Implemented' %}
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="feature_status" id="{{ status.0 }}" value="{{ status.0 }}">
+              <input class="form-check-input" type="radio" name="feature_filter" id="{{ status.0 }}" value="{{ status.0 }}" {% if request.GET.feature_filter == status.0 %}checked{% endif %}>
               <label class="form-check-label" for="{{ status.0 }}">{{ status.0 }}</label>
             </div>
-            {% endifnotequal %}
           {% endfor %}
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Filter</button>
-        </form>
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Filter</button>
       </div>
-      
       <div>
         {% if not new_features %}
         <p>No features to show.</p>
@@ -79,24 +72,24 @@
             <thead>
               <tr>
                 <th scope="col">#
-                  <a  href="?order=id&query={{ request.GET.query }}&feature_status={{ request.GET.feature_status }}"><i class="fas fa-arrow-down order-arrow"></i></a>
-                  <a  href="?order=-id&query={{ request.GET.query }}&feature_status={{ request.GET.feature_status }}"><i class="fas fa-arrow-up order-arrow"></i></a>
+                  <a  href="?order=id&query={{ request.GET.query }}&feature_filter={{ request.GET.feature_filter }}"><i class="fas fa-arrow-down order-arrow"></i></a>
+                  <a  href="?order=-id&query={{ request.GET.query }}&feature_filter={{ request.GET.feature_filter }}"><i class="fas fa-arrow-up order-arrow"></i></a>
                 </th>
                 <th scope="col">Customer
-                  <a href="?order=customer&query={{ request.GET.query }}&feature_status={{ request.GET.feature_status }}"><i class="fas fa-arrow-down order-arrow"></i></a>
-                  <a href="?order=-customer&query={{ request.GET.query }}&feature_status={{ request.GET.feature_status }}"><i class="fas fa-arrow-up order-arrow"></i></a>
+                  <a href="?order=customer&query={{ request.GET.query }}&feature_filter={{ request.GET.feature_filter }}"><i class="fas fa-arrow-down order-arrow"></i></a>
+                  <a href="?order=-customer&query={{ request.GET.query }}&feature_filter={{ request.GET.feature_filter }}"><i class="fas fa-arrow-up order-arrow"></i></a>
                 </th>
                 <th scope="col">Title
-                  <a href="?order=title&query={{ request.GET.query }}&feature_status={{ request.GET.feature_status }}"><i class="fas fa-arrow-down order-arrow"></i></a>
-                  <a href="?order=-title&query={{ request.GET.query }}&feature_status={{ request.GET.feature_status }}"><i class="fas fa-arrow-up order-arrow"></i></a>
+                  <a href="?order=title&query={{ request.GET.query }}&feature_filter={{ request.GET.feature_filter }}"><i class="fas fa-arrow-down order-arrow"></i></a>
+                  <a href="?order=-title&query={{ request.GET.query }}&feature_filter={{ request.GET.feature_filter }}"><i class="fas fa-arrow-up order-arrow"></i></a>
                 </th>
                 <th scope="col">Last Updated
-                  <a href="?order=last_update&query={{ request.GET.query }}&feature_status={{ request.GET.feature_status }}"><i class="fas fa-arrow-down order-arrow"></i></a>
-                  <a href="?order=-last_update&query={{ request.GET.query }}&feature_status={{ request.GET.feature_status }}"><i class="fas fa-arrow-up order-arrow"></i></a>
+                  <a href="?order=last_update&query={{ request.GET.query }}&feature_filter={{ request.GET.feature_filter }}"><i class="fas fa-arrow-down order-arrow"></i></a>
+                  <a href="?order=-last_update&query={{ request.GET.query }}&feature_filter={{ request.GET.feature_filter }}"><i class="fas fa-arrow-up order-arrow"></i></a>
                 </th>
                 <th scope="col">Status
-                  <a href="?order=status&query={{ request.GET.query }}&feature_status={{ request.GET.feature_status }}"><i class="fas fa-arrow-down order-arrow"></i></a>
-                  <a href="?order=-status&query={{ request.GET.query }}&feature_status={{ request.GET.feature_status }}"><i class="fas fa-arrow-up order-arrow"></i></a>
+                  <a href="?order=status&query={{ request.GET.query }}&feature_filter={{ request.GET.feature_filter }}"><i class="fas fa-arrow-down order-arrow"></i></a>
+                  <a href="?order=-status&query={{ request.GET.query }}&feature_filter={{ request.GET.feature_filter }}"><i class="fas fa-arrow-up order-arrow"></i></a>
                 </th>
                 <th scope="col"></th>
               </tr>
@@ -143,7 +136,7 @@
       </div>
     </div>
 
-    <!--Open Bugs-->
+    <!--Bugs-->
     <div id="bug-results" class="tab-pane fade" role="tabpanel" aria-labelledby="bug-tab">
       <h3>Bugs</h3>
       <small>Bugs in the UA application (fixed for free!)</small>
@@ -151,14 +144,16 @@
       <small class="text-warning">*High Priority</small>
       {% if not request.GET.query %}
       <div class="col-12">
-        <form action="?feature_status={{ request.GET.feature_status }}" class="form-inline">
+        <form class="form-inline">
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="bug_filter" id="all_open_tickets" value="all_open_tickets" {% if request.GET.bug_filter == 'all_open_tickets' or request.GET.bug_filter == None %}checked{% endif %}>
+            <label class="form-check-label" for="all_open_tickets">All Open Tickets</label>
+          </div>
           {% for status in bug_status %}
-            {% ifnotequal status.0 'Fixed' %}
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="feature_status" id="{{ status.0 }}" value="{{ status.0 }}">
-              <label class="form-check-label" for="{{ status.0 }}">{{ status.0 }}</label>
-            </div>
-            {% endifnotequal %}
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="bug_filter" id="{{ status.0 }}" value="{{ status.0 }}" {% if request.GET.bug_filter == status.0 %}checked{% endif %}>
+            <label class="form-check-label" for="{{ status.0 }}">{{ status.0 }}</label>
+          </div>
           {% endfor %}
         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Filter</button>
         </form>
@@ -255,200 +250,6 @@
           {% endif %}
           </ul>
         <!--End pagination-->
-        {% endif %}
-      </div>
-    </div>
-
-    <!--Resolved Bugs-->
-    <div id="fixed-bugs" class="tab-pane fade" role="tabpanel" aria-labelledby="fixed-bugs-tab">
-      <h3>Fixed Bugs</h3>
-      <small>Bugs that have been <strike>squashed</strike> fixed</small>
-
-
-      <div>
-        {% if not fixed_bugs %}
-          <p>No bugs to show.</p>
-        {% else %}
-
-        <!--Pagination-->
-        <ul class="pagination d-flex justify-content-end">
-          {% if fixed_bugs.has_previous %}
-          <li class="page-item">
-            <a class='page-link' href="?page=1&query={{ request.GET.query }}">&laquo; First</a>
-          </li>
-          <li class="page-item">
-            <a class='page-link' href="?page={{ fixed_bugs.previous_page_number }}&query={{ request.GET.query }}">Previous</a>
-          </li>
-          {% endif %}
-          <small class="mr-2 ml-2">
-              Page {{ fixed_bugs.number }} of {{ fixed_bugs.paginator.num_pages }}
-          </small>
-          {% if fixed_bugs.has_next %}
-          <li class="page-item">
-            <a class='page-link' href="?page={{ fixed_bugs.next_page_number }}&query={{ request.GET.query }}">Next</a>
-          </li>
-          <li class="page-item">
-            <a class='page-link' href="?page={{ fixed_bugs.paginator.num_pages }}&query={{ request.GET.query }}">Last &raquo;</a>
-          </li>
-          {% endif %}
-        </ul>
-        <!--End pagination-->
-
-          <table class="table table-hover table-striped">
-            <thead>
-              <tr>
-                <th scope="col">#
-                  <a  href="?order=id&query={{ request.GET.query }}"><i class="fas fa-arrow-down order-arrow"></i></a>
-                  <a  href="?order=-id&query={{ request.GET.query }}"><i class="fas fa-arrow-up order-arrow"></i></a>
-                </th>
-                <th scope="col">Customer
-                  <a href="?order=customer&query={{ request.GET.query }}"><i class="fas fa-arrow-down order-arrow"></i></a>
-                  <a href="?order=-customer&query={{ request.GET.query }}"><i class="fas fa-arrow-up order-arrow"></i></a>
-                </th>
-                <th scope="col">Title
-                  <a href="?order=title&query={{ request.GET.query }}"><i class="fas fa-arrow-down order-arrow"></i></a>
-                  <a href="?order=-title&query={{ request.GET.query }}"><i class="fas fa-arrow-up order-arrow"></i></a>
-                </th>
-                <th scope="col">Last Updated
-                  <a href="?order=last_update&query={{ request.GET.query }}"><i class="fas fa-arrow-down order-arrow"></i></a>
-                  <a href="?order=-last_update&query={{ request.GET.query }}"><i class="fas fa-arrow-up order-arrow"></i></a>
-                </th>
-                <th scope="col"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for fb in fixed_bugs %}
-                <tr>
-                  <th scope="row">{{ fb.id }}</th>
-                  <td>{{ fb.customer.first_name }} {{ fb.customer.last_name }}</td>
-                  <td><small>{{ fb.title }}</small></td>
-                  <td>{{ fb.last_update }}</td>
-                  <td><a href="{{ fb.get_absolute_url }}" class="btn btn-primary">Open</a></td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-
-        <!--Pagination-->
-        <ul class="pagination d-flex justify-content-end">
-          {% if fixed_bugs.has_previous %}
-          <li class="page-item">
-            <a class='page-link' href="?page=1&query={{ request.GET.query }}">&laquo; First</a>
-          </li>
-          <li class="page-item">
-            <a class='page-link' href="?page={{ fixed_bugs.previous_page_number }}&query={{ request.GET.query }}">Previous</a>
-          </li>
-          {% endif %}
-          <small class="mr-2 ml-2">
-              Page {{ fixed_bugs.number }} of {{ fixed_bugs.paginator.num_pages }}
-          </small>
-          {% if fixed_bugs.has_next %}
-          <li class="page-item">
-            <a class='page-link' href="?page={{ fixed_bugs.next_page_number }}&query={{ request.GET.query }}">Next</a>
-          </li>
-          <li class="page-item">
-            <a class='page-link' href="?page={{ fixed_bugs.paginator.num_pages }}&query={{ request.GET.query }}">Last &raquo;</a>
-          </li>
-          {% endif %}
-        </ul>
-        <!--End pagination-->
-
-        {% endif %}
-      </div>
-    </div>
-
-    <!--Completed Features-->
-    <div id="completed-features" class="tab-pane fade" role="tabpanel" aria-labelledby="completed-features-tab">
-      <h3>Completed Features</h3>
-      <small>Features that have been applied to UA</small>
-
-      <div>
-        {% if not completed_features %}
-        <p>No features to show.</p>
-        {% else %}
-        <!--Pagination-->
-        <ul class="pagination d-flex justify-content-end">
-          {% if completed_features.has_previous %}
-          <li class="page-item">
-            <a class='page-link' href="?page=1&query={{ request.GET.query }}">&laquo; First</a>
-          </li>
-          <li class="page-item">
-            <a class='page-link' href="?page={{ completed_features.previous_page_number }}&query={{ request.GET.query }}">Previous</a>
-          </li>
-          {% endif %}
-          <small class="mr-2 ml-2">
-              Page {{ completed_features.number }} of {{ completed_features.paginator.num_pages }}
-          </small>
-          {% if completed_features.has_next %}
-          <li class="page-item">
-            <a class='page-link' href="?page={{ completed_features.next_page_number }}&query={{ request.GET.query }}">Next</a>
-          </li>
-          <li class="page-item">
-            <a class='page-link' href="?page={{ completed_features.paginator.num_pages }}&query={{ request.GET.query }}">Last &raquo;</a>
-          </li>
-          {% endif %}
-        </ul>
-        <!--End Pagination-->
-
-          <table class="table table-hover table-striped">
-            <thead>
-              <tr>
-                <th scope="col">#
-                  <a  href="?order=id&query={{ request.GET.query }}"><i class="fas fa-arrow-down order-arrow"></i></a>
-                  <a  href="?order=-id&query={{ request.GET.query }}"><i class="fas fa-arrow-up order-arrow"></i></a>
-                </th>
-                <th scope="col">Customer
-                  <a href="?order=customer&query={{ request.GET.query }}"><i class="fas fa-arrow-down order-arrow"></i></a>
-                  <a href="?order=-customer&query={{ request.GET.query }}"><i class="fas fa-arrow-up order-arrow"></i></a>
-                </th>
-                <th scope="col">Title
-                  <a href="?order=title&query={{ request.GET.query }}"><i class="fas fa-arrow-down order-arrow"></i></a>
-                  <a href="?order=-title&query={{ request.GET.query }}"><i class="fas fa-arrow-up order-arrow"></i></a>
-                </th>
-                <th scope="col">Last Updated
-                  <a href="?order=last_update&query={{ request.GET.query }}"><i class="fas fa-arrow-down order-arrow"></i></a>
-                  <a href="?order=-last_update&query={{ request.GET.query }}"><i class="fas fa-arrow-up order-arrow"></i></a>
-                </th>
-                <th scope="col"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for cf in completed_features %}
-                <tr>
-                  <th scope="row">{{ cf.id }}</th>
-                  <td>{{ cf.customer.first_name }} {{ cf.customer.last_name }}</td>
-                  <td><small>{{ cf.title }}</small></td> 
-                  <td>{{ cf.last_update }}</td>
-                  <td><a href="{{ cf.get_absolute_url }}" class="btn btn-primary">Open</a></td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        
-
-        <!--Pagination-->
-        <ul class="pagination d-flex justify-content-end">
-            {% if completed_features.has_previous %}
-            <li class="page-item">
-              <a class='page-link' href="?page=1&query={{ request.GET.query }}">&laquo; First</a>
-            </li>
-            <li class="page-item">
-              <a class='page-link' href="?page={{ completed_features.previous_page_number }}&query={{ request.GET.query }}">Previous</a>
-            </li>
-            {% endif %}
-            <small class="mr-2 ml-2">
-                Page {{ completed_features.number }} of {{ completed_features.paginator.num_pages }}
-            </small>
-            {% if completed_features.has_next %}
-            <li class="page-item">
-              <a class='page-link' href="?page={{ completed_features.next_page_number }}&query={{ request.GET.query }}">Next</a>
-            </li>
-            <li class="page-item">
-              <a class='page-link' href="?page={{ completed_features.paginator.num_pages }}&query={{ request.GET.query }}">Last &raquo;</a>
-            </li>
-            {% endif %}
-          </ul>
-        <!--End Pagination-->
         {% endif %}
       </div>
     </div>

@@ -26,18 +26,18 @@ def all_tickets_view(request):
 	A home page showing all outstanding tickets
 	"""
 	order=request.GET.get('order')
-	feature_status = request.GET.get('feature_status')
-	bug_status = request.GET.get('bug_status')
-	bug_tickets = BugTicket.objects.exclude(status='Fixed').order_by(order if order else 'priority')
-	new_features = NewFeatureTicket.objects.exclude(status='Implemented').order_by(order if order else '-last_update')
-	fixed_bugs = BugTicket.objects.filter(status='Fixed').order_by(order if order else '-fixed_date')
-	completed_features = NewFeatureTicket.objects.filter(status='Implemented').order_by(order if order else '-implemented_date')
+	feature_filter = request.GET.get('feature_filter')
+	bug_filter = request.GET.get('bug_filter')
 
-	if feature_status:
-		new_features = new_features.filter(status=feature_status)
+	if feature_filter == 'all_open_tickets' or feature_filter == None:
+		new_features = NewFeatureTicket.objects.order_by(order if order else '-last_update').exclude(status='Implemented')	
+	else:
+		new_features = NewFeatureTicket.objects.filter(status=feature_filter)
 
-	if bug_status:
-		bug_tickets = bug_tickets.filter(status=bug_status)
+	if bug_filter == 'all_open_tickets' or bug_filter == None:
+		bug_tickets = BugTicket.objects.order_by(order if order else 'priority').exclude(status='Fixed')
+	else:
+		bug_tickets = BugTicket.objects.filter(status=bug_filter)
 
 	#Search function
 	query = request.GET.get('query')
@@ -57,40 +57,19 @@ def all_tickets_view(request):
 				Q(customer__last_name__icontains=query) |
 				Q(id__icontains=query)
 				).distinct().order_by(order if order else 'last_update')
-
-		fixed_bugs = fixed_bugs.filter(
-				Q(title__icontains=query) |
-				Q(description__icontains=query) |
-				Q(customer__first_name__icontains=query) |
-				Q(customer__last_name__icontains=query) |
-				Q(id__icontains=query)
-				).distinct().order_by(order if order else '-fixed_date')
-		
-		completed_features = completed_features.filter(
-				Q(title__icontains=query) |
-				Q(description__icontains=query) |
-				Q(customer__first_name__icontains=query) |
-				Q(customer__last_name__icontains=query) |
-				Q(id__icontains=query)
-				).distinct().order_by(order if order else '-implemented_date')
-
+		if feature_filter and feature_filter != 'all_open_tickets':
+			new_features = new_features.filter(feature_filter)
 
 	#Pagination
 	bug_paginator = Paginator(bug_tickets, 10) # Show 10 tickets per page
 	feature_paginator = Paginator(new_features, 10) # Show 10 tickets per page
-	fixed_bug_paginator = Paginator(fixed_bugs, 10) # Show 10 tickets per page
-	completed_feature_paginator = Paginator(completed_features, 10) # Show 10 tickets per page
 
 	page = request.GET.get('page')
 	bug_tickets = bug_paginator.get_page(page)
 	new_features = feature_paginator.get_page(page)	
-	fixed_bugs = fixed_bug_paginator.get_page(page)
-	completed_features = completed_feature_paginator.get_page(page)
 	context = {
 		'bug_tickets' : bug_tickets, 
 		'new_features' : new_features,
-		'fixed_bugs' : fixed_bugs,
-		'completed_features' : completed_features,
 		'priorities' : PRIORITY_CHOICES,
 		'bug_status' : STATUS_CHOICES,
 		'feature_status' : FEATURE_STATUS_CHOICES
@@ -368,8 +347,12 @@ def feature_ticket_view(request, id):
 
 		# Calculate the feature details
 		donations = feature.total_donations
-		percentage = round((donations / feature.cost)*100, 0)
-		remaining = round(feature.cost - donations, 2)
+		if donations:
+			percentage = round((donations / feature.cost)*100, 0)
+			remaining = round(feature.cost - donations, 2)
+		else:
+			percentage = 0
+			remaining = feature.cost
 		hours_worked_on = math.floor(feature.time_spent/60)
 		mins_worked_on = feature.time_spent%60
 
@@ -378,6 +361,14 @@ def feature_ticket_view(request, id):
 		upvotes = upvotes_list.count()
 		downvotes_list = feature.votes.filter(positive_vote=False)
 		downvotes = downvotes_list.count()
+
+		#check if user has contributed
+		orders = Order.objects.all()
+		users_orders = orders.filter(item=feature.id, user=request.user)
+		if len(users_orders) > 0:
+			user_can_comment = True
+		else:
+			user_can_comment = False
 
 		#check if user has already voted
 		user_votes = user.profile.votes.all()
@@ -391,7 +382,8 @@ def feature_ticket_view(request, id):
 					user_voted = False
 		else:
 			user_voted = False
-
+		print(feature.total_donations)
+		print(feature.cost)
 		#Get comments
 		comments = Comment.get_comments(NewFeatureTicket, feature.id)
 
@@ -412,7 +404,8 @@ def feature_ticket_view(request, id):
 			'mins' : mins_worked_on,
 			'upvotes' : upvotes,
 			'downvotes': downvotes,
-			'user_voted' : user_voted}
+			'user_voted' : user_voted,
+			'user_can_comment' : user_can_comment}
 
 		return render(request, 'feature.html', context)
 
