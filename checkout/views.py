@@ -54,6 +54,7 @@ def checkout(request, id):
 					feature.status = 'In Progress'
 				feature.save()
 				request.user.profile.total_contributed = F('total_contributed') + donation
+				request.user.profile.times_contributed = F('times_contributed') + 1
 				request.user.profile.save()
 				return redirect(reverse('feature', args=(feature.id,)))
 			else:

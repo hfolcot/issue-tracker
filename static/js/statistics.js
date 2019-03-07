@@ -8,11 +8,14 @@ var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oc
 var currentYearCountData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 var prevYearCountData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
+
+
 // BUGS
 $('#bugDataset').click(function() {
 	$('#featuresImplementedToday').hide();
 	$('#staffFeatures').hide();
 	$('#staffBugs').hide();
+	$('#contributionsBoard').hide();
 	$('#charts').show();
 	$('#bugsFixedToday').show();
 	$.ajax({
@@ -277,6 +280,7 @@ $('#featureDataset').click(function() {
 	$('#bugsFixedToday').hide();
 	$('#staffFeatures').hide();
 	$('#staffBugs').hide();
+	$('#contributionsBoard').hide();
 	$('#charts').show();
 	$('#featuresImplementedToday').show();
 	$.ajax({
@@ -531,6 +535,17 @@ $('#staffDataset').click(function() {
 	$('#charts').hide();
 	$('#bugsFixedToday').hide();
 	$('#featuresImplementedToday').hide();
+	$('#contributionsBoard').hide();
 	$('#staffFeatures').show();
 	$('#staffBugs').show();
+})
+
+//CUSTOMERS
+$('#customerDataset').click(function() {
+	$('#charts').hide();
+	$('#bugsFixedToday').hide();
+	$('#featuresImplementedToday').hide();
+	$('#staffFeatures').hide();
+	$('#staffBugs').hide();
+	$('#contributionsBoard').show();
 })

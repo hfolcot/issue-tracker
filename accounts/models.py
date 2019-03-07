@@ -10,6 +10,7 @@ class Profile(models.Model):
 	image = models.ImageField(default='profile_pics/default.jpg', upload_to='profile_pics')
 	votes = models.ManyToManyField(Vote)
 	total_contributed = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
+	times_contributed = models.IntegerField(default=0)
 
 	def __str__(self):
 		return str(self.user)

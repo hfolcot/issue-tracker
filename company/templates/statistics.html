@@ -9,9 +9,10 @@
 
 <div class="row">
 	<h6>Choose your dataset: </h6>
-	<button class="btn btn-primary btn-small ml-2" id='bugDataset'>Bugs</button>
-	<button class="btn btn-primary btn-small ml-2" id='featureDataset'>Features</button>
-	<button class="btn btn-primary btn-small ml-2" id='staffDataset'>Staff</button>
+	<button class="btn btn-primary btn-small ml-2 statisticButton" id='bugDataset'>Bugs</button>
+	<button class="btn btn-primary btn-small ml-2 statisticButton" id='featureDataset'>Features</button>
+	<button class="btn btn-primary btn-small ml-2 statisticButton" id='staffDataset'>Staff</button>
+	<button class="btn btn-primary btn-small ml-2 statisticButton" id='customerDataset'>Contributor Leaderboard</button>
 </div>
 <div class="row">
 	<div class='col-12 col-md-6' style='display: none' id='bugsFixedToday'>
@@ -60,34 +61,41 @@
 	</div>
 </div>
 <div class="row" id="staff">
-	<div class="col-12  col-md-6" id="staffFeatures" style='display: none'>
+	<div class="col-12  col-md-6" id="staffFeatures" {% if not staff_panel_active %} style='display: none' {% endif %}>
 		<table class="table">
 			<thead>
 				<th scope="col">Developer</th>
-				<th scope="col">Total Minutes Spent On Features</th>
+				<th scope="col"><a href="?dfilter=-time_spent_on_features">Total Minutes Spent On Features</a></th>
+				<th scope="col"><a href="?dfilter=-time_spent_on_bugs">Total Minutes Spent On Bugs</a></th>
 			</thead>
 			<tbody>
-				{% for dev in devs_by_features %}
+				{% for dev in devs %}
 				<tr>
 					<td>{{ dev.first_name }} {{ dev.last_name}}</td>
 					<td>{{ dev.time_spent_on_features }}</td>
+					<td>{{ dev.time_spent_on_bugs }}</td>
 				</tr>
 				{% endfor %}
 				
 			</tbody>
 		</table>
 	</div>
-	<div class="col-12 col-md-6" id="staffBugs" style='display: none'>
+	<div class="col-12 col-md-6" id="contributionsBoard" {% if staff_panel_active %} style='display: none' {% endif %}>
+		<h5>Top Ten Contributors</h5>
 		<table class="table">
 			<thead>
-				<th scope="col">Developer</th>
-				<th scope="col">Total Minutes Spent On Bugs</th>
+				<th scope="col">#</th>
+				<th scope="col">Username</th>
+				<th scope="col"><a href="?cfilter=-total_contributed">Total Contributions</a></th>
+				<th scope="col"><a href="?cfilter=-times_contributed">Number of contributions</a></th>
 			</thead>
 			<tbody>
-				{% for dev in devs_by_bugs %}
+				{% for customer in customers %}
 				<tr>
-					<td>{{ dev.first_name }} {{ dev.last_name}}</td>
-					<td>{{ dev.time_spent_on_bugs }}</td>
+					<td>{{ forloop.counter }}</td>
+					<td>{{ customer.user.first_name }} {{ customer.user.last_name}}</td>
+					<td>{{ customer.total_contributed }}</td>
+					<td>{{ customer.times_contributed }}</td>
 				</tr>
 				{% endfor %}
 				

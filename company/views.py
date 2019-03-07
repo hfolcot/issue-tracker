@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 import datetime
 
-from accounts.models import DeveloperProfile
+from accounts.models import DeveloperProfile, Profile
 from tickets.models import BugTicket, NewFeatureTicket
 from .forms import ContactForm
 
@@ -47,13 +47,31 @@ def statistics_view(request):
 	today = datetime.date.today()
 	bugs_fixed_today = BugTicket.objects.filter(fixed_date__startswith=today)
 	features_implemented_today = NewFeatureTicket.objects.filter(implemented_date__startswith=today)
-	developers_features = DeveloperProfile.objects.all().exclude(id=1).order_by('-time_spent_on_features')
-	developers_bugs = DeveloperProfile.objects.all().exclude(id=1).order_by('-time_spent_on_bugs')
-	print(developers_features)
+
+	dfilters = request.GET.get('dfilter')
+	if dfilters:
+		developers = DeveloperProfile.objects.all().exclude(id=1).order_by(dfilters)
+		staff_panel_active = True
+	else:
+		developers = DeveloperProfile.objects.all().exclude(id=1).order_by('-time_spent_on_bugs')
+		staff_panel_active = False
+
+	cfilters = request.GET.get('cfilter')
+	customers = []
+	if cfilters:
+		for profile in Profile.objects.all().order_by(cfilters)[:10]:
+			if not profile.user.is_staff:
+				customers.append(profile)
+	else:
+		for profile in Profile.objects.all().order_by('-total_contributed')[:10]:
+			if not profile.user.is_staff:
+				customers.append(profile)
+
 	context = {
 	'fixed_bugs' : bugs_fixed_today,
 	'implemented_features' : features_implemented_today,
-	'devs_by_bugs' : developers_bugs,
-	'devs_by_features' : developers_features
+	'devs' : developers,
+	'customers' : customers,
+	'staff_panel_active' : staff_panel_active
 	}
 	return render(request, 'statistics.html', context)
