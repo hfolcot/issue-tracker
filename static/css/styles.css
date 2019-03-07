@@ -40,3 +40,7 @@
 a {
     color: inherit;
 }
+
+.max-height {
+	height: 100%;
+}

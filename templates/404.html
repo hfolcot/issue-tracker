@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-center align-items-center max-height">
+	<h1>404!</h1>
+</div>
+<div class="d-flex justify-content-center align-items-center max-height">
+
+	<h3>Lost? This page doesn't exist. Try again.</h3>
+</div>
+<div class="d-flex justify-content-center align-items-center max-height">
+	<a href="{% url 'home' %}" class='btn btn-success'>Return Home</a>
+</div>
+{% endblock %}
