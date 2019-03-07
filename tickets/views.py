@@ -30,14 +30,22 @@ def all_tickets_view(request):
 	bug_filter = request.GET.get('bug_filter')
 
 	if feature_filter == 'all_open_tickets' or feature_filter == None:
-		new_features = NewFeatureTicket.objects.order_by(order if order else '-last_update').exclude(status='Implemented')	
+		new_features = NewFeatureTicket.objects.order_by(
+			order if order else '-last_update').exclude(
+			status='Implemented')	
 	else:
-		new_features = NewFeatureTicket.objects.filter(status=feature_filter)
+		new_features = NewFeatureTicket.objects.filter(
+			status=feature_filter).order_by(
+			order if order else '-last_update')
 
 	if bug_filter == 'all_open_tickets' or bug_filter == None:
-		bug_tickets = BugTicket.objects.order_by(order if order else 'priority').exclude(status='Fixed')
+		bug_tickets = BugTicket.objects.order_by(
+			order if order else 'priority').exclude(
+			status='Fixed')
 	else:
-		bug_tickets = BugTicket.objects.filter(status=bug_filter)
+		bug_tickets = BugTicket.objects.filter(
+			status=bug_filter).order_by(
+			order if order else '-last_update')
 
 	#Search function
 	query = request.GET.get('query')
@@ -57,8 +65,6 @@ def all_tickets_view(request):
 				Q(customer__last_name__icontains=query) |
 				Q(id__icontains=query)
 				).distinct().order_by(order if order else 'last_update')
-		if feature_filter and feature_filter != 'all_open_tickets':
-			new_features = new_features.filter(feature_filter)
 
 	#Pagination
 	bug_paginator = Paginator(bug_tickets, 10) # Show 10 tickets per page
@@ -72,7 +78,9 @@ def all_tickets_view(request):
 		'new_features' : new_features,
 		'priorities' : PRIORITY_CHOICES,
 		'bug_status' : STATUS_CHOICES,
-		'feature_status' : FEATURE_STATUS_CHOICES
+		'feature_status' : FEATURE_STATUS_CHOICES,
+		'bug_filter' : bug_filter,
+		'feature_filter': feature_filter
 
 	}		
 	return render(request, 'tickets.html', context)

@@ -29,12 +29,6 @@
     <li class="nav-item">
       <a class="nav-tabs-item nav-link" id="bugsTab"  data-toggle="tab" href="#bug-results" role="tab" aria-selected="false">My Bugs</a>
     </li>
-    <li class="nav-item">
-      <a class="nav-tabs-item nav-link" id="fixedBugsTab"  data-toggle="tab" href="#fixed-bugs" role="tab" aria-selected="false">My Fixed Bugs</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-tabs-item nav-link" id="completedFeaturesTab" data-toggle="tab" href="#completed-features" role="tab" aria-selected="false">My Completed Features</a>
-    </li>
   </ul>
 </div>
 <!--Tab Content-->
@@ -49,10 +43,24 @@
       <small>New features suggested by you</small>
       {% endif %}
       <div>
+        <div class="col-12">
+          <form class="form-inline">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="feature_filter" id="all_open_tickets" value="all_open_tickets" {% if request.GET.feature_filter == 'all_open_tickets' or request.GET.feature_filter == None %}checked{% endif %}>
+              <label class="form-check-label" for="all_open_tickets">All Open Tickets</label>
+            </div>
+            {% for status in feature_status %}
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="feature_filter" id="{{ status.0 }}" value="{{ status.0 }}" {% if request.GET.feature_filter == status.0 %}checked{% endif %}>
+              <label class="form-check-label" for="{{ status.0 }}">{{ status.0 }}</label>
+            </div>
+            {% endfor %}
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Filter</button>
+          </form>
+        </div>
         {% if not new_features %}
         <p>No features to show.</p>
         {% else %}
-
           <!-- Pagination -->
           <ul class="pagination d-flex justify-content-end">
             {% if new_features.has_previous %}
@@ -80,13 +88,23 @@
           <table class="table table-hover table-striped">
             <thead>
               <tr>
-                <th scope="col">#</th>
+                <th scope="col">
+                  <a  href="?order={% if request.GET.order == 'id' %}-{% endif%}id&feature_filter={% if feature_filter %}{{ request.GET.feature_filter }}{% else %}all_open_tickets{% endif %}">#</a>
+                </th>
                 {% if user.is_staff %}
-                <th scope="col">Customer</th>
+                <th scope="col">
+                  <a href="?order={% if request.GET.order == 'customer' %}-{% endif%}customer&feature_filter={% if feature_filter %}{{ request.GET.feature_filter }}{% else %}all_open_tickets{% endif %}">Customer</a>
+                </th>
                 {% endif %}
-                <th scope="col">Title</th>
-                <th scope="col">Last Comment</th>
-                <th scope="col">Status</th>
+                <th scope="col">
+                  <a href="?order={% if request.GET.order == 'title' %}-{% endif%}title&feature_filter={% if feature_filter %}{{ request.GET.feature_filter }}{% else %}all_open_tickets{% endif %}">Title</a>
+                </th>
+                <th scope="col">
+                  <a href="?order={% if request.GET.order == 'last_update' %}-{% endif%}last_update&feature_filter={% if feature_filter %}{{ request.GET.feature_filter }}{% else %}all_open_tickets{% endif %}">Last Updated</a>
+                </th>
+                <th scope="col">
+                  <a href="?order={% if request.GET.order == 'status' %}-{% endif%}status&feature_filter={% if feature_filter %}{{ request.GET.feature_filter }}{% else %}all_open_tickets{% endif %}">Status</a>
+                </th>
                 <th scope="col"></th>
               </tr>
             </thead>
@@ -98,7 +116,7 @@
                   <td>{{ feature.customer.first_name }} {{ feature.customer.last_name }}</td>
                   {% endif %}
                   <td><small>{{ feature.title }}</small></td> 
-                  <td>{{ feature.get_last_comment }}</td>
+                  <td>{{ feature.last_update }}</td>
                   <td>{{ feature.status }}</td>
                   <td><a href="{{ feature.get_absolute_url }}" class="btn btn-primary">Open</a></td>
                 </tr>
@@ -147,6 +165,22 @@
 
 
       <div>
+        <div class="col-12">
+          <form class="form-inline">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="bug_filter" id="all_open_tickets" value="all_open_tickets" {% if request.GET.bug_filter == 'all_open_tickets' or request.GET.bug_filter == None %}checked{% endif %}>
+              <label class="form-check-label" for="all_open_tickets">All Open Tickets</label>
+            </div>
+            {% for status in bug_status %}
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="bug_filter" id="{{ status.0 }}" value="{{ status.0 }}" {% if request.GET.bug_filter == status.0 %}checked{% endif %}>
+              <label class="form-check-label" for="{{ status.0 }}">{{ status.0 }}</label>
+            </div>
+            {% endfor %}
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Filter</button>
+          </form>
+        </div>
+
         {% if not bug_tickets %}
           <p>No bugs to show.</p>
         {% else %}
@@ -175,15 +209,26 @@
           <!--End pagination-->
             <table class="table table-hover table-striped">
               <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  {% if user.is_staff %}
-                  <th scope="col">Customer</th>
-                  {% endif %}
-                  <th scope="col">Title</th>
-                  <th scope="col">Last Comment</th>
-                  <th scope="col"></th>
-                </tr>
+              <tr>
+                <th scope="col">
+                  <a  href="?order={% if request.GET.order == 'id' %}-{% endif%}id&bug_filter={% if bug_filter %}{{ request.GET.bug_filter }}{% else %}all_open_tickets{% endif %}">#</a>
+                </th>
+                {% if user.is_staff %}
+                <th scope="col">
+                  <a href="?order={% if request.GET.order == 'customer' %}-{% endif%}customer&bug_filter={% if bug_filter %}{{ request.GET.bug_filter }}{% else %}all_open_tickets{% endif %}">Customer</a>
+                </th>
+                {% endif %}
+                <th scope="col">
+                  <a href="?order={% if request.GET.order == 'title' %}-{% endif%}title&bug_filter={% if bug_filter %}{{ request.GET.bug_filter }}{% else %}all_open_tickets{% endif %}">Title</a>
+                </th>
+                <th scope="col">
+                  <a href="?order={% if request.GET.order == 'last_update' %}-{% endif%}last_update&bug_filter={% if bug_filter %}{{ request.GET.bug_filter }}{% else %}all_open_tickets{% endif %}">Last Updated</a>
+                </th>
+                <th scope="col">
+                  <a href="?order={% if request.GET.order == 'status' %}-{% endif%}status&bug_filter={% if bug_filter %}{{ request.GET.bug_filter }}{% else %}all_open_tickets{% endif %}">Status</a>
+                </th>
+                <th scope="col"></th>
+              </tr>
               </thead>
               <tbody>
                 {% for bug in bug_tickets %}
@@ -199,7 +244,8 @@
                     <td>{{ bug.customer.first_name }} {{ bug.customer.last_name }}</td>
                     {% endif %}
                     <td><small>{{ bug.title }}</small></td>
-                    <td>{{ bug.get_last_comment }}</td>
+                    <td>{{ bug.last_update }}</td>
+                    <td>{{ bug.status }}</td>
                     <td><a href="{{ bug.get_absolute_url }}" class="btn btn-primary">Open</a></td>
                   </tr>
                 {% endfor %}
@@ -232,192 +278,7 @@
       </div>
     </div>
 
-    <!--Resolved Bugs-->
-    <div id="fixed-bugs" class="tab-pane fade" role="tabpanel" aria-labelledby="fixed-bugs-tab">
-      <h3>Fixed Bugs</h3>
-      {% if user.is_staff %}
-      <small>Bugs that have been <strike>squashed</strike> fixed by you</small>
-      {% else %}
-      <small>Bugs that have been <strike>squashed</strike> fixed</small>
-      {% endif %}
-      
-
-      <div>
-        {% if not fixed_bugs %}
-          <p>No bugs to show.</p>
-        {% else %}
-
-        <!--Pagination-->
-        <ul class="pagination d-flex justify-content-end">
-          {% if fixed_bugs.has_previous %}
-          <li class="page-item">
-            <a class='page-link' href="?page=1">&laquo; First</a>
-          </li>
-          <li class="page-item">
-            <a class='page-link' href="?page={{ fixed_bugs.previous_page_number }}">Previous</a>
-          </li>
-          {% endif %}
-          <small class="mr-2 ml-2">
-              Page {{ fixed_bugs.number }} of {{ fixed_bugs.paginator.num_pages }}
-          </small>
-          {% if fixed_bugs.has_next %}
-          <li class="page-item">
-            <a class='page-link' href="?page={{ fixed_bugs.next_page_number }}">Next</a>
-          </li>
-          <li class="page-item">
-            <a class='page-link' href="?page={{ fixed_bugs.paginator.num_pages }}">Last &raquo;</a>
-          </li>
-          {% endif %}
-        </ul>
-        <!--End pagination-->
-
-          <table class="table table-hover table-striped">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                {% if user.is_staff %}
-                <th scope="col">Customer</th>
-                {% endif %}
-                <th scope="col">Title</th>
-                <th scope="col">Last Comment</th>
-                <th scope="col"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for fb in fixed_bugs %}
-                <tr>
-                  <th scope="row">{{ fb.id }}</th>
-                  {% if user.is_staff %}
-                  <td>{{ fb.customer.first_name }} {{ fb.customer.last_name }}</td>
-                  {% endif %}
-                  <td><small>{{ fb.title }}</small></td>
-                  <td>{{ fb.get_last_comment }}</td>
-                  <td><a href="{{ fb.get_absolute_url }}" class="btn btn-primary">Open</a></td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-
-        <!--Pagination-->
-        <ul class="pagination d-flex justify-content-end">
-          {% if fixed_bugs.has_previous %}
-          <li class="page-item">
-            <a class='page-link' href="?page=1">&laquo; First</a>
-          </li>
-          <li class="page-item">
-            <a class='page-link' href="?page={{ fixed_bugs.previous_page_number }}">Previous</a>
-          </li>
-          {% endif %}
-          <small class="mr-2 ml-2">
-              Page {{ fixed_bugs.number }} of {{ fixed_bugs.paginator.num_pages }}
-          </small>
-          {% if fixed_bugs.has_next %}
-          <li class="page-item">
-            <a class='page-link' href="?page={{ fixed_bugs.next_page_number }}">Next</a>
-          </li>
-          <li class="page-item">
-            <a class='page-link' href="?page={{ fixed_bugs.paginator.num_pages }}">Last &raquo;</a>
-          </li>
-          {% endif %}
-        </ul>
-        <!--End pagination-->
-
-        {% endif %}
-      </div>
-    </div>
-
-    <!--Completed Features-->
-    <div id="completed-features" class="tab-pane fade" role="tabpanel" aria-labelledby="completed-features-tab">
-      <h3>Completed Features</h3>
-      {% if user.is_staff %}
-      <small>Features you have implemented</small>
-      {% else %}
-      <small>Features that have been applied to UA</small>
-      {% endif %}
-      <div>
-        {% if not completed_features %}
-        <p>No features to show.</p>
-        {% else %}
-        <!--Pagination-->
-        <ul class="pagination d-flex justify-content-end">
-          {% if completed_features.has_previous %}
-          <li class="page-item">
-            <a class='page-link' href="?page=1">&laquo; First</a>
-          </li>
-          <li class="page-item">
-            <a class='page-link' href="?page={{ completed_features.previous_page_number }}">Previous</a>
-          </li>
-          {% endif %}
-          <small class="mr-2 ml-2">
-              Page {{ completed_features.number }} of {{ completed_features.paginator.num_pages }}
-          </small>
-          {% if completed_features.has_next %}
-          <li class="page-item">
-            <a class='page-link' href="?page={{ completed_features.next_page_number }}">Next</a>
-          </li>
-          <li class="page-item">
-            <a class='page-link' href="?page={{ completed_features.paginator.num_pages }}">Last &raquo;</a>
-          </li>
-          {% endif %}
-        </ul>
-        <!--End Pagination-->
-
-          <table class="table table-hover table-striped">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                {% if user.is_staff %}
-                <th scope="col">Customer</th>
-                {% endif %}
-                <th scope="col">Title</th>
-                <th scope="col">Last Comment</th>
-                <th scope="col"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for cf in completed_features %}
-                <tr>
-                  <th scope="row">{{ cf.id }}</th>
-                  {% if user.is_staff %}
-                  <td>{{ cf.customer.first_name }} {{ cf.customer.last_name }}</td>
-                  {% endif %}
-                  <td><small>{{ cf.title }}</small></td> 
-                  <td>{{ cf.get_last_comment }}</td>
-                  <td><a href="{{ cf.get_absolute_url }}" class="btn btn-primary">Open</a></td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        {% endif %}
-
-        <!--Pagination-->
-        <ul class="pagination d-flex justify-content-end">
-            {% if completed_features.has_previous %}
-            <li class="page-item">
-              <a class='page-link' href="?page=1">&laquo; First</a>
-            </li>
-            <li class="page-item">
-              <a class='page-link' href="?page={{ completed_features.previous_page_number }}">Previous</a>
-            </li>
-            {% endif %}
-            <small class="mr-2 ml-2">
-                Page {{ completed_features.number }} of {{ completed_features.paginator.num_pages }}
-            </small>
-            {% if completed_features.has_next %}
-            <li class="page-item">
-              <a class='page-link' href="?page={{ completed_features.next_page_number }}">Next</a>
-            </li>
-            <li class="page-item">
-              <a class='page-link' href="?page={{ completed_features.paginator.num_pages }}">Last &raquo;</a>
-            </li>
-            {% endif %}
-          </ul>
-        <!--End Pagination-->
-      </div>
-    </div>
-  </div>
-  <!--End Tab Content-->
-
+    
 
 <!-- Modal -->
 <div class="modal fade" id="profileImgModal" tabindex="-1" role="dialog" aria-labelledby="profileImgModalLabel" aria-hidden="true">

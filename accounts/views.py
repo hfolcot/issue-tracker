@@ -7,6 +7,7 @@ import math
 
 from accounts.models import Profile
 from .forms import UserRegistrationForm, UpdateProfilePicture
+from tickets.choices import PRIORITY_CHOICES, STATUS_CHOICES, FEATURE_STATUS_CHOICES
 from tickets.models import BugTicket, NewFeatureTicket
 
 # Create your views here.
@@ -38,17 +39,35 @@ def dashboard_view(request):
 	"""
 	See the dashboard of the logged in user
 	"""
-	profile = request.user.profile
-	if request.user.is_staff:
-		bug_tickets = BugTicket.objects.filter(assigned=request.user.developerprofile).exclude(status='Fixed')
-		new_features = NewFeatureTicket.objects.filter(assigned=request.user.developerprofile).exclude(status='Implemented')
-		fixed_bugs = BugTicket.objects.filter(assigned=request.user.developerprofile.id, status="Fixed")
-		completed_features = NewFeatureTicket.objects.filter(assigned=request.user.developerprofile.id, status='Implemented')
+	order=request.GET.get('order')
+	feature_filter = request.GET.get('feature_filter')
+	bug_filter = request.GET.get('bug_filter')
+
+	if feature_filter == 'all_open_tickets' or feature_filter == None:
+		features =  NewFeatureTicket.objects.order_by(
+				order if order else '-last_update')
 	else:
-		bug_tickets = BugTicket.objects.filter(customer=request.user).exclude(status='Fixed')
-		new_features = NewFeatureTicket.objects.filter(customer=request.user).exclude(status='Implemented')
-		fixed_bugs = BugTicket.objects.filter(customer=request.user, status='Fixed')
-		completed_features = NewFeatureTicket.objects.filter(customer=request.user, status='Implemented')
+		features =  NewFeatureTicket.objects.order_by(
+				order if order else '-last_update').filter(
+				status=feature_filter)
+
+	if bug_filter == 'all_open_tickets' or bug_filter == None:
+		bugs =  BugTicket.objects.order_by(
+				order if order else '-last_update')
+	else:
+		bugs =  BugTicket.objects.order_by(
+				order if order else '-last_update').filter(
+				status=bug_filter)
+	profile = request.user.profile
+
+	if request.user.is_staff:
+		bug_tickets = bugs.filter(assigned=request.user.developerprofile)
+		new_features = features.filter(assigned=request.user.developerprofile)
+	else:
+		bug_tickets = bugs.filter(
+			customer=request.user)
+		new_features = features.filter(
+			customer=request.user)
 
 	if request.method == 'POST':
 		img_upload_form = UpdateProfilePicture(request.POST, request.FILES, instance=request.user.profile)
@@ -63,21 +82,20 @@ def dashboard_view(request):
 	#Pagination
 	bug_paginator = Paginator(bug_tickets, 10) # Show 10 tickets per page
 	feature_paginator = Paginator(new_features, 10) # Show 10 tickets per page
-	fixed_bug_paginator = Paginator(fixed_bugs, 10) # Show 10 tickets per page
-	completed_feature_paginator = Paginator(completed_features, 10) # Show 10 tickets per page
 
 	page = request.GET.get('page')
 	bug_tickets = bug_paginator.get_page(page)
-	new_features = feature_paginator.get_page(page)	
-	fixed_bugs = fixed_bug_paginator.get_page(page)
-	completed_features = completed_feature_paginator.get_page(page)
+	new_features = feature_paginator.get_page(page)
 
 	context = {'bug_tickets' : bug_tickets, 
 		'new_features' : new_features,
-		'fixed_bugs': fixed_bugs,
-		'completed_features': completed_features, 
 		'img_upload_form': img_upload_form,
-		'profile' : profile
+		'profile' : profile,
+		'priorities' : PRIORITY_CHOICES,
+		'bug_status' : STATUS_CHOICES,
+		'feature_status' : FEATURE_STATUS_CHOICES,
+		'bug_filter' : bug_filter,
+		'feature_filter': feature_filter
 	}
 	return render(request, 'profile.html', context)
 

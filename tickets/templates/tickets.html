@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  
 <!-- Larger Screens Only -->
 
   <!-- Tabs -->
@@ -71,25 +70,20 @@
           <table class="table table-hover table-striped">
             <thead>
               <tr>
-                <th scope="col">#
-                  <a  href="?order=id&query={{ request.GET.query }}&feature_filter={{ request.GET.feature_filter }}"><i class="fas fa-arrow-down order-arrow"></i></a>
-                  <a  href="?order=-id&query={{ request.GET.query }}&feature_filter={{ request.GET.feature_filter }}"><i class="fas fa-arrow-up order-arrow"></i></a>
+                <th scope="col">
+                  <a  href="?order={% if request.GET.order == 'id' %}-{% endif%}id&feature_filter={% if feature_filter %}{{ request.GET.feature_filter }}{% else %}all_open_tickets{% endif %}">#</a>
                 </th>
-                <th scope="col">Customer
-                  <a href="?order=customer&query={{ request.GET.query }}&feature_filter={{ request.GET.feature_filter }}"><i class="fas fa-arrow-down order-arrow"></i></a>
-                  <a href="?order=-customer&query={{ request.GET.query }}&feature_filter={{ request.GET.feature_filter }}"><i class="fas fa-arrow-up order-arrow"></i></a>
+                <th scope="col">
+                  <a href="?order={% if request.GET.order == 'customer' %}-{% endif%}customer&feature_filter={% if feature_filter %}{{ request.GET.feature_filter }}{% else %}all_open_tickets{% endif %}">Customer</a>
                 </th>
-                <th scope="col">Title
-                  <a href="?order=title&query={{ request.GET.query }}&feature_filter={{ request.GET.feature_filter }}"><i class="fas fa-arrow-down order-arrow"></i></a>
-                  <a href="?order=-title&query={{ request.GET.query }}&feature_filter={{ request.GET.feature_filter }}"><i class="fas fa-arrow-up order-arrow"></i></a>
+                <th scope="col">
+                  <a href="?order={% if request.GET.order == 'title' %}-{% endif%}title&feature_filter={% if feature_filter %}{{ request.GET.feature_filter }}{% else %}all_open_tickets{% endif %}">Title</a>
                 </th>
-                <th scope="col">Last Updated
-                  <a href="?order=last_update&query={{ request.GET.query }}&feature_filter={{ request.GET.feature_filter }}"><i class="fas fa-arrow-down order-arrow"></i></a>
-                  <a href="?order=-last_update&query={{ request.GET.query }}&feature_filter={{ request.GET.feature_filter }}"><i class="fas fa-arrow-up order-arrow"></i></a>
+                <th scope="col">
+                  <a href="?order={% if request.GET.order == 'last_update' %}-{% endif%}last_update&feature_filter={% if feature_filter %}{{ request.GET.feature_filter }}{% else %}all_open_tickets{% endif %}">Last Updated</a>
                 </th>
-                <th scope="col">Status
-                  <a href="?order=status&query={{ request.GET.query }}&feature_filter={{ request.GET.feature_filter }}"><i class="fas fa-arrow-down order-arrow"></i></a>
-                  <a href="?order=-status&query={{ request.GET.query }}&feature_filter={{ request.GET.feature_filter }}"><i class="fas fa-arrow-up order-arrow"></i></a>
+                <th scope="col">
+                  <a href="?order={% if request.GET.order == 'status' %}-{% endif%}status&feature_filter={% if feature_filter %}{{ request.GET.feature_filter }}{% else %}all_open_tickets{% endif %}">Status</a>
                 </th>
                 <th scope="col"></th>
               </tr>
@@ -190,21 +184,20 @@
             <table class="table table-hover table-striped">
               <thead>
               <tr>
-                <th scope="col">#
-                  <a  href="?order=id&query={{ request.GET.query }}"><i class="fas fa-arrow-down order-arrow"></i></a>
-                  <a  href="?order=-id&query={{ request.GET.query }}"><i class="fas fa-arrow-up order-arrow"></i></a>
+                <th scope="col">
+                  <a  href="?order={% if request.GET.order == 'id' %}-{% endif%}id&bug_filter={% if bug_filter %}{{ request.GET.bug_filter }}{% else %}all_open_tickets{% endif %}">#</a>
                 </th>
-                <th scope="col">Customer
-                  <a href="?order=customer&query={{ request.GET.query }}"><i class="fas fa-arrow-down order-arrow"></i></a>
-                  <a href="?order=-customer&query={{ request.GET.query }}"><i class="fas fa-arrow-up order-arrow"></i></a>
+                <th scope="col">
+                  <a href="?order={% if request.GET.order == 'customer' %}-{% endif%}customer&bug_filter={% if bug_filter %}{{ request.GET.bug_filter }}{% else %}all_open_tickets{% endif %}">Customer</a>
                 </th>
-                <th scope="col">Title
-                  <a href="?order=title&query={{ request.GET.query }}"><i class="fas fa-arrow-down order-arrow"></i></a>
-                  <a href="?order=-title&query={{ request.GET.query }}"><i class="fas fa-arrow-up order-arrow"></i></a>
+                <th scope="col">
+                  <a href="?order={% if request.GET.order == 'title' %}-{% endif%}title&bug_filter={% if bug_filter %}{{ request.GET.bug_filter }}{% else %}all_open_tickets{% endif %}">Title</a>
                 </th>
-                <th scope="col">Last Updated
-                  <a href="?order=last_update&query={{ request.GET.query }}"><i class="fas fa-arrow-down order-arrow"></i></a>
-                  <a href="?order=-last_update&query={{ request.GET.query }}"><i class="fas fa-arrow-up order-arrow"></i></a>
+                <th scope="col">
+                  <a href="?order={% if request.GET.order == 'last_update' %}-{% endif%}last_update&bug_filter={% if bug_filter %}{{ request.GET.bug_filter }}{% else %}all_open_tickets{% endif %}">Last Updated</a>
+                </th>
+                <th scope="col">
+                  <a href="?order={% if request.GET.order == 'status' %}-{% endif%}status&bug_filter={% if bug_filter %}{{ request.GET.bug_filter }}{% else %}all_open_tickets{% endif %}">Status</a>
                 </th>
                 <th scope="col"></th>
               </tr>
@@ -222,6 +215,7 @@
                     <td>{{ bug.customer.first_name }} {{ bug.customer.last_name }}</td>
                     <td><small>{{ bug.title }}</small></td>
                     <td>{{ bug.last_update }}</td>
+                    <td>{{ bug.status }}</td>
                     <td><a href="{{ bug.get_absolute_url }}" class="btn btn-primary">Open</a></td>
                   </tr>
                 {% endfor %}
