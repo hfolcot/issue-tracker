@@ -1,14 +1,18 @@
-var voteChartContainer = $('#voteChart');
-var byMonthChartContainer = $('#byMonth');
-var last28DaysChartContainer = $('#last28Days');
-var last7DaysChartContainer = $('#last7Days');
+
 var today = new Date();
 var lastMonth = (today - (28*24*60*60*1000))
 var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 var currentYearCountData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 var prevYearCountData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-
+function clearCanvases() {
+	$('#charts').show();
+	$('.canvas').remove();
+	$('#charts').append(`<canvas class="canvas" id="voteChart"></canvas>
+								<canvas class="canvas" id="byMonth"></canvas>
+								<canvas class="canvas" id="last28Days"></canvas>
+								<canvas class="canvas" id="last7Days"></canvas>`);
+}
 
 // BUGS
 $('#bugDataset').click(function() {
@@ -16,8 +20,13 @@ $('#bugDataset').click(function() {
 	$('#staffFeatures').hide();
 	$('#staffBugs').hide();
 	$('#contributionsBoard').hide();
-	$('#charts').show();
 	$('#bugsFixedToday').show();
+	clearCanvases()
+	var voteChartContainer = $('#voteChart');
+	var byMonthChartContainer = $('#byMonth');
+	var last28DaysChartContainer = $('#last28Days');
+	var last7DaysChartContainer = $('#last7Days');
+	
 	$.ajax({
 	type: 'GET',
 	url: '/tickets/api/bugtickets/?format=json',
@@ -281,8 +290,12 @@ $('#featureDataset').click(function() {
 	$('#staffFeatures').hide();
 	$('#staffBugs').hide();
 	$('#contributionsBoard').hide();
-	$('#charts').show();
+	clearCanvases()
 	$('#featuresImplementedToday').show();
+	var voteChartContainer = $('#voteChart');
+	var byMonthChartContainer = $('#byMonth');
+	var last28DaysChartContainer = $('#last28Days');
+	var last7DaysChartContainer = $('#last7Days');
 	$.ajax({
 		type: 'GET',
 		url: '/tickets/api/featuretickets/?format=json',
