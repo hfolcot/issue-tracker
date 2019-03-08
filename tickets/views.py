@@ -1,4 +1,6 @@
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator
 from django.db.models import Q, F
@@ -85,6 +87,7 @@ def all_tickets_view(request):
 	}		
 	return render(request, 'tickets.html', context)
 
+@login_required
 def bug_ticket_view(request, id):
 	"""
 	Opening the bug ticket to view specifics and add 
@@ -240,7 +243,7 @@ def bug_ticket_view(request, id):
 			}
 	return render(request, 'bug.html', context)
 
-
+@login_required
 def new_bug_view(request):
 	"""
 	Add a new bug ticket to the system
@@ -259,6 +262,7 @@ def new_bug_view(request):
 	}
 	return render(request, 'new_ticket.html', context)
 
+@login_required
 def feature_ticket_view(request, id):
 	"""
 	Opening the feature ticket to view specifics and add comments
@@ -417,6 +421,7 @@ def feature_ticket_view(request, id):
 
 		return render(request, 'feature.html', context)
 
+@login_required
 def new_feature_view(request):
 	"""
 	Add a new feature ticket to the system
@@ -435,14 +440,18 @@ def new_feature_view(request):
 	}
 	return render(request, 'new_ticket.html', context)
 
+
 class BugTicketApiView(viewsets.ModelViewSet):
 	queryset = BugTicket.objects.all()
 	serializer_class = BugSerializer
+	permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 class FeatureTicketApiView(viewsets.ModelViewSet):
 	queryset = NewFeatureTicket.objects.all()
 	serializer_class = FeatureSerializer
+	permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 class TicketUpdateApiView(viewsets.ModelViewSet):
 	queryset = TicketUpdate.objects.all()
 	serializer_class = TicketUpdateSerializer
+	permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
