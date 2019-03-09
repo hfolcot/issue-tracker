@@ -1,3 +1,83 @@
+
+
+/*nav {
+	background-color: #141301;
+}*/
+
+.main-section {
+	height: 90vh;
+}
+
+.full-height {
+	height: 100%;
+}
+
+.login-box {
+	background-color: #BBCBCB;
+	padding: 15px;
+	width: 100%;
+	border-radius: 10px;
+	display: flex;
+	justify-content: center;
+	box-shadow: 6px 6px 7px 0 rgba(0,0,0,0.14);
+}
+
+.login-box form {
+	width: 75%;
+}
+
+.nav-tabs {
+	border-bottom: 0px;
+}
+
+#feature-results,
+#bug-results
+ {
+ 	background-color: rgba(187, 203, 203, 0.2);
+	border: 0px;
+	box-shadow: 6px 6px 7px 0 rgba(0,0,0,0.14);
+	border-bottom-right-radius: 10px;
+	border-bottom-left-radius: 10px;
+	border-top-right-radius: 10px;
+	padding: 5px;
+}
+#bug-results {
+	border-top-left-radius: 10px;
+}
+
+
+#featuresTab,
+#bugsTab {
+	
+	border-top-right-radius: 10px;
+	border-top-left-radius: 10px;
+	border: 0px;
+	margin-bottom: 1px;
+}
+
+.nav-link.show.active
+ {
+	background-color: rgba(187, 203, 203, 0.2);
+	box-shadow: 2px 0 0 0 rgba(0,0,0,0.14);
+}
+
+.filter-select-container {
+	font-size: 0.75em;
+	background-color: #FFF;
+	padding: 5px;
+	border-radius: 10px;
+	box-shadow: 3px 3px 3px 0 rgba(0,0,0,0.14);
+	display: flex;
+	justify-content: space-evenly;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.pagination {
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+
 .screenshot-thumbnail {
     height: 250px;
 }
@@ -15,10 +95,6 @@
 	width: 100px;
 	height: 100px;
 	object-fit: cover;
-}
-
-.main-section {
-	padding-top: 15px;
 }
 
 .card-header h6 i {
@@ -43,4 +119,11 @@ a {
 
 .max-height {
 	height: 100%;
+}
+
+/*Buttons*/
+
+.btn-primary {
+	background-color: #1C6E8C;
+	border-color: #1C6E8C;
 }

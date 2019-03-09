@@ -17,7 +17,7 @@ $(document).ready(function() {
     $('#featuresTab').removeClass("active");
     activeTabId = "#" + sessionStorage.getItem("clickedTab")
     activePaneId = sessionStorage.getItem("activePane")
-      $(activeTabId).addClass("active");
+      $(activeTabId).addClass("show active");
       $(activePaneId).addClass("show active");
   } else {
     $("#feature-results").addClass("show active");

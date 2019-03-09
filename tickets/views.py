@@ -28,12 +28,13 @@ def all_tickets_view(request):
 	A home page showing all outstanding tickets
 	"""
 	order=request.GET.get('order')
+	print(order)
 	feature_filter = request.GET.get('feature_filter')
 	bug_filter = request.GET.get('bug_filter')
 
 	if feature_filter == 'all_open_tickets' or feature_filter == None:
 		new_features = NewFeatureTicket.objects.order_by(
-			order if order else '-last_update').exclude(
+			order if order and order != 'priority' and order != '-priority' else '-last_update').exclude(
 			status='Implemented')	
 	else:
 		new_features = NewFeatureTicket.objects.filter(

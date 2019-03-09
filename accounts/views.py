@@ -12,6 +12,7 @@ from tickets.models import BugTicket, NewFeatureTicket
 
 # Create your views here.
 
+
 def registration_view(request):
 	"""
 	Register a new user

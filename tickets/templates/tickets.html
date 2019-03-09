@@ -2,14 +2,16 @@
 
 {% block content %}
 <!-- Larger Screens Only -->
-
+<div class="row d-flex justify-content-center">
+  <h1>All Tickets</h1>
+</div>
   <!-- Tabs -->
 
 <div class="d-none d-sm-block">
-  <div role="tablist">
-    <ul class="nav nav-tabs" id="resultsTabs">
+  <div>
+    <ul class="nav nav-tabs" id="resultsTabs" role="tablist">
       <li class="nav-item">
-        <a class="nav-tabs-item nav-link active" id="featuresTab" data-toggle="tab" href="#feature-results" role="tab" aria-selected="true">Features</a>
+        <a class="nav-tabs-item nav-link show active" id="featuresTab" data-toggle="tab" href="#feature-results" role="tab" aria-selected="true">Features</a>
       </li>
       <li class="nav-item">
         <a class="nav-tabs-item nav-link" id="bugsTab"  data-toggle="tab" href="#bug-results" role="tab" aria-selected="false">Bugs</a>
@@ -21,10 +23,14 @@
   <div class="tab-content">
 
     <!-- New Features -->
-    <div id="feature-results" class="tab-pane fade show active" role="tabpanel" aria-labelledby="features-tab">
-      <h3>Suggested Features</h3>
-      <small>New features suggested by UA users</small>
-      <div class="col-12">
+    <div id="feature-results" class="tab-pane fade show active" role="tabpanel" aria-labelledby="featuresTab">
+      <div class="d-flex justify-content-center">
+        <h3>Suggested Features</h3>
+      </div>
+      <div class="d-flex justify-content-center pb-1">
+        <small>New features suggested by UA users</small>
+      </div>
+      <div class="col-10 offset-1 filter-select-container">
         <form class="form-inline">
           <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" name="feature_filter" id="all_open_tickets" value="all_open_tickets" {% if request.GET.feature_filter == 'all_open_tickets' or request.GET.feature_filter == None %}checked{% endif %}>
@@ -36,7 +42,8 @@
               <label class="form-check-label" for="{{ status.0 }}">{{ status.0 }}</label>
             </div>
           {% endfor %}
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Filter</button>
+          <button class="btn btn-outline-dark my-2 my-sm-0" type="submit"><i class="fas fa-filter"></i></button>
+        </form>
       </div>
       <div>
         {% if not new_features %}
@@ -67,7 +74,7 @@
           </ul>
         <!-- End Pagination -->
 
-          <table class="table table-hover table-striped">
+          <table class="table table-hover table-sm table-striped">
             <thead>
               <tr>
                 <th scope="col">
@@ -132,12 +139,14 @@
 
     <!--Bugs-->
     <div id="bug-results" class="tab-pane fade" role="tabpanel" aria-labelledby="bug-tab">
-      <h3>Bugs</h3>
-      <small>Bugs in the UA application (fixed for free!)</small>
-      <small class="text-danger">*Critical Priority</small>
-      <small class="text-warning">*High Priority</small>
+      <div class="d-flex justify-content-center">
+        <h3>Bugs</h3>
+      </div>
+      <div class="d-flex justify-content-center pb-1">
+        <small>Bugs in the UA application (fixed for free!)</small>
+      </div>
       {% if not request.GET.query %}
-      <div class="col-12">
+      <div class="col-10 offset-1 filter-select-container">
         <form class="form-inline">
           <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" name="bug_filter" id="all_open_tickets" value="all_open_tickets" {% if request.GET.bug_filter == 'all_open_tickets' or request.GET.bug_filter == None %}checked{% endif %}>
@@ -149,7 +158,7 @@
             <label class="form-check-label" for="{{ status.0 }}">{{ status.0 }}</label>
           </div>
           {% endfor %}
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Filter</button>
+        <button class="btn btn-outline-dark my-2 my-sm-0" type="submit"><i class="fas fa-filter"></i></button>
         </form>
       </div>
       {% endif %}
@@ -181,20 +190,20 @@
             {% endif %}
           </ul>
           <!--End pagination-->
-            <table class="table table-hover table-striped">
+            <table class="table table-hover table-sm table-striped">
               <thead>
               <tr>
                 <th scope="col">
                   <a  href="?order={% if request.GET.order == 'id' %}-{% endif%}id&bug_filter={% if bug_filter %}{{ request.GET.bug_filter }}{% else %}all_open_tickets{% endif %}">#</a>
                 </th>
                 <th scope="col">
-                  <a href="?order={% if request.GET.order == 'customer' %}-{% endif%}customer&bug_filter={% if bug_filter %}{{ request.GET.bug_filter }}{% else %}all_open_tickets{% endif %}">Customer</a>
-                </th>
-                <th scope="col">
                   <a href="?order={% if request.GET.order == 'title' %}-{% endif%}title&bug_filter={% if bug_filter %}{{ request.GET.bug_filter }}{% else %}all_open_tickets{% endif %}">Title</a>
                 </th>
                 <th scope="col">
                   <a href="?order={% if request.GET.order == 'last_update' %}-{% endif%}last_update&bug_filter={% if bug_filter %}{{ request.GET.bug_filter }}{% else %}all_open_tickets{% endif %}">Last Updated</a>
+                </th>
+                <th scope="col">
+                  <a href="?order={% if request.GET.order == 'priority' %}-{% endif%}priority&bug_filter={% if bug_filter %}{{ request.GET.bug_filter }}{% else %}all_open_tickets{% endif %}">Priority</a>
                 </th>
                 <th scope="col">
                   <a href="?order={% if request.GET.order == 'status' %}-{% endif%}status&bug_filter={% if bug_filter %}{{ request.GET.bug_filter }}{% else %}all_open_tickets{% endif %}">Status</a>
@@ -204,17 +213,11 @@
               </thead>
               <tbody>
                 {% for bug in bug_tickets %}
-                  {% if bug.priority == 'Critical' %}
-                  <tr class="text-danger">
-                  {% elif bug.priority == 'High' %}
-                  <tr class="text-warning">
-                  {% else %}
                   <tr>
-                    {% endif %}
                     <th scope="row">{{ bug.id }}</th>
-                    <td>{{ bug.customer.first_name }} {{ bug.customer.last_name }}</td>
                     <td><small>{{ bug.title }}</small></td>
                     <td>{{ bug.last_update }}</td>
+                    <td {% if bug.priority == 'Critical' %} class="text-danger"{% elif bug.priority == 'High' %} class="text-warning"{% endif %}>{{ bug.priority }}</td>
                     <td>{{ bug.status }}</td>
                     <td><a href="{{ bug.get_absolute_url }}" class="btn btn-primary">Open</a></td>
                   </tr>
