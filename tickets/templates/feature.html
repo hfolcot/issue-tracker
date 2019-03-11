@@ -2,102 +2,134 @@
 {% load crispy_forms_tags %}
 {% block content %}
 
-<h1>{{ feature.title }}</h1>
 <div class="row">
-	<div class="col-xs-12 col-md-8">
-		{% if user_voted %}
+	<div class="col-12 title pt-2 pb-2">
+		<h2>{{ feature.title }}</h2>
+	</div>
+</div>
+<div class="row">
+	<div class="col-12 col-xl-6">
+		<div class="grey-card description">
+			<h6>Idea</h6>
+			{{ feature.description }}<br>
+			<div class="d-flex justify-content-end">
+				<small>Suggested by {{ feature.customer.first_name }} {{ feature.customer.last_name }}</small>
+			</div>
+		</div>
+		<div class="voting mt-2 mb-2">
+			{% if user_voted %}
 			<small>You have already voted!</small> 
-			<p><i class="far fa-thumbs-up text-success"></i> {{upvotes}} | <i class="far fa-thumbs-down text-danger"></i> {{ downvotes }}</p>
-		{% else %}
-		<form method="POST">
-			{% csrf_token %}
-			<input type="submit" class="btn btn-success btn-sm" value="({{ upvotes }}) This would be great!" name="upvote">
-			<input type="submit" class="btn btn-danger btn-sm" value="({{downvotes}}) Nah, not interested!" name="downvote">
-		</form>
-		{% endif %}
-		<p>{{ feature.description }}</p>
-		<h5>Comments:</h5>
-		{% if user_can_comment or user.is_staff %}
+			<p><i class="far fa-thumbs-up"></i> {{upvotes}} | <i class="far fa-thumbs-down"></i> {{ downvotes }}</p>
+			{% else %}
+			<form method="POST">
+				{% csrf_token %}
+				<button type="submit" class="btn btn-success btn-sm mt-2" name="upvote"><i class="far fa-thumbs-up"></i></button>
+				<button type="submit" class="btn btn-danger btn-sm mt-2" name="downvote"><i class="far fa-thumbs-down"></i></button>
+			</form>
+			<small style='text-decoration: underline'><a href="{% url 'about' %}">Not sure?</a></small>
+			{% endif %}
+		</div>
 		<div>
+			{% if user.is_staff %}
+			<div>
+				<p class="grey-card ticket-info-cust">Time spent so far: {{ hours }} hrs {{ mins }} mins</p>
+				<div class="grey-card ticket-info-cust mb-4">
+					<h6>Update Ticket</h6>
+					<form method="POST">
+						{% csrf_token %}
+						{{ update_form|crispy }}
+						<div class="d-flex justify-content-end">
+							<button type="submit" value="update" name="update" class="btn btn-primary btn-sm">Update</button>
+						</div>
+					</form>
+				</div>
+			</div>
+			{% else %}
+			<div>
+				<p class="grey-card ticket-info-cust"><strong>Status:</strong> {{ feature.status }}</p>
+				<p class="grey-card ticket-info-cust"><strong>Assigned to: </strong>{{ feature.assigned }}</p>
+				{% if feature.cost %}
+				<p class="grey-card ticket-info-cust"><strong>Estimated Cost:</strong> £{{ feature.cost }}</p>
+				{% else %}
+				<p class="grey-card ticket-info-cust">Not yet quoted</p>
+				{% endif %}
+			</div>
+			{% endif %}
+		</div>
+	</div>
+	<div class="col-12 col-xl-6">
+		{% if not user.is_staff %}
+			{% if feature.quoted %}
+			<div class="grey-card mb-4">
+				<div class="d-flex justify-content-center mt-1">
+					<h6>Contribute to have this feature!</h6>
+				</div>
+				<div class="progress">
+  					<div class="progress-bar progress-bar-striped" role="progressbar" style="width: {{ percentage }}%" aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100"><strong>{{ percentage }}%</strong></div>
+				</div>
+				<div class="d-flex justify-content-center mt-1">
+					<p>Target £{{ feature.cost }}</p>
+				</div>
+				{% if remaining == 0 %}
+				<p class="text-success">Target reached!</p>
+				{% else %}
+				<div class="d-flex justify-content-center mt-1">
+					<a href="{% url 'checkout' feature.id %}" class="btn btn-success contribute">Contribute!</a>
+				</div>
+				{% endif %}
+			{% endif %}
+			</div>
+		{% endif %}
+		<div class="add-comment grey-card">
+			<p>Add a comment:</p>
+
 			<form method="POST">{% csrf_token %}
 				{{ comment_form|crispy }}
-			<input type="submit" value="Post" name="comment" class="btn btn-outline-dark">
+				<div class="d-flex justify-content-end">
+					<input type="submit" value="Post" name="comment" class="btn btn-primary">
+				</div>
 			</form>
 		</div>
-		{% else %}
-		<small>You must <strong><a href="{% url 'checkout' feature.id %}">donate</a></strong> to be able to comment</small>
-		{% endif %}
-		{% if comments %}
-			<div class="comments">
-				<h6>Previous comments:</h6>
+		<div class="comments mt-4">
+			<h6>Comments:</h6>
 			{% for comment in comments %}
-			<div class="row card mt-1">
+			<div class="col-12 grey-card mt-2">
+				<img class="profile-pic rounded-circle" src="{{ comment.user.profile.image.url }}" alt="{{comment.user }} profile picture"/>
+				<span>
+					<a href="{% url 'profile' id=comment.user.profile.id %}"><strong>{{ comment.user.first_name }} {{ comment.user.last_name }}</strong></a>
+					<small>on {{ comment.timestamp.date }} at {{ comment.timestamp.time }}</small>
+				</span>
 				<div class="col-12 mt-1">
-					<img class="profile-pic rounded-circle" src="{{ comment.user.profile.image.url }}"/>
-					<span>
-						<a href="{% url 'other_profile' id=comment.user.profile.id %}"><strong>{{ comment.user.first_name }} {{ comment.user.last_name }}</strong></a>
-						<small>on {{ comment.timestamp.date }} at {{ comment.timestamp.time }}</small>
-					</span>
-				</div>
-				<div class="col-12">
 					<p>{{ comment.content }}</p>
 				</div>
 			</div>
 			{% endfor %}
-			<ul class="pagination">
-	          {% if comments.has_previous %}
-	          <li class="page-item">
-	            <a class='page-link' href="?page=1">&laquo; First</a>
-	          </li>
-	          <li class="page-item">
-	            <a class='page-link' href="?page={{ comments.previous_page_number }}">Previous</a>
-	          </li>
-	          {% endif %}
-	          <small class="mr-2 ml-2">
-	              Page {{ comments.number }} of {{ comments.paginator.num_pages }}
-	          </small>
-	          {% if comments.has_next %}
-	          <li class="page-item">
-	            <a class='page-link' href="?page={{ comments.next_page_number }}">Next</a>
-	          </li>
-	          <li class="page-item">
-	            <a class='page-link' href="?page={{ comments.paginator.num_pages }}">Last &raquo;</a>
-	          </li>
-	          {% endif %}
-	        </ul>
+			<div class="d-flex justify-content-end mt-2">
+				<small class="mr-2 ml-2">Page {{ comments.number }} of {{ comments.paginator.num_pages }}</small>
 			</div>
-		{% endif %}
-	</div>
-	<div class="col-12 col-md-4">
-		{% if user.is_staff %}
-			<div class="update_ticket">
-				<p>Customer: {{ feature.customer.first_name }} {{ feature.customer.last_name }}</p>
-				<p>Time spent so far:</p>
-				<p>{{ hours }} hrs {{ mins }} mins</p>
-				<form method="POST">
-					{% csrf_token %}
-					{{ update_form|crispy }}
-					<button type="submit" value="update" name="update" class="btn btn-success btn-sm">Update</button>
-				</form>
-			</div>
-		{% else %}
-			{% if feature.quoted %}
-				<p>£{{ donations }} donated</p>
-				<p>{{ percentage }}% of target</p>
-				<p>£{{ remaining }} remaining</p>
-				<p>This feature has been quoted at £{{ feature.cost }}.</p>
-				{% if remaining == 0 %}
-				<p class="text-success">Target reached!</p>
-				{% else %}
-				<a href="{% url 'checkout' feature.id %}" class="btn btn-success">Donate!</a>
-				{% endif %}
-			{% endif %}
-			<p>Customer: {{ feature.customer.first_name }} {{ feature.customer.last_name }}</p>
-			<p>Status: {{ feature.status }}</p>
-			<p>Assigned to: {{ feature.assigned }}</p>
-		{% endif %}
-
-
+			<div class="d-flex justify-content-end">
+				<nav aria-label="comments pages">
+					<ul class="pagination">
+			          {% if comments.has_previous %}
+			          <li class="page-item">
+			            <a class='page-link' href="?page=1">&laquo; First</a>
+			          </li>
+			          <li class="page-item">
+			            <a class='page-link' href="?page={{ comments.previous_page_number }}">Previous</a>
+			          </li>
+			          {% endif %}
+			          {% if comments.has_next %}
+			          <li class="page-item">
+			            <a class='page-link' href="?page={{ comments.next_page_number }}">Next</a>
+			          </li>
+			          <li class="page-item">
+			            <a class='page-link' href="?page={{ comments.paginator.num_pages }}">Last &raquo;</a>
+			          </li>
+			          {% endif %}
+			        </ul>
+			    </nav>
+		    </div>
+		</div>
 	</div>
 </div>
 

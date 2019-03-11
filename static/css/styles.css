@@ -1,8 +1,7 @@
-
-
-/*nav {
-	background-color: #141301;
-}*/
+body {
+	font-size: 15px;
+	/*background-color: #c8c8c8*/
+}
 
 .main-section {
 	height: 90vh;
@@ -12,11 +11,16 @@
 	height: 100%;
 }
 
+.grey-card {
+	background-color: #f1f5f5;
+	padding: 5px;
+	border-radius: 10px;
+	box-shadow: 3px 3px 3px 0 rgba(0,0,0,0.14);
+}
+
 .login-box {
-	background-color: #BBCBCB;
 	padding: 15px;
 	width: 100%;
-	border-radius: 10px;
 	display: flex;
 	justify-content: center;
 	box-shadow: 6px 6px 7px 0 rgba(0,0,0,0.14);
@@ -78,8 +82,31 @@
 	padding-bottom: 15px;
 }
 
+.description {
+	border: 1px solid #818D92;
+}
+
+.voting {
+	text-align: center;
+}
+
+.ticket-info-cust,
+.add-comment{
+	font-size: 0.9rem;
+}
+
 .screenshot-thumbnail {
-    height: 250px;
+    max-height: 200px;
+    max-width: 100%;
+}
+
+
+.progress {
+	height: 30px;
+}
+
+.progress-bar {
+	background-color: #59C3C3;
 }
 
 .result {
@@ -126,4 +153,27 @@ a {
 .btn-primary {
 	background-color: #1C6E8C;
 	border-color: #1C6E8C;
+}
+
+.contribute {
+	background-color: #C8C8C8;
+	border-color: #C8C8C8;
+	animation-name: attention;
+	animation-duration: 1s;
+ 	animation-iteration-count: infinite;
+ 	animation-timing-function: ease-in-out;
+ 	animation-direction: alternate-reverse;
+}
+
+/*animations*/
+
+@keyframes attention {
+  from {
+    background-color: #C8C8C8;
+	border-color: #C8C8C8;
+  }
+  to {
+    background-color: #F49D37;
+	border-color: #F49D37;
+  }
 }

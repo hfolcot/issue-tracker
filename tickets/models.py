@@ -35,7 +35,7 @@ class BugTicket(models.Model):
 	customer = models.ForeignKey(User, null=True,
         			on_delete=models.CASCADE,)
 	title = models.CharField(max_length=100, blank=False)
-	description = models.TextField()
+	description = models.TextField(max_length=999)
 	timestamp = models.DateTimeField(auto_now=True)
 	screenshot = models.ImageField(upload_to='images', blank=True)
 	assigned = models.ForeignKey(DeveloperProfile, default=choices.UNASSIGNED, on_delete=models.SET('Unassigned'))
@@ -69,7 +69,7 @@ class NewFeatureTicket(models.Model):
 	customer = models.ForeignKey(User, null=True,
         			on_delete=models.CASCADE,)
 	title = models.CharField(max_length=100, blank=False)
-	description = models.TextField()
+	description = models.TextField(max_length=999)
 	assigned = models.ForeignKey(DeveloperProfile, default=choices.UNASSIGNED, on_delete=models.SET('Unassigned'))
 	quoted = models.BooleanField(default=False)
 	cost = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
