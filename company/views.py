@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 
 import datetime
+import os
 
 from accounts.models import DeveloperProfile, Profile
 from tickets.models import BugTicket, NewFeatureTicket
@@ -20,6 +21,7 @@ def contact_view(request):
 	"""
 	Handle the contact form
 	"""
+	email_address = os.environ.get("COMPANY_EMAIL")
 	if request.method == 'POST':
 		contact_form = ContactForm(request.POST)
 		if contact_form.is_valid():
@@ -27,7 +29,7 @@ def contact_view(request):
 			from_email = contact_form.cleaned_data['email']
 			message = contact_form.cleaned_data['message']
 		try:
-			send_mail(from_name, message, from_email, ['issuetrackerhev@gmail.com'])
+			send_mail(from_name, message, from_email, [email_address])
 		except BadHeaderError:
 			return HttpResponse('Invalid header found.')
 		messages.success(request, f"Message sent!")
