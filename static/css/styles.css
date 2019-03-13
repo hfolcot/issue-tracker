@@ -1,11 +1,24 @@
 body {
 	font-size: 15px;
-	/*background-color: #c8c8c8*/
+	display: flex;
+	min-height: 100vh;
+    flex-direction: column;
 }
 
-.main-section {
-	height: 90vh;
+.page-footer {
+	margin-top: 10px;
+	background-color: #212529;
+	color: #FFF;
 }
+
+.footer-icons {
+	padding-left: 10px;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
 
 .full-height {
 	height: 100%;
