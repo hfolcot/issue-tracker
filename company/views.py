@@ -77,3 +77,9 @@ def statistics_view(request):
 	'staff_panel_active' : staff_panel_active
 	}
 	return render(request, 'statistics.html', context)
+
+def help_view(request):
+	"""
+	Render the help page
+	"""
+	return render(request, 'help.html')

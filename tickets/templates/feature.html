@@ -26,7 +26,7 @@
 				<button type="submit" class="btn btn-success btn-sm mt-2" name="upvote"><i class="far fa-thumbs-up"></i></button>
 				<button type="submit" class="btn btn-danger btn-sm mt-2" name="downvote"><i class="far fa-thumbs-down"></i></button>
 			</form>
-			<small style='text-decoration: underline'><a href="{% url 'about' %}">Not sure?</a></small>
+			<small style='text-decoration: underline'><a href="{% url 'help' %}">Not sure?</a></small>
 			{% endif %}
 		</div>
 			{% if not user.is_staff %}
