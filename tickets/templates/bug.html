@@ -76,18 +76,24 @@
 		</div>
 		<div class="comments mt-4">
 			<h6>Comments:</h6>
-			{% for comment in comments %}
-			<div class="col-12 grey-card mt-2">
-				<img class="profile-pic rounded-circle" src="{{ comment.user.profile.image.url }}" alt="{{comment.user }} profile picture"/>
-				<span>
-					<a href="{% url 'profile' id=comment.user.profile.id %}"><strong>{{ comment.user.first_name }} {{ comment.user.last_name }}</strong></a>
-					<small>on {{ comment.timestamp.date }} at {{ comment.timestamp.time }}</small>
-				</span>
-				<div class="col-12 mt-1">
-					<p>{{ comment.content }}</p>
+			{% if comments %}
+				{% for comment in comments %}
+				<div class="col-12 grey-card mt-2">
+					<img class="profile-pic rounded-circle" src="{{ comment.user.profile.image.url }}" alt="{{comment.user }} profile picture"/>
+					<span>
+						<a href="{% url 'profile' id=comment.user.profile.id %}"><strong>{{ comment.user.first_name }} {{ comment.user.last_name }}</strong></a>
+						<small>on {{ comment.timestamp.date }} at {{ comment.timestamp.time }}</small>
+					</span>
+					<div class="col-12 mt-1">
+						<p>{{ comment.content }}</p>
+					</div>
 				</div>
-			</div>
-			{% endfor %}
+				{% endfor %}
+			{% else %}
+				<div class="col-12 grey-card mt-2">
+					No comments to show
+				</div>
+			{% endif %}
 			<div class="d-flex justify-content-end mt-2">
 				<small class="mr-2 ml-2">Page {{ comments.number }} of {{ comments.paginator.num_pages }}</small>
 			</div>

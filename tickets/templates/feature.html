@@ -29,22 +29,7 @@
 			<small style='text-decoration: underline'><a href="{% url 'about' %}">Not sure?</a></small>
 			{% endif %}
 		</div>
-		<div>
-			{% if user.is_staff %}
-			<div>
-				<p class="grey-card ticket-info-cust">Time spent so far: {{ hours }} hrs {{ mins }} mins</p>
-				<div class="grey-card ticket-info-cust mb-4">
-					<h6>Update Ticket</h6>
-					<form method="POST">
-						{% csrf_token %}
-						{{ update_form|crispy }}
-						<div class="d-flex justify-content-end">
-							<button type="submit" value="update" name="update" class="btn btn-primary btn-sm">Update</button>
-						</div>
-					</form>
-				</div>
-			</div>
-			{% else %}
+			{% if not user.is_staff %}
 			<div>
 				<p class="grey-card ticket-info-cust"><strong>Status:</strong> {{ feature.status }}</p>
 				<p class="grey-card ticket-info-cust"><strong>Assigned to: </strong>{{ feature.assigned }}</p>
@@ -54,35 +39,9 @@
 				<p class="grey-card ticket-info-cust">Not yet quoted</p>
 				{% endif %}
 			</div>
-			{% endif %}
-		</div>
-	</div>
-	<div class="col-12 col-xl-6">
-		{% if not user.is_staff %}
-			{% if feature.quoted %}
-			<div class="grey-card mb-4">
-				<div class="d-flex justify-content-center mt-1">
-					<h6>Contribute to have this feature!</h6>
-				</div>
-				<div class="progress">
-  					<div class="progress-bar progress-bar-striped" role="progressbar" style="width: {{ percentage }}%" aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100"><strong>{{ percentage }}%</strong></div>
-				</div>
-				<div class="d-flex justify-content-center mt-1">
-					<p>Target £{{ feature.cost }}</p>
-				</div>
-				{% if remaining == 0 %}
-				<p class="text-success">Target reached!</p>
-				{% else %}
-				<div class="d-flex justify-content-center mt-1">
-					<a href="{% url 'checkout' feature.id %}" class="btn btn-success contribute">Contribute!</a>
-				</div>
-				{% endif %}
-			{% endif %}
-			</div>
-		{% endif %}
-		<div class="add-comment grey-card">
+			{% else %}
+			<div class="add-comment grey-card">
 			<p>Add a comment:</p>
-
 			<form method="POST">{% csrf_token %}
 				{{ comment_form|crispy }}
 				<div class="d-flex justify-content-end">
@@ -92,18 +51,24 @@
 		</div>
 		<div class="comments mt-4">
 			<h6>Comments:</h6>
-			{% for comment in comments %}
-			<div class="col-12 grey-card mt-2">
-				<img class="profile-pic rounded-circle" src="{{ comment.user.profile.image.url }}" alt="{{comment.user }} profile picture"/>
-				<span>
-					<a href="{% url 'profile' id=comment.user.profile.id %}"><strong>{{ comment.user.first_name }} {{ comment.user.last_name }}</strong></a>
-					<small>on {{ comment.timestamp.date }} at {{ comment.timestamp.time }}</small>
-				</span>
-				<div class="col-12 mt-1">
-					<p>{{ comment.content }}</p>
+			{% if comments %}
+				{% for comment in comments %}
+				<div class="col-12 grey-card mt-2">
+					<img class="profile-pic rounded-circle" src="{{ comment.user.profile.image.url }}" alt="{{comment.user }} profile picture"/>
+					<span>
+						<a href="{% url 'profile' id=comment.user.profile.id %}"><strong>{{ comment.user.first_name }} {{ comment.user.last_name }}</strong></a>
+						<small>on {{ comment.timestamp.date }} at {{ comment.timestamp.time }}</small>
+					</span>
+					<div class="col-12 mt-1">
+						<p>{{ comment.content }}</p>
+					</div>
 				</div>
-			</div>
-			{% endfor %}
+				{% endfor %}
+			{% else %}
+				<div class="col-12 grey-card mt-2">
+					No comments to show
+				</div>
+			{% endif %}
 			<div class="d-flex justify-content-end mt-2">
 				<small class="mr-2 ml-2">Page {{ comments.number }} of {{ comments.paginator.num_pages }}</small>
 			</div>
@@ -130,6 +95,102 @@
 			    </nav>
 		    </div>
 		</div>
+			{% endif %}
+		
+	</div>
+	<div class="col-12 col-xl-6">
+		{% if not user.is_staff %}
+			{% if feature.quoted %}
+				<div class="grey-card mb-4">
+					<div class="d-flex justify-content-center mt-1">
+						<h6>Contribute to have this feature!</h6>
+					</div>
+					<div class="progress">
+	  					<div class="progress-bar progress-bar-striped" role="progressbar" style="width: {{ percentage }}%" aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100"><strong>{{ percentage }}%</strong></div>
+					</div>
+					<div class="d-flex justify-content-center mt-1">
+						<p>Target £{{ feature.cost }}</p>
+					</div>
+					{% if remaining == 0 %}
+					<p class="text-success">Target reached!</p>
+					{% else %}
+					<div class="d-flex justify-content-center mt-1">
+						<a href="{% url 'checkout' feature.id %}" class="btn btn-success contribute">Contribute!</a>
+					</div>
+					{% endif %}
+				</div>
+			{% endif %}	
+			<div class="add-comment grey-card">
+			<p>Add a comment:</p>
+			<form method="POST">{% csrf_token %}
+				{{ comment_form|crispy }}
+				<div class="d-flex justify-content-end">
+					<input type="submit" value="Post" name="comment" class="btn btn-primary">
+				</div>
+			</form>
+		</div>
+		<div class="comments mt-4">
+			<h6>Comments:</h6>
+			{% if comments %}
+				{% for comment in comments %}
+				<div class="col-12 grey-card mt-2">
+					<img class="profile-pic rounded-circle" src="{{ comment.user.profile.image.url }}" alt="{{comment.user }} profile picture"/>
+					<span>
+						<a href="{% url 'profile' id=comment.user.profile.id %}"><strong>{{ comment.user.first_name }} {{ comment.user.last_name }}</strong></a>
+						<small>on {{ comment.timestamp.date }} at {{ comment.timestamp.time }}</small>
+					</span>
+					<div class="col-12 mt-1">
+						<p>{{ comment.content }}</p>
+					</div>
+				</div>
+				{% endfor %}
+			{% else %}
+				<div class="col-12 grey-card mt-2">
+					No comments to show
+				</div>
+			{% endif %}
+			<div class="d-flex justify-content-end mt-2">
+				<small class="mr-2 ml-2">Page {{ comments.number }} of {{ comments.paginator.num_pages }}</small>
+			</div>
+			<div class="d-flex justify-content-end">
+				<nav aria-label="comments pages">
+					<ul class="pagination">
+			          {% if comments.has_previous %}
+			          <li class="page-item">
+			            <a class='page-link' href="?page=1">&laquo; First</a>
+			          </li>
+			          <li class="page-item">
+			            <a class='page-link' href="?page={{ comments.previous_page_number }}">Previous</a>
+			          </li>
+			          {% endif %}
+			          {% if comments.has_next %}
+			          <li class="page-item">
+			            <a class='page-link' href="?page={{ comments.next_page_number }}">Next</a>
+			          </li>
+			          <li class="page-item">
+			            <a class='page-link' href="?page={{ comments.paginator.num_pages }}">Last &raquo;</a>
+			          </li>
+			          {% endif %}
+			        </ul>
+			    </nav>
+		    </div>
+		</div>
+		{% else %}
+			<div>
+				<p class="grey-card ticket-info-cust">Time spent so far: {{ hours }} hrs {{ mins }} mins</p>
+				<div class="grey-card ticket-info-cust mb-4">
+					<h6>Update Ticket</h6>
+					<form method="POST">
+						{% csrf_token %}
+						{{ update_form|crispy }}
+						<div class="d-flex justify-content-end">
+							<button type="submit" value="update" name="update" class="btn btn-primary btn-sm">Update</button>
+						</div>
+					</form>
+				</div>
+			</div>		
+		{% endif %}
+		
 	</div>
 </div>
 

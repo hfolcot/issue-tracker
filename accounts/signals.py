@@ -9,7 +9,6 @@ def create_profile(sender, instance, created, **kwargs):
 	Automatically create a profile when a new user 
 	is created
 	"""
-	print("signal fired")
 	if created:
 		Profile.objects.create(user=instance)
 

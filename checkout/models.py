@@ -23,26 +23,3 @@ class Order(models.Model):
 
 	def __str__(self):
 		return "{0} - {1} - {2}".format(self.id, self.date, self.user)
-
-	# def get_item(self):
-	# 	return self.item
-
-	# def get_max_amount(self):
-	# 	"""
-	# 	Get the maximum amount a person can donate based on the quote
-	# 	"""
-	# 	item = get_item(self)
-	# 	print(item)
-	# 	ticket = get_object_or_404(NewFeatureTicket, pk=item)
-	# 	print(ticket)
-	# 	orders = Order.objects.filter(item=ticket)
-	# 	print(orders)
-	# 	if orders:
-	# 		donations = 0
-	# 		for order in orders:
-	# 			print(order.donation)
-	# 			donations += order.donation
-	# 		max_amount = round(ticket.cost - donations, 2)
-	# 	else:
-	# 		max_amount = ticket.cost
-	# 	return max_amount

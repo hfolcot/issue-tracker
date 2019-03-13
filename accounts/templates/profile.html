@@ -2,306 +2,143 @@
 {% load crispy_forms_tags %}
 {% block content %}
 
-
-<div class="row mb-4">
-	<div class="col-12 d-flex justify-content-center">
-		<h2>{{ profile.user.first_name|capfirst }}'s IssueTracker</h2>
-	</div>
-	<div class="col-12 col-md-8">
-		<div class="col-9">
-			<img class="rounded-circle profile-pic-large" src="{{ user.profile.image.url }}"/>
-		</div>
-	</div>
-	<div class="col-12 col-md-4 mt-2">
-		<a href="{% url 'reset_password' %}"class="btn btn-secondary btn-sm mb-2">Change Password</a>
-		<button data-toggle="modal" data-target="#profileImgModal" class="btn btn-success btn-sm">Change Profile Picture</button>
-	</div>
-
-</div>
-
-<!-- If user is a developer they will see bugs assigned to them here -->
-<!-- Or if user is a customer they will see bugs raised by them here -->
-<div role="tablist">
-  <ul class="nav nav-tabs">
-    <li class="nav-item">
-      <a class="nav-tabs-item nav-link active" id="featuresTab" data-toggle="tab" href="#feature-results" role="tab" aria-selected="true">My Features</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-tabs-item nav-link" id="bugsTab"  data-toggle="tab" href="#bug-results" role="tab" aria-selected="false">My Bugs</a>
-    </li>
-  </ul>
-</div>
-<!--Tab Content-->
-  <div class="tab-content">
-
-    <!-- New Features -->
-    <div id="feature-results" class="tab-pane fade show active" role="tabpanel" aria-labelledby="features-tab">
-      <h3>Suggested Features</h3>
-      {% if user.is_staff %}
-      <small>New features assigned to you</small>
-      {% else %}
-      <small>New features suggested by you</small>
+<div class="row mt-4">
+  <div class="col-12 col-md-4 offset-md-1 col-lg-3 offset-lg-1">
+    <div class="grey-card profile-pic-container">
+      {% if profile.user == request.user %}
+      <div class="d-flex justify-content-end">
+        <small class="mb-1"><a data-toggle="modal" data-target="#profileImgModal"><i class="fas fa-camera"></i></a></small>
+      </div>
       {% endif %}
-      <div>
-        <div class="col-12">
-          <form class="form-inline">
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="feature_filter" id="all_open_tickets" value="all_open_tickets" {% if request.GET.feature_filter == 'all_open_tickets' or request.GET.feature_filter == None %}checked{% endif %}>
-              <label class="form-check-label" for="all_open_tickets">All Open Tickets</label>
-            </div>
-            {% for status in feature_status %}
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="feature_filter" id="{{ status.0 }}" value="{{ status.0 }}" {% if request.GET.feature_filter == status.0 %}checked{% endif %}>
-              <label class="form-check-label" for="{{ status.0 }}">{{ status.0 }}</label>
-            </div>
-            {% endfor %}
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Filter</button>
-          </form>
-        </div>
-        {% if not new_features %}
-        <p>No features to show.</p>
+      <div class="d-flex justify-content-center">
+        <img class="rounded-circle profile-pic-large img-responsive" src="{{ profile.image.url }}"/>
+      </div>
+      <div class="d-flex justify-content-center">
+        <h6>{{ profile.user.first_name|capfirst }} {{ profile.user.last_name|capfirst }}</h6>
+      </div>
+      <div class="d-flex justify-content-center">
+        {% if profile.user.is_staff %}
+          <small>UnicornAttractor Developer!</small>
         {% else %}
-          <!-- Pagination -->
-          <ul class="pagination d-flex justify-content-end">
-            {% if new_features.has_previous %}
-            <li class="page-item">
-              <a class='page-link' href="?page=1">&laquo; First</a>
-            </li>
-            <li class="page-item">
-              <a class='page-link' href="?page={{ new_features.previous_page_number }}">Previous</a>
-            </li>
-            {% endif %}
-            <small class="mr-2 ml-2">
-                Page {{ new_features.number }} of {{ new_features.paginator.num_pages }}
-            </small>
-            {% if new_features.has_next %}
-            <li class="page-item">
-              <a class='page-link' href="?page={{ new_features.next_page_number }}">Next</a>
-            </li>
-            <li class="page-item">
-              <a class='page-link' href="?page={{ new_features.paginator.num_pages }}">Last &raquo;</a>
-            </li>
-            {% endif %}
-          </ul>
-        <!-- End Pagination -->
-
-          <table class="table table-hover table-striped">
-            <thead>
-              <tr>
-                <th scope="col">
-                  <a  href="?order={% if request.GET.order == 'id' %}-{% endif%}id&feature_filter={% if feature_filter %}{{ request.GET.feature_filter }}{% else %}all_open_tickets{% endif %}">#</a>
-                </th>
-                {% if user.is_staff %}
-                <th scope="col">
-                  <a href="?order={% if request.GET.order == 'customer' %}-{% endif%}customer&feature_filter={% if feature_filter %}{{ request.GET.feature_filter }}{% else %}all_open_tickets{% endif %}">Customer</a>
-                </th>
-                {% endif %}
-                <th scope="col">
-                  <a href="?order={% if request.GET.order == 'title' %}-{% endif%}title&feature_filter={% if feature_filter %}{{ request.GET.feature_filter }}{% else %}all_open_tickets{% endif %}">Title</a>
-                </th>
-                <th scope="col">
-                  <a href="?order={% if request.GET.order == 'last_update' %}-{% endif%}last_update&feature_filter={% if feature_filter %}{{ request.GET.feature_filter }}{% else %}all_open_tickets{% endif %}">Last Updated</a>
-                </th>
-                <th scope="col">
-                  <a href="?order={% if request.GET.order == 'status' %}-{% endif%}status&feature_filter={% if feature_filter %}{{ request.GET.feature_filter }}{% else %}all_open_tickets{% endif %}">Status</a>
-                </th>
-                <th scope="col"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for feature in new_features %}
-                <tr>
-                  <th scope="row">{{ feature.id }}</th>
-                  {% if user.is_staff %}
-                  <td>{{ feature.customer.first_name }} {{ feature.customer.last_name }}</td>
-                  {% endif %}
-                  <td><small>{{ feature.title }}</small></td> 
-                  <td>{{ feature.last_update }}</td>
-                  <td>{{ feature.status }}</td>
-                  <td><a href="{{ feature.get_absolute_url }}" class="btn btn-primary">Open</a></td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        
-
-        <!-- Pagination -->
-        <ul class="pagination d-flex justify-content-end">
-            {% if new_features.has_previous %}
-            <li class="page-item">
-              <a class='page-link' href="?page=1">&laquo; First</a>
-            </li>
-            <li class="page-item">
-              <a class='page-link' href="?page={{ new_features.previous_page_number }}">Previous</a>
-            </li>
-            {% endif %}
-            <small class="mr-2 ml-2">
-                Page {{ new_features.number }} of {{ new_features.paginator.num_pages }}
-            </small>
-            {% if new_features.has_next %}
-            <li class="page-item">
-              <a class='page-link' href="?page={{ new_features.next_page_number }}">Next</a>
-            </li>
-            <li class="page-item">
-              <a class='page-link' href="?page={{ new_features.paginator.num_pages }}">Last &raquo;</a>
-            </li>
-            {% endif %}
-        </ul>
-       <!-- End Pagination -->
-      {% endif %}
-    </div>
-    </div>
-
-    <!--Open Bugs-->
-    <div id="bug-results" class="tab-pane fade" role="tabpanel" aria-labelledby="bug-tab">
-      <h3>Bugs</h3>
-      {% if user.is_staff %}
-      <small>Bugs assigned to you</small>
-      {% else %}
-      <small>Bugs suggested by you</small>
-      {% endif %}
-      <small class="text-danger">*Critical Priority</small>
-      <small class="text-warning">*High Priority</small>
-
-
-      <div>
-        <div class="col-12">
-          <form class="form-inline">
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="bug_filter" id="all_open_tickets" value="all_open_tickets" {% if request.GET.bug_filter == 'all_open_tickets' or request.GET.bug_filter == None %}checked{% endif %}>
-              <label class="form-check-label" for="all_open_tickets">All Open Tickets</label>
-            </div>
-            {% for status in bug_status %}
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="bug_filter" id="{{ status.0 }}" value="{{ status.0 }}" {% if request.GET.bug_filter == status.0 %}checked{% endif %}>
-              <label class="form-check-label" for="{{ status.0 }}">{{ status.0 }}</label>
-            </div>
-            {% endfor %}
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Filter</button>
-          </form>
-        </div>
-
-        {% if not bug_tickets %}
-          <p>No bugs to show.</p>
-        {% else %}
-        <!--Pagination-->
-          <ul class="pagination d-flex justify-content-end">
-            {% if bug_tickets.has_previous %}
-            <li class="page-item">
-              <a class='page-link' href="?page=1">&laquo; First</a>
-            </li>
-            <li class="page-item">
-              <a class='page-link' href="?page={{ bug_tickets.previous_page_number }}">Previous</a>
-            </li>
-            {% endif %}
-            <small class="mr-2 ml-2">
-                Page {{ bug_tickets.number }} of {{ bug_tickets.paginator.num_pages }}
-            </small>
-            {% if bug_tickets.has_next %}
-            <li class="page-item">
-              <a class='page-link' href="?page={{ bug_tickets.next_page_number }}">Next</a>
-            </li>
-            <li class="page-item">
-              <a class='page-link' href="?page={{ bug_tickets.paginator.num_pages }}">Last &raquo;</a>
-            </li>
-            {% endif %}
-          </ul>
-          <!--End pagination-->
-            <table class="table table-hover table-striped">
-              <thead>
-              <tr>
-                <th scope="col">
-                  <a  href="?order={% if request.GET.order == 'id' %}-{% endif%}id&bug_filter={% if bug_filter %}{{ request.GET.bug_filter }}{% else %}all_open_tickets{% endif %}">#</a>
-                </th>
-                {% if user.is_staff %}
-                <th scope="col">
-                  <a href="?order={% if request.GET.order == 'customer' %}-{% endif%}customer&bug_filter={% if bug_filter %}{{ request.GET.bug_filter }}{% else %}all_open_tickets{% endif %}">Customer</a>
-                </th>
-                {% endif %}
-                <th scope="col">
-                  <a href="?order={% if request.GET.order == 'title' %}-{% endif%}title&bug_filter={% if bug_filter %}{{ request.GET.bug_filter }}{% else %}all_open_tickets{% endif %}">Title</a>
-                </th>
-                <th scope="col">
-                  <a href="?order={% if request.GET.order == 'last_update' %}-{% endif%}last_update&bug_filter={% if bug_filter %}{{ request.GET.bug_filter }}{% else %}all_open_tickets{% endif %}">Last Updated</a>
-                </th>
-                <th scope="col">
-                  <a href="?order={% if request.GET.order == 'status' %}-{% endif%}status&bug_filter={% if bug_filter %}{{ request.GET.bug_filter }}{% else %}all_open_tickets{% endif %}">Status</a>
-                </th>
-                <th scope="col"></th>
-              </tr>
-              </thead>
-              <tbody>
-                {% for bug in bug_tickets %}
-                  {% if bug.priority == 'Critical' %}
-                  <tr class="text-danger">
-                  {% elif bug.priority == 'High' %}
-                  <tr class="text-warning">
-                  {% else %}
-                  <tr>
-                    {% endif %}
-                    <th scope="row">{{ bug.id }}</th>
-                    {% if user.is_staff %}
-                    <td>{{ bug.customer.first_name }} {{ bug.customer.last_name }}</td>
-                    {% endif %}
-                    <td><small>{{ bug.title }}</small></td>
-                    <td>{{ bug.last_update }}</td>
-                    <td>{{ bug.status }}</td>
-                    <td><a href="{{ bug.get_absolute_url }}" class="btn btn-primary">Open</a></td>
-                  </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          <!--Pagination-->
-          <ul class="pagination d-flex justify-content-end">
-          {% if bug_tickets.has_previous %}
-          <li class="page-item">
-            <a class='page-link' href="?page=1">&laquo; First</a>
-          </li>
-          <li class="page-item">
-            <a class='page-link' href="?page={{ bug_tickets.previous_page_number }}">Previous</a>
-          </li>
-          {% endif %}
-          <small class="mr-2 ml-2">
-              Page {{ bug_tickets.number }} of {{ bug_tickets.paginator.num_pages }}
-          </small>
-          {% if bug_tickets.has_next %}
-          <li class="page-item">
-            <a class='page-link' href="?page={{ bug_tickets.next_page_number }}">Next</a>
-          </li>
-          <li class="page-item">
-            <a class='page-link' href="?page={{ bug_tickets.paginator.num_pages }}">Last &raquo;</a>
-          </li>
-          {% endif %}
-          </ul>
-        <!--End pagination-->
+          <small>UnicornAttractor User!</small>
         {% endif %}
       </div>
     </div>
-
-    
-
-<!-- Modal -->
-<div class="modal fade" id="profileImgModal" tabindex="-1" role="dialog" aria-labelledby="profileImgModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      	<div class="modal-header">
-        	<h5 class="modal-title" id="profileImgModalLabel">Select a File</h5>
-        	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          		<span aria-hidden="true">&times;</span>
-        	</button>
-      	</div>
-      	<form method="POST" enctype="multipart/form-data">
-	      	<div class="modal-body">
-	      		{% csrf_token %}
-	        	{{ img_upload_form|crispy }}
-	      	</div>
-	      	<div class="modal-footer">
-		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-		        <button type="submit" class="btn btn-primary">Upload</button>
-	      	</div>
-  		</form>
+  </div>
+  <div class="col-12 col-md-4 offset-md-2 col-lg-3 offset-lg-2">
+    <div class="grey-card stats">
+      {% if profile.user.is_staff %}
+        <div class="d-flex justify-content-center">
+          <u>Time spent working</u>
+        </div>
+        <div class="d-flex justify-content-center mt-2">
+          <strong><i class="far fa-clock"></i> Total</strong>
+        </div>
+        <div class="d-flex justify-content-center"> 
+          {{ total_days }} days {{ total_hours }} hours {{ total_mins }} mins
+        </div>
+        <div class="d-flex justify-content-center mt-2"> 
+          <strong><i class="far fa-clock"></i> Bugs</strong>
+        </div>
+        <div class="d-flex justify-content-center">{{ bug_days }} days {{ bug_hours }} hours {{ bug_mins }} mins
+        </div>
+        <div class="d-flex justify-content-center mt-2"> 
+          <strong><i class="far fa-clock"></i> Features</strong> 
+        </div>
+        <div class="d-flex justify-content-center">
+          {{ feature_days }} days {{ feature_hours }} hours {{ feature_mins }} mins
+        </div>
+        {% else %}
+        <div class="d-flex justify-content-center mt-2"> 
+        <strong>Total contributions:</strong> 
+        </div>
+        <div class="d-flex justify-content-center">
+          <h3>£{{ profile.total_contributed }}</h3>
+        </div>
+        <div class="d-flex justify-content-center mt-2">
+          Amount Contributed Ranking: 
+        </div>
+        <div class="d-flex justify-content-center">
+          <h3>#{{ total_position }}</h3>
+        </div>
+        <div class="d-flex justify-content-center mt-2">
+          Number of Contributions Ranking: 
+        </div>
+        <div class="d-flex justify-content-center">
+          <h3>#{{ times_position }}</h3>
+        </div>
+        <div class="d-flex justify-content-center">
+          {% if total_position == 1 %}
+            <h3><i class="fas fa-trophy"></i></h3>
+          {% endif %}
+          {% if times_position == 1 %}
+            <h3><i class="fas fa-trophy"></i></h3>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-12 col-md-10 offset-md-1 col-lg-8 offset-lg-1 mt-4">
+    <div class="grey-card">
+      <div class="d-flex justify-content-start">
+        <h6>About Me</h6>{% if profile.user == request.user %}<small class="ml-2"><a data-toggle="modal" data-target="#profileAboutModal">(Edit)</a></small>{% endif %}
+      </div>
+      <div class="d-flex justify-content-start">
+        <p>{{ profile.about }}</p>
+      </div>
     </div>
   </div>
 </div>
 
+
+
+<!-- Modals -->
+<div class="modal fade" id="profileImgModal" tabindex="-1" role="dialog" aria-labelledby="profileImgModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="profileImgModalLabel">Select a File</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form method="POST" enctype="multipart/form-data">
+          <div class="modal-body">
+            {% csrf_token %}
+            {{ img_upload_form|crispy }}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary" name='img'>Upload</button>
+          </div>
+        </form>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="profileAboutModal" tabindex="-1" role="dialog" aria-labelledby="profileAboutModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="profileAboutModalLabel">About Me</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form method="POST">
+          <div class="modal-body">
+            {% csrf_token %}
+            {{ about_form|crispy }}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary" name='about-me'>Save</button>
+          </div>
+        </form>
+    </div>
+  </div>
+</div>
 {% endblock %}

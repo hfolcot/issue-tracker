@@ -6,7 +6,7 @@ from django.core.paginator import Paginator
 import math
 
 from accounts.models import Profile
-from .forms import UserRegistrationForm, UpdateProfilePicture
+from .forms import UserRegistrationForm, UpdateProfilePicture, UpdateAboutMeForm
 from tickets.choices import PRIORITY_CHOICES, STATUS_CHOICES, FEATURE_STATUS_CHOICES
 from tickets.models import BugTicket, NewFeatureTicket
 
@@ -46,7 +46,7 @@ def dashboard_view(request):
 
 	if feature_filter == 'all_open_tickets' or feature_filter == None:
 		features =  NewFeatureTicket.objects.order_by(
-				order if order else '-last_update')
+				order if order else '-last_update').exclude(status='Implemented')
 	else:
 		features =  NewFeatureTicket.objects.order_by(
 				order if order else '-last_update').filter(
@@ -54,7 +54,7 @@ def dashboard_view(request):
 
 	if bug_filter == 'all_open_tickets' or bug_filter == None:
 		bugs =  BugTicket.objects.order_by(
-				order if order else '-last_update')
+				order if order else '-last_update').exclude(status='Fixed')
 	else:
 		bugs =  BugTicket.objects.order_by(
 				order if order else '-last_update').filter(
@@ -70,15 +70,7 @@ def dashboard_view(request):
 		new_features = features.filter(
 			customer=request.user)
 
-	if request.method == 'POST':
-		img_upload_form = UpdateProfilePicture(request.POST, request.FILES, instance=request.user.profile)
-		if img_upload_form.is_valid():
-			img_upload_form.save()
-			messages.success(request, "Profile Updated")
-			return redirect('profile')
-
-	else:	
-		img_upload_form = UpdateProfilePicture()
+	
 
 	#Pagination
 	bug_paginator = Paginator(bug_tickets, 10) # Show 10 tickets per page
@@ -90,7 +82,6 @@ def dashboard_view(request):
 
 	context = {'bug_tickets' : bug_tickets, 
 		'new_features' : new_features,
-		'img_upload_form': img_upload_form,
 		'profile' : profile,
 		'priorities' : PRIORITY_CHOICES,
 		'bug_status' : STATUS_CHOICES,
@@ -98,7 +89,7 @@ def dashboard_view(request):
 		'bug_filter' : bug_filter,
 		'feature_filter': feature_filter
 	}
-	return render(request, 'profile.html', context)
+	return render(request, 'dashboard.html', context)
 
 
 
@@ -107,6 +98,9 @@ def other_profile_view(request, id):
 	View the profile of a selected user
 	"""
 	profile = get_object_or_404(Profile, id=id)
+	about_form = UpdateAboutMeForm(instance=request.user.profile)
+	img_upload_form = UpdateProfilePicture()
+
 	if profile.user.is_staff:
 		dev = profile.user.developerprofile
 		bug_days = math.floor(dev.time_spent_on_bugs / 1440)
@@ -117,9 +111,12 @@ def other_profile_view(request, id):
 		feature_mins = dev.time_spent_on_features % 60
 		total_days = math.floor((dev.time_spent_on_bugs + dev.time_spent_on_features) / 1440)
 		total_hours = math.floor(((dev.time_spent_on_bugs + dev.time_spent_on_features) % 1440) / 60)
-		total_mins = (dev.time_spent_on_bugs + dev.time_spent_on_features) % 60
+		total_mins = (dev.time_spent_on_bugs + dev.time_spent_on_features) % 60	
+		
 		context = {
 			'profile' : profile,
+			'img_upload_form': img_upload_form,
+			'about_form' : about_form,
 			'bug_days' : bug_days,
 			'bug_mins' : bug_mins,
 			'bug_hours' : bug_hours,
@@ -131,7 +128,37 @@ def other_profile_view(request, id):
 			'total_mins' : total_mins
 		}
 	else:
+		
+		customers = []
+		for name in Profile.objects.all().order_by('-total_contributed'):
+			if not name.user.is_staff:
+				customers.append(name)
+		if profile in customers:
+			total_position = customers.index(profile) + 1
+		customers = []
+		for name in Profile.objects.all().order_by('-times_contributed'):
+			if not name.user.is_staff:
+				customers.append(name)
+		if profile in customers:
+			times_position = customers.index(profile) + 1
 		context = {
-		'profile' : profile
+		'profile' 		 : profile,
+		'total_position' : total_position,
+		'times_position' : times_position,
+		'img_upload_form': img_upload_form,
+		'about_form' 	 : about_form,
 		}
-	return render(request, 'other_profile.html', context)
+	if request.method == 'POST':
+		if 'img' in request.POST:
+			img_upload_form = UpdateProfilePicture(request.POST, request.FILES, instance=request.user.profile)
+			img_upload_form.save()
+			messages.success(request, "Profile Updated")
+			return redirect('profile', id=request.user.profile.id)
+		if 'about-me' in request.POST:
+			print(request.POST)
+			about_form = UpdateAboutMeForm(request.POST, instance=request.user.profile)
+			about_form.save()
+			messages.success(request, "Profile Updated")
+			return redirect('profile', id=request.user.profile.id)
+
+	return render(request, 'profile.html', context)

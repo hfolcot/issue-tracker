@@ -3,18 +3,34 @@
 {% block content %}
 
 <div class="row">
-	<div class="col-12">
-		<p>If you wish to report a bug in UnicornAttractor, <a href="{% url 'new_bug' %}">do it here!</a></p>
-		<p>If you wish to suggest a new feature for the app, <a href="{% url 'new_feature' %}">do it here!</a></p>	
-		<p>If you would have a query that is not related to the UnicornAttractor app, let us know here!</p>
+	<div class="col-12 d-flex justify-content-center">
+		<h2>Contact Us</h2>
+	</div>
+	<div class="col-10 offset-1 col-lg-8 offset-lg-2 grey-card mt-2">
+		<div class="d-flex justify-content-center">
+			<p>Found a bug in UnicornAttractor?</p>
+		</div>
+		<div class="d-flex justify-content-center">
+			<a href="{% url 'new_bug' %}" class="btn btn-outline-secondary btn-sm ml-2">Report It</a>
+		</div>
+		<div class="d-flex justify-content-center">
+			<p>Want something new added?</p>
+		</div>
+		<div class="d-flex justify-content-center">
+			<a href="{% url 'new_feature' %}" class="btn btn-outline-secondary btn-sm ml-2">Suggest It</a>
+		</div>
+		<div class="d-flex justify-content-center">
+			<p>If you have a query that is not related to the UnicornAttractor app, let us know by filling in the form below!</p>
+		</div>
 	</div>	
-	<div class="col-12" id="contactForm">
-		<form onsubmit="return sendMail(this);" method="POST">
+	<div class="col-10 offset-1 col-lg-8 offset-lg-2 grey-card mt-3" id="contactForm">
+		<form method="POST">
 			{% csrf_token %}
 			{{ contact_form|crispy }}
-			<input type="submit" class="btn btn-outline-success" value="Submit" />
+			<div class="d-flex justify-content-center">
+				<input type="submit" class="btn btn-primary" value="Submit" />
+			</div>
 		</form>
-		<div id="emailJsErrors"></div>
 	</div>
 </div>
 

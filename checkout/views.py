@@ -46,7 +46,7 @@ def checkout(request, id):
 				messages.error(request, "Your card was declined")
 
 			if customer.paid:
-				messages.success(request, "You have successfully paid")
+				messages.success(request, "Thank you for your contribution!")
 				feature.number_of_donations = F('number_of_donations') + 1
 				feature.total_donations = F('total_donations') + donation
 				total_donated = current_total + donation

@@ -1,10 +1,13 @@
 {% extends 'base.html' %}
-
 {% block content %}
 
-<div class="row d-flex justify-content-center">
-  <h1>All Tickets</h1>
+
+<div class="row mb-4">
+	<div class="col-12 d-flex justify-content-center">
+		<h2>{{ profile.user.first_name|capfirst }}'s IssueTracker</h2>
+	</div>
 </div>
+
   <!-- Tabs -->
 
 
@@ -28,7 +31,11 @@
       <h3>Suggested Features</h3>
     </div>
     <div class="d-flex justify-content-center pb-1">
-      <small>New features suggested by UA users</small>
+      {% if user.is_staff %}
+      <small>New features assigned to you</small>
+      {% else %}
+      <small>New features suggested by you</small>
+      {% endif %}
     </div>
     <div class="col-10 offset-1 filter-select-container">
       <form class="form-inline">
@@ -143,7 +150,11 @@
       <h3>Bugs</h3>
     </div>
     <div class="d-flex justify-content-center pb-1">
-      <small>Bugs in the UA application (fixed for free!)</small>
+      {% if user.is_staff %}
+      <small>Bugs assigned to you</small>
+      {% else %}
+      <small>Bugs raised by you</small>
+      {% endif %}
     </div>
     {% if not request.GET.query %}
     <div class="col-10 offset-1 filter-select-container">
@@ -254,9 +265,14 @@
 
   <!--End Tab Content-->
 
-
-<script type="text/javascript">
-
-
-</script>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+

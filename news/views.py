@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
+from django.core.paginator import Paginator
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, reverse, redirect
 
@@ -39,8 +40,18 @@ def article_view(request, id):
 		return HttpResponseRedirect(reverse('article', args=(article.id,)))
 	#Get comments to display
 	comments = Comment.get_comments(Article, article.id)
+	#Pagination (comments)
+	comment_paginator = Paginator(comments, 10) # Show 10 tickets per page
+	page = request.GET.get('page')
+	comments = comment_paginator.get_page(page)
+	context = {
+		'article': article, 
+		'profile': profile, 
+		'comments': comments, 
+		'comment_form':comment_form
+	}
 
-	return render(request, 'article.html', {'article': article, 'profile': profile, 'comments': comments, 'comment_form':comment_form})
+	return render(request, 'article.html', context)
 
 def new_edit_article_view(request, id=None):
 	article = get_object_or_404(Article, id=id) if id else None

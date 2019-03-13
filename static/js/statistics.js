@@ -9,8 +9,11 @@ function clearCanvases() {
 	$('#charts').show();
 	$('.canvas').remove();
 	$('#charts').append(`<canvas class="canvas" id="voteChart"></canvas>
+								<hr class="canvas">
 								<canvas class="canvas" id="byMonth"></canvas>
+								<hr class="canvas">
 								<canvas class="canvas" id="last28Days"></canvas>
+								<hr class="canvas">
 								<canvas class="canvas" id="last7Days"></canvas>`);
 }
 

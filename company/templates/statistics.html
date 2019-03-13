@@ -4,56 +4,84 @@
 
 {% block content %}
 <div class="row">
-	<h1>Statistics</h1>
+	<div class="col-12 d-flex justify-content-center">
+		<h1>Statistics</h1>
+	</div>
 </div>
 
 <div class="row">
-	<h6>Choose your dataset: </h6>
-	<button class="btn btn-primary btn-small ml-2 statisticButton" id='bugDataset'>Bugs</button>
-	<button class="btn btn-primary btn-small ml-2 statisticButton" id='featureDataset'>Features</button>
-	<button class="btn btn-primary btn-small ml-2 statisticButton" id='staffDataset'>Staff</button>
-	<button class="btn btn-primary btn-small ml-2 statisticButton" id='customerDataset'>Contributor Leaderboard</button>
-</div>
-<div class="row">
-	<div class='col-12 col-md-6' style='display: none' id='bugsFixedToday'>
-		<table class="table">
-			<thead>
-				<th scope="col">Bug ID</th>
-				<th scope="col">Title</th>
-				<th scope="col">Customer</th>
-			</thead>
-			<tbody>
-			{% for bug in fixed_bugs %}
-			<tr>
-				<td>{{ bug.id }}</td>
-				<td>{{ bug.title }}</td>
-				<td>{{ bug.customer }}</td>
-			</tr>
-			{% endfor %}
-			</tbody>
-		</table>
-	</div>
-	<div class='col-12 col-md-6' style='display: none' id='featuresImplementedToday'>
-		<table class="table" id="fImpTod">
-			<thead>
-				<th scope="col">Feature ID</th>
-				<th scope="col">Title</th>
-				<th scope="col">Amount Paid</th>
-			</thead>
-			<tbody>
-			{% for feature in implemented_features %}
-			<tr>
-				<td>{{ feature.id }}</td>
-				<td>{{ feature.title }}</td>
-				<td>{{ feature.total_donations }}</td>
-			</tr>
-			{% endfor %}
-			</tbody>
-		</table>
+	<div class="col-12">
+		<div class="d-flex justify-content-center">
+			<h6>Choose your dataset: </h6>
+		</div>
+		<div class="d-flex justify-content-center flex-wrap">
+			<button class="btn btn-primary btn-small ml-2 mb-2 statisticButton" id='bugDataset'>Bugs</button>
+			<button class="btn btn-primary btn-small ml-2 mb-2 statisticButton" id='featureDataset'>Features</button>
+			<button class="btn btn-primary btn-small ml-2 mb-2 statisticButton" id='staffDataset'>Staff</button>
+			<button class="btn btn-primary btn-small ml-2 mb-2 statisticButton" id='customerDataset'>Contributor Leaderboard</button>
+		</div>
 	</div>
 </div>
 <div class="row">
-	<div id="charts" class="col-12" style='display: none'>
+	<div class='grey-card col-12 col-md-6 offset-md-3 mt-2' style='display: none' id='bugsFixedToday'>
+		
+		<div class="d-flex justify-content-center">
+			<h6>Bugs fixed today</h6>
+		</div>
+		<div class="d-flex justify-content-center">
+			{% if fixed_bugs %}
+				<table class="table">
+					<thead>
+						<th scope="col">Bug ID</th>
+						<th scope="col">Title</th>
+						<th scope="col">Customer</th>
+					</thead>
+					<tbody>
+					{% for bug in fixed_bugs %}
+					<tr>
+						<td>{{ bug.id }}</td>
+						<td>{{ bug.title }}</td>
+						<td>{{ bug.customer }}</td>
+					</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			{% else %}
+				No bugs have been fixed today :(
+			{% endif %}
+		</div>
+
+	</div>
+	<div class='col-12 col-md-6 offset-md-3 mt-2 grey-card' style='display: none' id='featuresImplementedToday'>
+		<div class="d-flex justify-content-center">
+			<h6>Features added today</h6>
+		</div>
+		<div class="d-flex justify-content-center">
+			{% if implemented_features %}
+				<table class="table" id="fImpTod">
+					<thead>
+						<th scope="col">Feature ID</th>
+						<th scope="col">Title</th>
+						<th scope="col">Amount Paid</th>
+					</thead>
+					<tbody>
+					{% for feature in implemented_features %}
+					<tr>
+						<td>{{ feature.id }}</td>
+						<td>{{ feature.title }}</td>
+						<td>{{ feature.total_donations }}</td>
+					</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			{% else %}
+				No new features have been added today :(
+			{% endif %}
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div id="charts" class="col-12 col-xl-10 offset-xl-1 grey-card mt-2" style='display: none'>
 		<canvas class="canvas" id="voteChart"></canvas>
 		<canvas class="canvas" id="byMonth"></canvas>
 		<canvas class="canvas" id="last28Days"></canvas>
@@ -61,46 +89,76 @@
 	</div>
 </div>
 <div class="row" id="staff">
-	<div class="col-12  col-md-6" id="staffFeatures" {% if not staff_panel_active %} style='display: none' {% endif %}>
-		<table class="table">
-			<thead>
-				<th scope="col">Developer</th>
-				<th scope="col"><a href="?dfilter=-time_spent_on_features">Total Minutes Spent On Features</a></th>
-				<th scope="col"><a href="?dfilter=-time_spent_on_bugs">Total Minutes Spent On Bugs</a></th>
-			</thead>
-			<tbody>
-				{% for dev in devs %}
-				<tr>
-					<td>{{ dev.first_name }} {{ dev.last_name}}</td>
-					<td>{{ dev.time_spent_on_features }}</td>
-					<td>{{ dev.time_spent_on_bugs }}</td>
-				</tr>
-				{% endfor %}
-				
-			</tbody>
-		</table>
+	<div class="col-12 col-xl-10 offset-xl-1 mt-2" id="staffFeatures" {% if not staff_panel_active %} style='display: none' {% endif %}>
+		<div class="d-flex justify-content-center mt-2">
+			<h5>Our hard-working developers</h5>
+		</div>
+		<div class="grey-card d-flex justify-content-center">
+			<table class="table">
+				<thead>
+					<th scope="col">#</th>
+					<th scope="col">Developer</th>
+					<th scope="col"><a href="?dfilter=-time_spent_on_features">Total Minutes Spent On Features</a></th>
+					<th scope="col"><a href="?dfilter=-time_spent_on_bugs">Total Minutes Spent On Bugs</a></th>
+				</thead>
+				<tbody>
+					{% for dev in devs %}
+					<tr>
+						<td>{{ forloop.counter }}</td>
+						<td>{{ dev.first_name }} {{ dev.last_name}}</td>
+						<td>{{ dev.time_spent_on_features }}</td>
+						<td>{{ dev.time_spent_on_bugs }}</td>
+					</tr>
+					{% endfor %}
+					
+				</tbody>
+			</table>
+		</div>
 	</div>
-	<div class="col-12 col-md-6" id="contributionsBoard" {% if staff_panel_active %} style='display: none' {% endif %}>
-		<h5>Top Ten Contributors</h5>
-		<table class="table">
-			<thead>
-				<th scope="col">#</th>
-				<th scope="col">Username</th>
-				<th scope="col"><a href="?cfilter=-total_contributed">Total Contributions</a></th>
-				<th scope="col"><a href="?cfilter=-times_contributed">Number of contributions</a></th>
-			</thead>
-			<tbody>
-				{% for customer in customers %}
-				<tr>
-					<td>{{ forloop.counter }}</td>
-					<td>{{ customer.user.first_name }} {{ customer.user.last_name}}</td>
-					<td>{{ customer.total_contributed }}</td>
-					<td>{{ customer.times_contributed }}</td>
-				</tr>
-				{% endfor %}
-				
-			</tbody>
-		</table>
+	<div class="col-12 col-xl-10 offset-xl-1" id="contributionsBoard" {% if staff_panel_active %} style='display: none' {% endif %}>
+		<div class="d-flex justify-content-center mt-2">
+			<h5>Top Ten Contributors</h5>
+		</div>
+		<div class="grey-card d-flex justify-content-center">
+			<table class="table table-sm">
+				<thead>
+					<th scope="col"></th>
+					<th scope="col">Username</th>
+					<th scope="col"><a href="?cfilter=-total_contributed">Total Contributions</a></th>
+					<th scope="col" class="d-none d-sm-block"><a href="?cfilter=-times_contributed">Number of contributions</a></th>
+				</thead>
+				<tbody>
+					{% for customer in customers %}
+					<tr>
+						<td>{{ forloop.counter }}</td>
+						<td>{{ customer.user.first_name }} {{ customer.user.last_name}}</td>
+						<td>£{{ customer.total_contributed }}</td>
+						<td class="d-none d-sm-block">{{ customer.times_contributed }}</td>
+					</tr>
+					{% endfor %}
+					
+				</tbody>
+			</table>
+		</div>
+		<div class="grey-card d-flex justify-content-center d-sm-none mt-2">
+			<table class="table table-sm">
+				<thead>
+					<th scope="col"></th>
+					<th scope="col">Username</th>
+					<th scope="col"># Contributions</a></th>
+				</thead>
+				<tbody>
+					{% for customer in customers %}
+					<tr>
+						<td>{{ forloop.counter }}</td>
+						<td>{{ customer.user.first_name }} {{ customer.user.last_name}}</td>
+						<td>{{ customer.times_contributed }}</td>
+					</tr>
+					{% endfor %}
+					
+				</tbody>
+			</table>
+		</div>
 	</div>
 </div>
 {% endblock %}

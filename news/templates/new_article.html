@@ -2,10 +2,19 @@
 {% load crispy_forms_tags %}
 {% block content %}
 
-<form method="POST">
-	{% csrf_token %}
-	{{ form|crispy }}
-	<small>Article content can be written in either <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet"><strong>markdown</strong></a> (recommended) or <strong>plain text</strong>.</small><br>
-	<button type="submit" class="btn btn-success mt-2">Publish</button>
-</form>
+<div class="row">
+	<div class="col-12 d-flex justify-content-center">
+		<h2>New Article</h2>
+	</div>
+	<div class="col-12 col-lg-6 offset-lg-3">
+		<div class="grey-card mt-2">
+			<form method="POST">
+				{% csrf_token %}
+				{{ form|crispy }}
+				<small>Article content can be written in either <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet"><strong>markdown</strong></a> (recommended) or <strong>plain text</strong>.</small><br>
+				<button type="submit" class="btn btn-success mt-2">Publish</button>
+			</form>
+		</div>
+	</div>
+</div>
 {% endblock %}

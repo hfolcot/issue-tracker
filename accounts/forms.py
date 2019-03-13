@@ -28,3 +28,11 @@ class UpdateProfilePicture(forms.ModelForm):
 	class Meta:
 		model = Profile
 		fields = ['image']
+
+class UpdateAboutMeForm(forms.ModelForm):
+	"""
+	Form to update the user's "about me" section
+	"""
+	class Meta:
+		model = Profile
+		fields = ['about']

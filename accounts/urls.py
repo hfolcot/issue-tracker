@@ -6,7 +6,7 @@ from .views import registration_view, dashboard_view, other_profile_view
 
 urlpatterns = [
 	path('register', registration_view, name="register"),
-	path('profile', dashboard_view, name="dashboard"),
+	path('dashboard', dashboard_view, name="dashboard"),
 	path('users/<int:id>', other_profile_view, name='profile'),
 	path('logout', auth_views.LogoutView.as_view(template_name='logout.html'), name='logout'),
 	path('login', auth_views.LoginView.as_view(template_name='login.html'), name='login'),

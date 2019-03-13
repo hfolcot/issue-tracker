@@ -18,7 +18,7 @@
 </head>
 
 <body>
-
+<header>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="{% url 'home' %}">UA IssueTracker</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,16 +53,22 @@
         </li>
       </ul>
       <ul class="navbar-nav mr-3">
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarAboutDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            {{ request.user }}
-          </a>
-          <div class="dropdown-menu" aria-labelledby="navbarAboutDropdown">
-            <a class="dropdown-item" href="{% url 'dashboard' %}">Dashboard</a>
-            <a class="dropdown-item" href="{% url 'profile' id=request.user.id %}">My Profile</a>
-            <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
-          </div>
+        {% if user.is_authenticated %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarUserDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {{ request.user }}
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarUserDropdown">
+              <a class="dropdown-item" href="{% url 'dashboard' %}">Dashboard</a>
+              <a class="dropdown-item" href="{% url 'profile' id=request.user.id %}">My Profile</a>
+              <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+            </div>
+          </li>  
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'login' %}">Login/Register</a>
         </li>
+        {% endif %}
       </ul>
       <form class="form-inline my-2 my-lg-0" action="{% url 'home' %}">
         <input class="form-control mr-sm-2" type="text" name="query" value="{{ request.GET.query }}" placeholder="Search all tickets" aria-label="Search">
@@ -70,11 +76,12 @@
       </form>
     </div>
   </nav>
-<div class="container-fluid">
+</header>
+<main class="container-fluid">
   {% if messages %}
-    <div class="messages">
+    <div class="row messages">
       {% for message in messages %}
-      <div class="alert alert-{{ message.tags }} text-center">{{ message }}</div>
+      <div class="col-12 alert alert-{{ message.tags }} text-center">{{ message }}</div>
       {% endfor %}
     </div>
   {% endif %}
@@ -84,7 +91,7 @@
       {% block content %} {% endblock %}
     </div>
   </div>
-
+</main>
 <!-- JQuery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
 <!-- Bootstrap -->

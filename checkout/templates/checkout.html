@@ -14,28 +14,37 @@
 {% endblock %}
 
 {% block content %}
-<form role='form' method='POST' id='payment-form' action="{% url 'checkout' feature.id %}">
-	{% csrf_token %}
-	<div id="credit-card-errors" style="display:none">
-        <div class="alert-message block-message error" id="stripe-error-message"></div>
-    </div>
-    <div class="d-flex justify-content-center">
-    <h3>Please donate any amount from <span class="text-primary">£5.00</span> to <span class="text-primary">£{{ max_amount }}</span></h3>
+<div class="row">
+	<div class="col-12 d-flex justify-content-center">
+		<h1>Contributing to "{{ feature.title }}"</h1>
 	</div>
-	<div>
-	<div id="div_id_donation" class="form-group"> 
-		<label for="id_donation" class="col-form-label  requiredField">
-        	Donation<span class="asteriskField">*</span> 
-        </label> 
-	    <div class=""> 
-	    	<input type="number" name="donation" min="5.00" max="{{ max_amount }}" step="any" class="numberinput form-control" required id="id_donation"> 
-	    </div> 
+	<div class="col-12 col-md-8 offset-md-2 grey-card mt-4">
+		<form role='form' method='POST' id='payment-form' action="{% url 'checkout' feature.id %}">
+			{% csrf_token %}
+			<div id="credit-card-errors" style="display:none">
+		        <div class="alert-message block-message error" id="stripe-error-message"></div>
+		    </div>
+		    <div class="d-flex justify-content-center">
+		    <h3>Please donate any amount from <span class="text-primary">£5.00</span> to <span class="text-primary">£{{ max_amount }}</span></h3>
+			</div>
+			<div>
+			<div id="div_id_donation" class="form-group"> 
+				<label for="id_donation" class="col-form-label  requiredField">
+		        	Donation<span class="asteriskField">*</span> 
+		        </label> 
+			    <div class=""> 
+			    	<input type="number" name="donation" min="5.00" max="{{ max_amount }}" step="any" class="numberinput form-control" required id="id_donation"> 
+			    </div> 
+			</div>
+			{{ order_form|crispy }}
+			{{ payment_form|crispy }}
+			</div>
+			<div class="d-flex justify-content-center">
+				<input class="btn btn-primary" id="submit_payment_btn" name="commit" type="submit" value="Submit Payment"></input>
+			</div>
+		</form>
 	</div>
-	{{ order_form|crispy }}
-	{{ payment_form|crispy }}
-	</div>
-	<input class="btn btn-primary" id="submit_payment_btn" name="commit" type="submit" value="Submit Payment"></input>
-</form>
+</div>
 
 {% endblock %}
 

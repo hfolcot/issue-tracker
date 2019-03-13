@@ -22,3 +22,6 @@ contact form python snippet from https://wsvincent.com/django-contact-form/
 
 ## Issues
 How to filter on search results? As 'query' not carried through.
+
+## Deployment
+Users would need to add their email address into the sendMail function in contacts/views.py.

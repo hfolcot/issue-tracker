@@ -1,54 +1,83 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-<div class="row mb-5">
-	<a href="{% url 'news' %}" class="btn btn-outline-secondary"><i class="fas fa-angle-double-left"></i> Back to Latest News</a>
-</div>
-{% if user.is_staff %}
-	<div class="d-flex flex-row-reverse">
-		<a href="{% url 'edit_article' article.id %}" class="btn btn-secondary"><i class="fas fa-plus"></i>  Edit Article</a>
+<div class="row">
+	<div class="col-12 mt-2">
+		<div class="d-flex justify-content-between">
+			<a href="{% url 'news' %}" class="btn btn-outline-secondary"><i class="fas fa-angle-double-left"></i> Back to Latest News</a>
+			{% if user.is_staff %}
+				<a href="{% url 'edit_article' article.id %}" class="btn btn-secondary"><i class="fas fa-plus"></i>  Edit Article</a>
+			{% endif %}
+		</div>
 	</div>
-{% endif %}
-<div class="article-heading">
+</div>
+
+<div class="col-12 mt-2 d-flex justify-content-center">
 	<h2>{{ article.title }}</h2>
 </div>
 <div class="col-12 d-flex justify-content-end align-items-end">
-	
 	<small>By {{ article.author.first_name|capfirst }} {{ article.author.last_name|capfirst }} on {{ article.timestamp }}</small>
 	<img src="{{ profile.get_image_url }}" class="profile-pic rounded-circle" style='align-self: center'/>
 </div>
 <hr>
-<div class="article-content">
+<div class="article-content grey-card">
 {{ article.content }}
 </div>
 <hr>
 <div class="row">
 	<div class="col-12 col-sm-6">
-		<h5>Add a comment:</h5>
-		<form method="POST">{% csrf_token %}
-			{{ comment_form|crispy }}
-			<input type="submit" value="Post" class="btn btn-outline-dark">
-		</form>
-		<div class="comments">
-		{% if not comments %}
-		<h6>No comments yet</h6>
-		{% else %}
-		<h6>Previous comments:</h6>
-		{% endif %}
-		{% for comment in comments %}
-		<div class="row card mt-1">
-			<div class="col-12 mt-1">
-				<img class="profile-pic rounded-circle" src="{{ comment.user.profile.image.url }}"/>
-				<span>
-					<strong>{{ comment.user.profile.first_name }} {{ comment.user.profile.last_name }}</strong> 
-					<small>on {{ comment.timestamp.date }} at {{ comment.timestamp.time }}</small>
-				</span>
-			</div>
-			<div class="col-12">
-				<p>{{ comment.content }}</p>
-			</div>
+		<div class="add-comment grey-card">
+			<h5>Add a comment:</h5>
+			<form method="POST">{% csrf_token %}
+				{{ comment_form|crispy }}
+				<input type="submit" value="Post" class="btn btn-outline-dark">
+			</form>
 		</div>
-		{% endfor %}
-	</div>
+		<div class="comments mt-4">
+			<h6>Comments:</h6>
+			{% if comments %}
+				{% for comment in comments %}
+				<div class="col-12 grey-card mt-2">
+					<img class="profile-pic rounded-circle" src="{{ comment.user.profile.image.url }}" alt="{{comment.user }} profile picture"/>
+					<span>
+						<a href="{% url 'profile' id=comment.user.profile.id %}"><strong>{{ comment.user.first_name }} {{ comment.user.last_name }}</strong></a>
+						<small>on {{ comment.timestamp.date }} at {{ comment.timestamp.time }}</small>
+					</span>
+					<div class="col-12 mt-1">
+						<p>{{ comment.content }}</p>
+					</div>
+				</div>
+				{% endfor %}
+			{% else %}
+				<div class="col-12 grey-card mt-2">
+					No comments to show
+				</div>
+			{% endif %}
+			<div class="d-flex justify-content-end mt-2">
+				<small class="mr-2 ml-2">Page {{ comments.number }} of {{ comments.paginator.num_pages }}</small>
+			</div>
+			<div class="d-flex justify-content-end">
+				<nav aria-label="comments pages">
+					<ul class="pagination">
+			          {% if comments.has_previous %}
+			          <li class="page-item">
+			            <a class='page-link' href="?page=1">&laquo; First</a>
+			          </li>
+			          <li class="page-item">
+			            <a class='page-link' href="?page={{ comments.previous_page_number }}">Previous</a>
+			          </li>
+			          {% endif %}
+			          {% if comments.has_next %}
+			          <li class="page-item">
+			            <a class='page-link' href="?page={{ comments.next_page_number }}">Next</a>
+			          </li>
+			          <li class="page-item">
+			            <a class='page-link' href="?page={{ comments.paginator.num_pages }}">Last &raquo;</a>
+			          </li>
+			          {% endif %}
+			        </ul>
+			    </nav>
+		    </div>
+		</div>
 </div>
 {% endblock %}
