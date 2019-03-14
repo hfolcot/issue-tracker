@@ -16,6 +16,7 @@ Links to next and previous articles in the latest news blog
 
 Refactor so that the commenting and updates are done together for devs? But not for users as users can't update. Would it be possible?
 
+Idea: add a 'rejected' status for features.
 
 contact form python snippet from https://wsvincent.com/django-contact-form/
 
