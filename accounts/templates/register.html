@@ -5,8 +5,14 @@
 {% block content %}
 
 <div class="row full-height">
-	<div class="col-12 col-sm-10 offset-sm-1 col-md-6 offset-md-3 d-flex justify-content-center align-items-center">
-		<div class="grey-card login-box">
+	<div class="col-12 d-flex justify-content-center mt-4">
+		<h2>Registration</h2>
+	</div>
+	<div class="col-12 d-flex justify-content-center">
+		<small><a href="{% url 'help' %}">What am I registering for?</a></small>
+	</div>
+	<div class="col-12 col-sm-10 offset-sm-1 col-md-6 offset-md-3 d-flex justify-content-center">
+		<div class="grey-card login-box mt-4">
 			<form method="POST">
 			{% csrf_token %}
 			{{ form|crispy }}
