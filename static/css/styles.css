@@ -1,5 +1,5 @@
 body {
-	font-size: 15px;
+	/*font-size: 15px;*/
 	display: flex;
 	min-height: 100vh;
     flex-direction: column;
@@ -140,7 +140,7 @@ main {
 }
 
 .profile-pic-container {
-	min-width: ;
+	min-height: 100%;
 }
 
 .stats {
@@ -148,6 +148,7 @@ main {
 	max-height: 100%;
 	padding: 25px;
 }
+
 
 .fa-trophy {
 	color: #59C3C3;

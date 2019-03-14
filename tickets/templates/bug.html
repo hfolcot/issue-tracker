@@ -12,7 +12,7 @@
 			<h6>Problem Description</h6>
 			{{ bug.description }}<br>
 			<div class="d-flex justify-content-end">
-				<small>Raised by {{ bug.customer.first_name }} {{ bug.customer.last_name }}</small>
+				<small>Raised by <a href="{% url 'profile' id=bug.customer.profile.id %}">{{ bug.customer.first_name }} {{ bug.customer.last_name }}</a></small>
 			</div>
 		</div>
 		<div class="voting mt-2 mb-2">
