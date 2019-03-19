@@ -28,7 +28,6 @@ def all_tickets_view(request):
 	A home page showing all outstanding tickets
 	"""
 	order=request.GET.get('order')
-	print(order)
 	feature_filter = request.GET.get('feature_filter')
 	bug_filter = request.GET.get('bug_filter')
 
@@ -395,8 +394,6 @@ def feature_ticket_view(request, id):
 					user_voted = False
 		else:
 			user_voted = False
-		print(feature.total_donations)
-		print(feature.cost)
 		#Get comments
 		comments = Comment.get_comments(NewFeatureTicket, feature.id)
 

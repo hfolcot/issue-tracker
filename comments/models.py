@@ -1,14 +1,9 @@
 from django.db import models
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
-def get_sentinel_user():
-	#return 'deleted' on comments associated with deleted user accounts
-    return get_user_model().objects.get_or_create(username='deleted')[0]
-
-
+from accounts.models import get_sentinel_user
 
 class Comment(models.Model):
 	"""

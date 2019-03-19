@@ -13,7 +13,7 @@
 			<h6>Idea</h6>
 			{{ feature.description }}<br>
 			<div class="d-flex justify-content-end">
-				<small>Suggested by {{ feature.customer.first_name }} {{ feature.customer.last_name }}</small>
+				<small>Suggested by <a href="{% url 'profile' id=feature.customer.profile.id %}">{{ feature.customer.first_name }} {{ feature.customer.last_name }}</a></small>
 			</div>
 		</div>
 		<div class="voting mt-2 mb-2">

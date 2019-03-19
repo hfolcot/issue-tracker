@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator
 from django.http import HttpResponse, HttpResponseRedirect
@@ -53,13 +54,17 @@ def article_view(request, id):
 
 	return render(request, 'article.html', context)
 
+@login_required
 def new_edit_article_view(request, id=None):
-	article = get_object_or_404(Article, id=id) if id else None
-	if request.method == 'POST':
-		form = NewArticleForm(request.POST)
-		if form.is_valid():
-			article = form.save()
-			return redirect(article_view, article.id)
+	if not request.user.is_staff:
+		return redirect('news')
 	else:
-		form = NewArticleForm(instance=article)
-	return render(request, 'new_article.html', {'form':form})
+		article = get_object_or_404(Article, id=id) if id else None
+		if request.method == 'POST':
+			form = NewArticleForm(request.POST)
+			if form.is_valid():
+				article = form.save()
+				return redirect(article_view, article.id)
+		else:
+			form = NewArticleForm(instance=article)
+		return render(request, 'new_article.html', {'form':form})

@@ -92,8 +92,8 @@ def dashboard_view(request):
 	return render(request, 'dashboard.html', context)
 
 
-
-def other_profile_view(request, id):
+@login_required
+def profile_view(request, id):
 	"""
 	View the profile of a selected user
 	"""
