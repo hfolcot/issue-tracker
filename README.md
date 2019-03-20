@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/hfolcot/issue-tracker.svg?branch=master)](https://travis-ci.org/hfolcot/issue-tracker)
+
 # UnicornAttractor Issue Tracker
 
 ## By Heather Olcot
