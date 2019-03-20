@@ -25,4 +25,15 @@ contact form python snippet from https://wsvincent.com/django-contact-form/
 How to filter on search results? As 'query' not carried through.
 
 ## Deployment
-Users would need to add their email address into the sendMail function in contacts/views.py.
+Users would need to add their email address into the env variables for the sendMail function in contacts/views.py.
+
+## Testing
+Django TestCase automated tests written, contained within each app and all starting with 'test_*'.
+Jasmine test written for javascript. To use, these scripts must be added to the base.html header above the local scripts: `
+    <!-- Jasmine Testing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jasmine/3.1.0/jasmine.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jasmine/3.1.0/jasmine-html.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jasmine/3.1.0/boot.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jasmine/3.1.0/jasmine.css" />`
+In addition, this needs to be added to the block bodyjs section of statistics.html:
+`<script src="{% static 'js/spec.js' %}"></script>`
