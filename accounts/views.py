@@ -155,7 +155,6 @@ def profile_view(request, id):
 			messages.success(request, "Profile Updated")
 			return redirect('profile', id=request.user.profile.id)
 		if 'about-me' in request.POST:
-			print(request.POST)
 			about_form = UpdateAboutMeForm(request.POST, instance=request.user.profile)
 			about_form.save()
 			messages.success(request, "Profile Updated")
