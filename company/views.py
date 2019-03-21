@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.core.mail import send_mail, BadHeaderError
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
@@ -60,15 +61,16 @@ def statistics_view(request):
 
 	cfilters = request.GET.get('cfilter')
 	customers = []
+	deleted_profile = User.objects.get(username='deleteduser').profile.id
 	if cfilters:
-		for profile in Profile.objects.all().order_by(cfilters)[:10]:
+		for profile in Profile.objects.all().order_by(cfilters).exclude(id=deleted_profile)[:10]:
 			if not profile.user.is_staff:
 				customers.append(profile)
 	else:
-		for profile in Profile.objects.all().order_by('-total_contributed')[:10]:
+		for profile in Profile.objects.all().order_by('-total_contributed').exclude(id=deleted_profile)[:10]:
 			if not profile.user.is_staff:
 				customers.append(profile)
-
+	print(customers)
 	context = {
 	'fixed_bugs' : bugs_fixed_today,
 	'implemented_features' : features_implemented_today,
