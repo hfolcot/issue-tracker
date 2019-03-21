@@ -40,12 +40,12 @@
     <div class="col-10 offset-1 filter-select-container">
       <form class="form-inline">
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="feature_filter" id="all_open_tickets" value="all_open_tickets" {% if request.GET.feature_filter == 'all_open_tickets' or request.GET.feature_filter == None %}checked{% endif %}>
+          <input class="form-check-input" type="radio" name="feature_filter" value="all_open_tickets" {% if request.GET.feature_filter == 'all_open_tickets' or request.GET.feature_filter == None %}checked{% endif %}>
           <label class="form-check-label" for="all_open_tickets">All Open Tickets</label>
         </div>
         {% for status in feature_status %}
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="feature_filter" id="{{ status.0 }}" value="{{ status.0 }}" {% if request.GET.feature_filter == status.0 %}checked{% endif %}>
+            <input class="form-check-input" type="radio" name="feature_filter" id="feature{{ status.0 }}" value="{{ status.0 }}" {% if request.GET.feature_filter == status.0 %}checked{% endif %}>
             <label class="form-check-label" for="{{ status.0 }}">{{ status.0 }}</label>
           </div>
         {% endfor %}
@@ -162,12 +162,12 @@
     <div class="col-10 offset-1 filter-select-container">
       <form class="form-inline">
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="bug_filter" id="all_open_tickets" value="all_open_tickets" {% if request.GET.bug_filter == 'all_open_tickets' or request.GET.bug_filter == None %}checked{% endif %}>
+          <input class="form-check-input" type="radio" name="bug_filter" value="all_open_tickets" {% if request.GET.bug_filter == 'all_open_tickets' or request.GET.bug_filter == None %}checked{% endif %}>
           <label class="form-check-label" for="all_open_tickets">All Open Tickets</label>
         </div>
         {% for status in bug_status %}
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="bug_filter" id="{{ status.0 }}" value="{{ status.0 }}" {% if request.GET.bug_filter == status.0 %}checked{% endif %}>
+          <input class="form-check-input" type="radio" name="bug_filter" id="bug{{ status.0 }}" value="{{ status.0 }}" {% if request.GET.bug_filter == status.0 %}checked{% endif %}>
           <label class="form-check-label" for="{{ status.0 }}">{{ status.0 }}</label>
         </div>
         {% endfor %}
