@@ -9,9 +9,7 @@ $(function() {
         };
         
     Stripe.createToken(card, function(status, response) {
-        console.log("createToken")
         if (status === 200) {
-            console.log("200!")
             $("#credit-card-errors").hide();
             $("#id_stripe_id").val(response.id);
             
@@ -23,7 +21,6 @@ $(function() {
             
             form.submit();
         } else {
-            console.log("epic fail")
             $("#stripe-error-message").text(response.error.message);
             $("#credit-card-errors").show();
             $("#validate_card_btn").attr("disabled", false);

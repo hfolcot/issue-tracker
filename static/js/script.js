@@ -3,8 +3,8 @@ $(document).ready(function() {
 	//Render markdown where called
 	$(".article-content").each(function() {
 		var article = $(this).text();
-		var marked_article = marked(article)
-		$(this).html(marked_article)
+		var marked_article = marked(article);
+		$(this).html(marked_article);
 	});
 
   //Store which tab is currently selected, in the session window
@@ -15,8 +15,8 @@ $(document).ready(function() {
   if(sessionStorage.length > 0) {
     $("#feature-results").removeClass("show active");
     $('#featuresTab').removeClass("active");
-    activeTabId = "#" + sessionStorage.getItem("clickedTab")
-    activePaneId = sessionStorage.getItem("activePane")
+    activeTabId = "#" + sessionStorage.getItem("clickedTab");
+    activePaneId = sessionStorage.getItem("activePane");
       $(activeTabId).addClass("show active");
       $(activePaneId).addClass("show active");
   } else {
@@ -26,4 +26,4 @@ $(document).ready(function() {
 
 
 
-})
+});
