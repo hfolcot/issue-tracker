@@ -5,6 +5,44 @@ body {
     flex-direction: column;
 }
 
+main {
+    flex: 1 0 auto;
+}
+
+/*****************************Misc Items*/
+
+.small {
+	font-size: 80%;
+	font-weight: 400;
+}
+
+.full-height {
+	height: 100%;
+}
+
+
+.grey-card {
+	background-color: #f1f5f5;
+	padding: 5px;
+	border-radius: 10px;
+	box-shadow: 3px 3px 3px 0 rgba(0,0,0,0.14);
+}
+
+.no-dec {
+	text-decoration: none;
+}
+
+.max-height {
+	height: 100%;
+}
+
+a {
+    color: inherit;
+}
+
+
+/**************************Header/Footer*/
+
 .page-footer {
 	margin-top: 10px;
 	background-color: #212529;
@@ -15,22 +53,30 @@ body {
 	padding-left: 10px;
 }
 
-main {
-    flex: 1 0 auto;
+/*********************************Images*/
+
+.screenshot-thumbnail {
+    max-height: 200px;
+    max-width: 100%;
+}
+
+.profile-pic {
+	width: 32px;
+	height: 32px;
+}
+
+.profile-pic-large {
+	width: 90%;
+	height: 90%;
+	object-fit: cover;
+}
+
+.profile-pic-container {
+	min-height: 100%;
 }
 
 
-.full-height {
-	height: 100%;
-}
-
-.grey-card {
-	background-color: #f1f5f5;
-	padding: 5px;
-	border-radius: 10px;
-	box-shadow: 3px 3px 3px 0 rgba(0,0,0,0.14);
-}
-
+/**********************************Login*/
 .login-box {
 	padding: 15px;
 	width: 100%;
@@ -43,7 +89,7 @@ main {
 	width: 75%;
 }
 
-
+/***************************Tickets page*/
 .nav-tabs {
 	border-bottom: 0px;
 }
@@ -97,6 +143,7 @@ main {
 	padding-bottom: 15px;
 }
 
+/*************************Individual tickets*/
 .description {
 	border: 1px solid #818D92;
 }
@@ -110,12 +157,6 @@ main {
 	font-size: 0.9rem;
 }
 
-.screenshot-thumbnail {
-    max-height: 200px;
-    max-width: 100%;
-}
-
-
 .progress {
 	height: 30px;
 }
@@ -124,25 +165,7 @@ main {
 	background-color: #59C3C3;
 }
 
-.result {
-	padding: 0;
-}
-
-.profile-pic {
-	width: 32px;
-	height: 32px;
-}
-
-.profile-pic-large {
-	width: 90%;
-	height: 90%;
-	object-fit: cover;
-}
-
-.profile-pic-container {
-	min-height: 100%;
-}
-
+/***************************Profiles*/
 .stats {
 	min-height: 100%;
 	max-height: 100%;
@@ -154,35 +177,17 @@ main {
 	color: #59C3C3;
 }
 
-.card-header h6 i {
- font-size: 1.5rem;
-}
+/*********************About/Statistics*/
 
 .unicorn-img {
 	height: 300px;
-}
-
-.no-dec {
-	text-decoration: none;
-}
-
-.order-arrow {
-	font-size: 0.6em;
-}
-
-a {
-    color: inherit;
 }
 
 hr.canvas {
 	border-top: 2px solid #818D92;
 }
 
-.max-height {
-	height: 100%;
-}
-
-/*Buttons*/
+/******************************Buttons*/
 
 .btn-primary {
 	background-color: #1C6E8C;
@@ -201,7 +206,7 @@ hr.canvas {
 
 
 
-/*animations*/
+/******************************Animations*/
 
 @keyframes attention {
   from {
