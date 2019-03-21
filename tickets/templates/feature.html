@@ -119,16 +119,23 @@
 					</div>
 					{% endif %}
 				</div>
-			{% endif %}	
-			<div class="add-comment grey-card">
-			<p>Add a comment:</p>
-			<form method="POST">{% csrf_token %}
-				{{ comment_form|crispy }}
-				<div class="d-flex justify-content-end">
-					<input type="submit" value="Post" name="comment" class="btn btn-primary">
+			{% endif %}
+			{% if user_can_comment %}	
+				<div class="add-comment grey-card">
+					<p>Add a comment:</p>
+					<form method="POST">{% csrf_token %}
+						{{ comment_form|crispy }}
+						<div class="d-flex justify-content-end">
+							<input type="submit" value="Post" name="comment" class="btn btn-primary">
+						</div>
+					</form>
 				</div>
-			</form>
-		</div>
+			{% else %}
+				<div class="add-comment grey-card">
+					<p>Add a comment:</p>
+					<p>You must <a href="{% url 'checkout' id=feature.id %}"><u>contribute</u></a> before you can add comments</p>
+				</div>
+			{% endif %}
 		<div class="comments mt-4">
 			<h6>Comments:</h6>
 			{% if comments %}

@@ -96,10 +96,12 @@
 		<div class="grey-card d-flex justify-content-center">
 			<table class="table">
 				<thead>
-					<th scope="col">#</th>
-					<th scope="col">Developer</th>
-					<th scope="col"><a href="?dfilter=-time_spent_on_features">Total Minutes Spent On Features</a></th>
-					<th scope="col"><a href="?dfilter=-time_spent_on_bugs">Total Minutes Spent On Bugs</a></th>
+					<tr>
+						<th scope="col">#</th>
+						<th scope="col">Developer</th>
+						<th scope="col"><a href="?dfilter=-time_spent_on_features">Total Minutes Spent On Features</a></th>
+						<th scope="col"><a href="?dfilter=-time_spent_on_bugs">Total Minutes Spent On Bugs</a></th>
+					</tr>
 				</thead>
 				<tbody>
 					{% for dev in devs %}
@@ -122,10 +124,12 @@
 		<div class="grey-card d-flex justify-content-center">
 			<table class="table table-sm">
 				<thead>
-					<th scope="col"></th>
-					<th scope="col">Username</th>
-					<th scope="col"><a href="?cfilter=-total_contributed">Total Contributions</a></th>
-					<th scope="col" class="d-none d-sm-block"><a href="?cfilter=-times_contributed">Number of contributions</a></th>
+					<tr>
+						<th scope="col"></th>
+						<th scope="col">Username</th>
+						<th scope="col"><a href="?cfilter=-total_contributed">Total Contributions</a></th>
+						<th scope="col" class="d-none d-sm-block"><a href="?cfilter=-times_contributed">Number of contributions</a></th>
+					</tr>
 				</thead>
 				<tbody>
 					{% for customer in customers %}
@@ -143,9 +147,11 @@
 		<div class="grey-card d-flex justify-content-center d-sm-none mt-2">
 			<table class="table table-sm">
 				<thead>
-					<th scope="col"></th>
-					<th scope="col">Username</th>
-					<th scope="col"># Contributions</a></th>
+					<tr>
+						<th scope="col"></th>
+						<th scope="col">Username</th>
+						<th scope="col"># Contributions</th>
+					</tr>
 				</thead>
 				<tbody>
 					{% for customer in customers %}

@@ -33,13 +33,13 @@
     <div class="col-10 offset-1 filter-select-container">
       <form class="form-inline">
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="feature_filter" id="all_open_tickets" value="all_open_tickets" {% if request.GET.feature_filter == 'all_open_tickets' or request.GET.feature_filter == None %}checked{% endif %}>
-          <label class="form-check-label" for="all_open_tickets">All Open Tickets</label>
+          <input class="form-check-input" type="radio" name="feature_filter" id="all_open_features" value="all_open_tickets" {% if request.GET.feature_filter == 'all_open_tickets' or request.GET.feature_filter == None %}checked{% endif %}>
+          <label class="form-check-label" for="all_open_features">All Open Tickets</label>
         </div>
         {% for status in feature_status %}
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="feature_filter" id="{{ status.0 }}" value="{{ status.0 }}" {% if request.GET.feature_filter == status.0 %}checked{% endif %}>
-            <label class="form-check-label" for="{{ status.0 }}">{{ status.0 }}</label>
+            <input class="form-check-input" type="radio" name="feature_filter" id="feature_status_{{ forloop.counter }}" value="{{ status.0 }}" {% if request.GET.feature_filter == status.0 %}checked{% endif %}>
+            <label class="form-check-label" for="feature_status_{{ forloop.counter }}">{{ status.0 }}</label>
           </div>
         {% endfor %}
         <button class="btn btn-outline-dark my-2 my-sm-0" type="submit"><i class="fas fa-filter"></i></button>
@@ -62,9 +62,9 @@
             <a class='page-link' href="?page={{ new_features.previous_page_number }}&query={{ request.GET.query }}">Previous</a>
           </li>
           {% endif %}
-          <small class="mr-2 ml-2">
+          <li class="mr-2 ml-2 small">
               Page {{ new_features.number }} of {{ new_features.paginator.num_pages }}
-          </small>
+          </li>
           {% if new_features.has_next %}
           <li class="page-item">
             <a class='page-link' href="?page={{ new_features.next_page_number }}&query={{ request.GET.query }}">Next</a>
@@ -122,9 +122,9 @@
             <a class='page-link' href="?page={{ new_features.previous_page_number }}&query={{ request.GET.query }}">Previous</a>
           </li>
           {% endif %}
-          <small class="mr-2 ml-2">
+          <li class="mr-2 ml-2 small">
               Page {{ new_features.number }} of {{ new_features.paginator.num_pages }}
-          </small>
+          </li>
           {% if new_features.has_next %}
           <li class="page-item">
             <a class='page-link' href="?page={{ new_features.next_page_number }}&query={{ request.GET.query }}">Next</a>
@@ -140,7 +140,7 @@
   </div>
 
   <!--Bugs-->
-  <div id="bug-results" class="tab-pane fade" role="tabpanel" aria-labelledby="bug-tab">
+  <div id="bug-results" class="tab-pane fade" role="tabpanel" aria-labelledby="bugsTab">
     <div class="d-flex justify-content-center">
       <h3>Bugs</h3>
     </div>
@@ -151,13 +151,13 @@
     <div class="col-10 offset-1 filter-select-container">
       <form class="form-inline">
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="bug_filter" id="all_open_tickets" value="all_open_tickets" {% if request.GET.bug_filter == 'all_open_tickets' or request.GET.bug_filter == None %}checked{% endif %}>
-          <label class="form-check-label" for="all_open_tickets">All Open Tickets</label>
+          <input class="form-check-input" type="radio" name="bug_filter" id="all_open_bugs" value="all_open_tickets" {% if request.GET.bug_filter == 'all_open_tickets' or request.GET.bug_filter == None %}checked{% endif %}>
+          <label class="form-check-label" for="all_open_bugs">All Open Tickets</label>
         </div>
         {% for status in bug_status %}
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="bug_filter" id="{{ status.0 }}" value="{{ status.0 }}" {% if request.GET.bug_filter == status.0 %}checked{% endif %}>
-          <label class="form-check-label" for="{{ status.0 }}">{{ status.0 }}</label>
+          <input class="form-check-input" type="radio" name="bug_filter" id="bug_status_{{ forloop.counter }}" value="{{ status.0 }}" {% if request.GET.bug_filter == status.0 %}checked{% endif %}>
+          <label class="form-check-label" for="bug_status_{{ forloop.counter }}">{{ status.0 }}</label>
         </div>
         {% endfor %}
       <button class="btn btn-outline-dark my-2 my-sm-0" type="submit"><i class="fas fa-filter"></i></button>
@@ -181,9 +181,9 @@
             <a class='page-link' href="?page={{ bug_tickets.previous_page_number }}&query={{ request.GET.query }}">Previous</a>
           </li>
           {% endif %}
-          <small class="mr-2 ml-2">
+          <li class="mr-2 ml-2 small">
               Page {{ bug_tickets.number }} of {{ bug_tickets.paginator.num_pages }}
-          </small>
+          </li>
           {% if bug_tickets.has_next %}
           <li class="page-item">
             <a class='page-link' href="?page={{ bug_tickets.next_page_number }}&query={{ request.GET.query }}">Next</a>
@@ -238,9 +238,9 @@
           <a class='page-link' href="?page={{ bug_tickets.previous_page_number }}&query={{ request.GET.query }}">Previous</a>
         </li>
         {% endif %}
-        <small class="mr-2 ml-2">
+        <li class="mr-2 ml-2 small">
             Page {{ bug_tickets.number }} of {{ bug_tickets.paginator.num_pages }}
-        </small>
+        </li>
         {% if bug_tickets.has_next %}
         <li class="page-item">
           <a class='page-link' href="?page={{ bug_tickets.next_page_number }}&query={{ request.GET.query }}">Next</a>
@@ -258,9 +258,4 @@
 
   <!--End Tab Content-->
 
-
-<script type="text/javascript">
-
-
-</script>
 {% endblock %}

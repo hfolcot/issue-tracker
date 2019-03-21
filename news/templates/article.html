@@ -17,7 +17,7 @@
 </div>
 <div class="col-12 d-flex justify-content-end align-items-end">
 	<small>By {{ article.author.first_name|capfirst }} {{ article.author.last_name|capfirst }} on {{ article.timestamp }}</small>
-	<img src="{{ profile.get_image_url }}" class="profile-pic rounded-circle" style='align-self: center'/>
+	<img src="{{ profile.get_image_url }}" class="profile-pic rounded-circle" alt="{{ article.author }}" style='align-self: center'/>
 </div>
 <hr>
 <div class="article-content grey-card">
@@ -79,5 +79,6 @@
 			    </nav>
 		    </div>
 		</div>
+	</div>
 </div>
 {% endblock %}
