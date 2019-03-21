@@ -63,12 +63,12 @@ def statistics_view(request):
 	customers = []
 	deleted_profile = User.objects.get(username='deleteduser').profile.id
 	if cfilters:
-		for profile in Profile.objects.all().order_by(cfilters).exclude(id=deleted_profile)[:10]:
-			if not profile.user.is_staff:
+		for profile in Profile.objects.all().order_by(cfilters)[:10]:
+			if not profile.user.is_staff and not profile.id == deleted_profile:
 				customers.append(profile)
 	else:
-		for profile in Profile.objects.all().order_by('-total_contributed').exclude(id=deleted_profile)[:10]:
-			if not profile.user.is_staff:
+		for profile in Profile.objects.all().order_by('-total_contributed')[:10]:
+			if not profile.user.is_staff and not profile.id == deleted_profile:
 				customers.append(profile)
 	print(customers)
 	context = {
