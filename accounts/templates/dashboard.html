@@ -89,9 +89,11 @@
               <th scope="col">
                 <a  href="?order={% if request.GET.order == 'id' %}-{% endif%}id&feature_filter={% if feature_filter %}{{ request.GET.feature_filter }}{% else %}all_open_tickets{% endif %}">#</a>
               </th>
+              {% if user.is_staff %}
               <th class="d-none d-sm-block" scope="col">
                 <a href="?order={% if request.GET.order == 'customer' %}-{% endif%}customer&feature_filter={% if feature_filter %}{{ request.GET.feature_filter }}{% else %}all_open_tickets{% endif %}">Customer</a>
               </th>
+              {% endif %}
               <th scope="col">
                 <a href="?order={% if request.GET.order == 'title' %}-{% endif%}title&feature_filter={% if feature_filter %}{{ request.GET.feature_filter }}{% else %}all_open_tickets{% endif %}">Title</a>
               </th>
@@ -108,7 +110,9 @@
             {% for feature in new_features %}
               <tr>
                 <th scope="row">{{ feature.id }}</th>
+                {% if user.is_staff %}
                 <td class="d-none d-sm-block">{{ feature.customer.first_name }} {{ feature.customer.last_name }}</td>
+                {% endif %}
                 <td><small>{{ feature.title }}</small></td> 
                 <td class="d-none d-sm-block">{{ feature.last_update }}</td>
                 <td>{{ feature.status }}</td>
