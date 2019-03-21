@@ -61,7 +61,10 @@ def new_edit_article_view(request, id=None):
 	else:
 		article = get_object_or_404(Article, id=id) if id else None
 		if request.method == 'POST':
-			form = NewArticleForm(request.POST)
+			if article:
+				form = NewArticleForm(request.POST, instance=article)
+			else:
+				form = NewArticleForm(request.POST)
 			if form.is_valid():
 				article = form.save()
 				return redirect(article_view, article.id)
