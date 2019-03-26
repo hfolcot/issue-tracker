@@ -17,6 +17,8 @@ def registration_view(request):
 	"""
 	Register a new user
 	"""
+	if request.user.is_authenticated:
+		return redirect('dashboard')
 	if request.method == "POST":
 		registration_form = UserRegistrationForm(request.POST)
 		if registration_form.is_valid():
