@@ -32,6 +32,7 @@ class BugUpdateForm(forms.ModelForm):
 		}
 
 class FeatureUpdateForm(forms.ModelForm):
+	cost = forms.DecimalField(min_value=5.00, decimal_places=2)
 	class Meta:
 		model = NewFeatureTicket
 		fields = [
