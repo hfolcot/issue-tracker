@@ -17,6 +17,9 @@ stripe.api_key = settings.STRIPE_SECRET
 @login_required
 def checkout(request, id):
 	feature = get_object_or_404(NewFeatureTicket, pk=id)
+	if not feature.quoted or feature.cost == feature.total_donations:
+		messages.error(request, 'You cannot contribute to this feature at this time')
+		return redirect(reverse('feature', args=(feature.id,)))
 	current_total = float(feature.total_donations)
 	max_amount = feature.cost - feature.total_donations
 
