@@ -21,11 +21,9 @@
 	<div class="col-12 col-md-8 offset-md-2 grey-card mt-4">
 		<form method='POST' id='payment-form' action="{% url 'checkout' feature.id %}">
 			{% csrf_token %}
-			<div id="credit-card-errors" style="display:none">
-		        <div class="alert-message block-message error" id="stripe-error-message"></div>
-		    </div>
+			
 		    <div class="d-flex justify-content-center">
-		    <h3>Please donate any amount from <span class="text-primary">£5.00</span> to <span class="text-primary">£{{ max_amount }}</span></h3>
+			    <h3>Please donate any amount from <span class="text-primary">£5.00</span> to <span class="text-primary">£{{ max_amount }}</span></h3>
 			</div>
 			<div>
 			<div id="div_id_donation" class="form-group"> 
@@ -39,6 +37,9 @@
 			{{ order_form|crispy }}
 			{{ payment_form|crispy }}
 			</div>
+			<div id="credit-card-errors" class="d-flex justify-content-center mt-1" style="display:none">
+		        <div class="alert-message alert-error mb-2" id="stripe-error-message"></div>
+		    </div>
 			<div class="d-flex justify-content-center">
 				<input class="btn btn-primary" id="submit_payment_btn" name="commit" type="submit" value="Submit Payment">
 			</div>
