@@ -135,7 +135,11 @@
 			{% else %}
 				<div class="add-comment grey-card">
 					<p>Add a comment:</p>
-					<p>You must <a href="{% url 'checkout' id=feature.id %}"><u>contribute</u></a> before you can add comments</p>
+					{% if feature.quoted %}
+						<p>You must <a href="{% url 'checkout' id=feature.id %}"><u>contribute</u></a> before you can add comments</p>
+					{% else %}
+						<small>You cannot comment until the feature has been quoted and you have contributed towards funds.</small>
+					{% endif %}
 				</div>
 			{% endif %}
 		<div class="comments mt-4">
