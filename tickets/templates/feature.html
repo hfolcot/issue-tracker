@@ -112,7 +112,9 @@
 						<p>Target £{{ feature.cost }}</p>
 					</div>
 					{% if remaining == 0 %}
-					<p class="text-success">Target reached!</p>
+					<div class="d-flex justify-content-center mt-1">
+						<p class="text-success">Target reached!</p>
+					<div class="d-flex justify-content-center mt-1">
 					{% else %}
 					<div class="d-flex justify-content-center mt-1">
 						<a href="{% url 'checkout' feature.id %}" class="btn btn-success contribute">Contribute!</a>
@@ -184,6 +186,20 @@
 		</div>
 		{% else %}
 			<div>
+				<div class="grey-card mb-4">
+					<div class="progress">
+	  					<div class="progress-bar progress-bar-striped" role="progressbar" style="width: {{ percentage }}%" aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100"><strong>{{ percentage }}%</strong></div>
+					</div>
+					{% if quoted == True and remaining == 0 %}
+					<div class="d-flex justify-content-center mt-1">
+						<p class="text-success">Target reached!</p>
+					</div>
+					{% else %}
+					<div class="d-flex justify-content-center mt-1">
+						<p class="text-secondary">{{ feature.status }} {% if feature.status == 'Awaiting Funds' %} ({{ feature.cost }}){% endif %}</p>
+					</div>
+					{% endif %}
+				</div>
 				<p class="grey-card ticket-info-cust">Time spent so far: {{ hours }} hrs {{ mins }} mins</p>
 				<div class="grey-card ticket-info-cust mb-4">
 					<h6>Update Ticket</h6>
