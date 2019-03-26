@@ -42,7 +42,7 @@ def all_tickets_view(request):
 
 	if bug_filter == 'all_open_tickets' or bug_filter == None:
 		bug_tickets = BugTicket.objects.order_by(
-			order if order else 'priority').exclude(
+			order if order else 'priority', '-last_update').exclude(
 			status='Fixed')
 	else:
 		bug_tickets = BugTicket.objects.filter(
@@ -58,7 +58,7 @@ def all_tickets_view(request):
 				Q(customer__first_name__icontains=query) |
 				Q(customer__last_name__icontains=query) |
 				Q(id__icontains=query)
-				).distinct().order_by(order if order else 'last_update')
+				).distinct().order_by(order if order else '-last_update')
 			
 		new_features = new_features.filter(
 				Q(title__icontains=query) |
@@ -66,7 +66,7 @@ def all_tickets_view(request):
 				Q(customer__first_name__icontains=query) |
 				Q(customer__last_name__icontains=query) |
 				Q(id__icontains=query)
-				).distinct().order_by(order if order else 'last_update')
+				).distinct().order_by(order if order else '-last_update')
 
 	#Pagination
 	bug_paginator = Paginator(bug_tickets, 10) # Show 10 tickets per page
