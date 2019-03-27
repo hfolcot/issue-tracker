@@ -18,6 +18,12 @@ The demonstrated version of the app focuses on support of the fictional 'Unicorn
 
 ## Notes for CI assessors
 
+### Sample developer account
+The application has developers and basic users. Basic users are ready to go as soon as they register but developers need to be granted access through admin. I have supplied a sample account below.
+
+Username: citester
+Password: guess321
+
 ### Possible issues
 The contact form is working, however there is occassionally a 500 error caused when trying to test it. This is caused by Google blocking the attempted sign in and NOT a bug in the app.
 
