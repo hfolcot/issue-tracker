@@ -19,7 +19,7 @@ The demonstrated version of the app focuses on support of the fictional 'Unicorn
 ## Notes for CI assessors
 
 ### Sample developer account
-The application has developers and basic users. Basic users are ready to go as soon as they register but developers need to be granted access through admin. I have supplied a sample account below.
+The application has developers and basic users. Basic users are ready to go as soon as they register but developers need to be granted access through admin (details in deployment section). I have supplied a sample account below.
 
 Username: citester
 Password: guess321
@@ -164,7 +164,7 @@ To deploy the application the following steps must be taken:
 14. Go to Users > Add User and create a user with username 'unassigned' (all lower case), and name of 'Not currently assigned' or similar. This is for the application to use as a default staff assignment for all tickets. Give the user staff status.
 15. Go back to the admin home, then Developer Profiles > add, and add the new unassigned user. It is vital that this is done before any other user is given a developer profile.
 16. Create a developer profile for the superuser.
-17. Application deployment is complete.
+17. Any further developers that need access to the software will need to be given staff access in the admin panel, and have a developer profile created for them.
 
 ## Credits
 This project was completed as part of the milestone projects in Code Institute's Full Stack Web Development course. The idea is from the brief given for milestone 5, Full Stack Frameworks, although doesnt match the brief exactly, as explained above.
