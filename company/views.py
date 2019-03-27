@@ -36,7 +36,11 @@ def contact_view(request):
 		messages.success(request, f"Message sent!")
 		return redirect('contact')
 	else:
-		contact_form = ContactForm()
+		if request.user.is_authenticated:
+			name = request.user.first_name + ' ' + request.user.last_name
+			contact_form = ContactForm({'email' : request.user.email, 'your_name' : name})
+		else:
+			contact_form = ContactForm()
 
 	context = {
 		'contact_form' : contact_form
