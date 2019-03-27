@@ -215,6 +215,10 @@ hr.canvas {
  	animation-direction: alternate-reverse;
 }
 
+.page-link {
+	background-color: #6c6c71;
+	color: #fff;
+}
 
 
 /******************************Animations*/

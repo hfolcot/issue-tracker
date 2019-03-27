@@ -45,6 +45,7 @@ def dashboard_view(request):
 	order=request.GET.get('order')
 	feature_filter = request.GET.get('feature_filter')
 	bug_filter = request.GET.get('bug_filter')
+	print(bug_filter)
 
 	if feature_filter == 'all_open_tickets' or feature_filter == None:
 		features =  NewFeatureTicket.objects.order_by(

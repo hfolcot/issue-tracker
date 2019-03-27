@@ -63,21 +63,21 @@
         <ul class="pagination d-flex justify-content-end">
           {% if new_features.has_previous %}
           <li class="page-item">
-            <a class='page-link' href="?page=1&query={{ request.GET.query }}&feature_filter={{ request.GET.feature_filter }}">&laquo; First</a>
+            <a class='page-link' href="?page=1{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}{% if request.GET.feature_filter %}&feature_filter={{request.GET.feature_filter }}{% endif %}">&laquo; First</a>
           </li>
           <li class="page-item">
-            <a class='page-link' href="?page={{ new_features.previous_page_number }}&query={{ request.GET.query }}&feature_filter={{ request.GET.feature_filter }}">Previous</a>
+            <a class='page-link' href="?page={{ new_features.previous_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}{% if request.GET.feature_filter %}&feature_filter={{request.GET.feature_filter }}{% endif %}">Previous</a>
           </li>
           {% endif %}
-          <li class="mr-2 ml-2 small">
+          <li class="mt-2 mr-2 ml-2 small">
               Page {{ new_features.number }} of {{ new_features.paginator.num_pages }}
           </li>
           {% if new_features.has_next %}
           <li class="page-item">
-            <a class='page-link' href="?page={{ new_features.next_page_number }}&query={{ request.GET.query }}&feature_filter={{ request.GET.feature_filter }}">Next</a>
+            <a class='page-link' href="?page={{ new_features.next_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}{% if request.GET.feature_filter %}&feature_filter={{request.GET.feature_filter }}{% endif %}">Next</a>
           </li>
           <li class="page-item">
-            <a class='page-link' href="?page={{ new_features.paginator.num_pages }}&query={{ request.GET.query }}&feature_filter={{ request.GET.feature_filter }}">Last &raquo;</a>
+            <a class='page-link' href="?page={{ new_features.paginator.num_pages }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}{% if request.GET.feature_filter %}&feature_filter={{request.GET.feature_filter }}{% endif %}">Last &raquo;</a>
           </li>
           {% endif %}
         </ul>
@@ -127,21 +127,21 @@
       <ul class="pagination d-flex justify-content-end">
           {% if new_features.has_previous %}
           <li class="page-item">
-            <a class='page-link' href="?page=1&query={{ request.GET.query }}&feature_filter={{ request.GET.feature_filter }}">&laquo; First</a>
+            <a class='page-link' href="?page=1&query={{ request.GET.query }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}{% if request.GET.feature_filter %}&feature_filter={{request.GET.feature_filter }}{% endif %}">&laquo; First</a>
           </li>
           <li class="page-item">
-            <a class='page-link' href="?page={{ new_features.previous_page_number }}&query={{ request.GET.query }}&feature_filter={{ request.GET.feature_filter }}">Previous</a>
+            <a class='page-link' href="?page={{ new_features.previous_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}{% if request.GET.feature_filter %}&feature_filter={{request.GET.feature_filter }}{% endif %}">Previous</a>
           </li>
           {% endif %}
-          <li class="mr-2 ml-2 small">
+          <li class="mt-2 mr-2 ml-2 small">
               Page {{ new_features.number }} of {{ new_features.paginator.num_pages }}
           </li>
           {% if new_features.has_next %}
           <li class="page-item">
-            <a class='page-link' href="?page={{ new_features.next_page_number }}&query={{ request.GET.query }}&feature_filter={{ request.GET.feature_filter }}">Next</a>
+            <a class='page-link' href="?page={{ new_features.next_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}{% if request.GET.feature_filter %}&feature_filter={{request.GET.feature_filter }}{% endif %}">Next</a>
           </li>
           <li class="page-item">
-            <a class='page-link' href="?page={{ new_features.paginator.num_pages }}&query={{ request.GET.query }}&feature_filter={{ request.GET.feature_filter }}">Last &raquo;</a>
+            <a class='page-link' href="?page={{ new_features.paginator.num_pages }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}{% if request.GET.feature_filter %}&feature_filter={{request.GET.feature_filter }}{% endif %}">Last &raquo;</a>
           </li>
           {% endif %}
       </ul>
@@ -190,21 +190,21 @@
         <ul class="pagination d-flex justify-content-end">
           {% if bug_tickets.has_previous %}
           <li class="page-item">
-            <a class='page-link' href="?page=1&query={{ request.GET.query }}&bug_filter={{request.GET.bug_filter }}">&laquo; First</a>
+            <a class='page-link' href="?page=1{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}{% if request.GET.bug_filter %}&bug_filter={{request.GET.bug_filter }}{% endif %}">&laquo; First</a>
           </li>
           <li class="page-item">
-            <a class='page-link' href="?page={{ bug_tickets.previous_page_number }}&query={{ request.GET.query }}&bug_filter={{request.GET.bug_filter }}">Previous</a>
+            <a class='page-link' href="?page={{ bug_tickets.previous_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}{% if request.GET.bug_filter %}&bug_filter={{request.GET.bug_filter }}{% endif %}">Previous</a>
           </li>
           {% endif %}
-          <li class="mr-2 ml-2 small">
+          <li class="mt-2 mr-2 ml-2 small">
               Page {{ bug_tickets.number }} of {{ bug_tickets.paginator.num_pages }}
           </li>
           {% if bug_tickets.has_next %}
           <li class="page-item">
-            <a class='page-link' href="?page={{ bug_tickets.next_page_number }}&query={{ request.GET.query }}&bug_filter={{request.GET.bug_filter }}">Next</a>
+            <a class='page-link' href="?page={{ bug_tickets.next_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}{% if request.GET.bug_filter %}&bug_filter={{request.GET.bug_filter }}{% endif %}">Next</a>
           </li>
           <li class="page-item">
-            <a class='page-link' href="?page={{ bug_tickets.paginator.num_pages }}&query={{ request.GET.query }}&bug_filter={{request.GET.bug_filter }}">Last &raquo;</a>
+            <a class='page-link' href="?page={{ bug_tickets.paginator.num_pages }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}{% if request.GET.bug_filter %}&bug_filter={{request.GET.bug_filter }}{% endif %}">Last &raquo;</a>
           </li>
           {% endif %}
         </ul>
@@ -247,21 +247,21 @@
         <ul class="pagination d-flex justify-content-end">
         {% if bug_tickets.has_previous %}
         <li class="page-item">
-          <a class='page-link' href="?page=1&query={{ request.GET.query }}&bug_filter={{request.GET.bug_filter }}">&laquo; First</a>
+          <a class='page-link' href="?page=1{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}{% if request.GET.bug_filter %}&bug_filter={{request.GET.bug_filter }}{% endif %}">&laquo; First</a>
         </li>
         <li class="page-item">
-          <a class='page-link' href="?page={{ bug_tickets.previous_page_number }}&query={{ request.GET.query }}&bug_filter={{request.GET.bug_filter }}">Previous</a>
+          <a class='page-link' href="?page={{ bug_tickets.previous_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}{% if request.GET.bug_filter %}&bug_filter={{request.GET.bug_filter }}{% endif %}">Previous</a>
         </li>
         {% endif %}
-        <li class="mr-2 ml-2 small">
+        <li class="mt-2 mr-2 ml-2 small">
             Page {{ bug_tickets.number }} of {{ bug_tickets.paginator.num_pages }}
         </li>
         {% if bug_tickets.has_next %}
         <li class="page-item">
-          <a class='page-link' href="?page={{ bug_tickets.next_page_number }}&query={{ request.GET.query }}&bug_filter={{request.GET.bug_filter }}">Next</a>
+          <a class='page-link' href="?page={{ bug_tickets.next_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}{% if request.GET.bug_filter %}&bug_filter={{request.GET.bug_filter }}{% endif %}">Next</a>
         </li>
         <li class="page-item">
-          <a class='page-link' href="?page={{ bug_tickets.paginator.num_pages }}&query={{ request.GET.query }}&bug_filter={{request.GET.bug_filter }}">Last &raquo;</a>
+          <a class='page-link' href="?page={{ bug_tickets.paginator.num_pages }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}{% if request.GET.bug_filter %}&bug_filter={{request.GET.bug_filter }}{% endif %}">Last &raquo;</a>
         </li>
         {% endif %}
         </ul>
