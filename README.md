@@ -2,6 +2,7 @@
 
 # UnicornAttractor Issue Tracker
 Demonstration application deployed [here](https://issue-tracker-hev.herokuapp.com/)
+[App help section](https://issue-tracker-hev.herokuapp.com/help/)
 
 ## By Heather Olcot
 
@@ -19,7 +20,7 @@ The demonstrated version of the app focuses on support of the fictional 'Unicorn
 ### Possible issues
 The contact form is working, however there is occassionally a 500 error caused when trying to test it. This is caused by Google blocking the attempted sign in and NOT a bug in the app.
 
-### Not matching brief:
+### Slight difference from brief:
 The idea is that new features are quoted based on how long they will take and so a finite cost is given. Voting is available to all users but only one vote is allowed each. However commenting is only available to those who have contributed towards the project, and developers.
 
 ## UX
@@ -67,6 +68,9 @@ A blog has been included so that developers of the company can keep end users in
 
 *Contact page*
 A separate contact page has been added for users to get in touch with developers about anything that is not a bug/feature. (_Please note that in the demonstration version, this function may occassionally give a 500 error, this is due to an issue with the Gmail address being used - Google has been rejecting the login - rather than an error in the application._)
+
+*Help section*
+Help section included to explain how the site works.
 
 ### Features left to Implement
 As the application currently works, when sorting bugs by priority, it is done alphabetically. A future version of the app will number the priority choices so that when bugs are sorted this way, the order will be Critical, High, Medium, Low and vice versa.
