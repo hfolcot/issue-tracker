@@ -2,6 +2,7 @@
 
 # UnicornAttractor Issue Tracker
 Demonstration application deployed [here](https://issue-tracker-hev.herokuapp.com/)
+
 [App help section](https://issue-tracker-hev.herokuapp.com/help/)
 
 ## By Heather Olcot
