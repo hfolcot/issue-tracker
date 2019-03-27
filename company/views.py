@@ -61,7 +61,10 @@ def statistics_view(request):
 
 	cfilters = request.GET.get('cfilter')
 	customers = []
-	deleted_profile = User.objects.get(username='deleteduser').profile.id
+	if User.objects.filter(username='deleteduser'):
+		deleted_profile = User.objects.get(username='deleteduser').profile.id
+	else:
+		deleted_profile=None
 	if cfilters:
 		for profile in Profile.objects.all().order_by(cfilters)[:10]:
 			if not profile.user.is_staff and not profile.id == deleted_profile:
