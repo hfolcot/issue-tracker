@@ -35,7 +35,9 @@ The idea is that new features are quoted based on how long they will take and so
 The application can be used by most companies to support their own existing software, allowing users to report issues and suggest new features, and developers to communicate with the customer what stage the resolution/implementation has reached.
 
 Planning documentation: 
+
 [Planning.pdf](https://github.com/hfolcot/issue-tracker/blob/master/design/planning/Planning.pdf)
+
 [Wireframes](https://github.com/hfolcot/issue-tracker/tree/master/design/Wireframes)
 
 User stories:
@@ -48,35 +50,43 @@ User stories:
 ### Existing Features
 
 *Full user authentication*
+
 All users of the application can create a secure account with a username and password, to use for adding and viewing tickets. Developers can be given staff status by the administrator for the ability to update tickets. Users can view their own tickets in a personal dashboard and update their profile.
 
-*Home page to view all tickets*
+**Home page to view all tickets**
+
 Users can view both features and bugs in separate tabs, and filter these by status. Results can also be sorted by different headings.
 
-*Search function*
-USers can perform a search to find tickets containing their selected keyword.
+**Search function**
 
-*Bug reporting*
+Users can perform a search to find tickets containing their selected keyword.
+
+**Bug reporting**
+
 End users can report bugs and follow the progress of these right through to a fix being implemented. A screenshot can be added to the title and description for extra clarity. Comments can be added by both users and developers so that full communication between each can be achieved.
 Developers can update further details on each bug including status, priority and to whom it is assigned.
 A voting application has been built which can create one vote per user, per ticket. Once a user has voted, they cannot vote on that ticket again.
 
-*New feature suggestions*
+**New feature suggestions**
+
 End users can also suggest new features for the supported app. These are then assessed by the developers and a quote given for the cost of developing this new feature. End users can contribute towards this quoted target, and once it is reached the developers can work towards implementation. 
 
-*Comments*
+**Comments**
+
 The comments function is a separate app within the Django setup, which is used for both tickets and news articles.
 
-*Statistics*
+**Statistics**
+
 The Django Rest Framework has been utilised along with charts.js in order to create a visual representation of the work done.
 
-*News blog*
-A blog has been included so that developers of the company can keep end users informed of the latest developments.
+**News blog**
 
-*Contact page*
+A blog has been included so that developers of the company can keep end users informed of the latest developments. Articles can be written in both markdown and plain text.
+
+**Contact page**
 A separate contact page has been added for users to get in touch with developers about anything that is not a bug/feature. (_Please note that in the demonstration version, this function may occassionally give a 500 error, this is due to an issue with the Gmail address being used - Google has been rejecting the login - rather than an error in the application._)
 
-*Help section*
+**Help section**
 Help section included to explain how the site works.
 
 ### Features left to Implement
@@ -108,6 +118,8 @@ The [Django Rest Framework](https://www.django-rest-framework.org/) was used to 
 
 The contact form uses the Django SendMail function. (Thanks to [this site](https://wsvincent.com/django-contact-form/))
 
+[MarkedJS](https://marked.js.org/) is used to render blog articles which have been written in markdown.
+
 ## Testing 
 
 There have been a number of automated tests written using Django TestCase. These are contained within each app and begin with 'test_*'.
@@ -115,18 +127,22 @@ There have been a number of automated tests written using Django TestCase. These
 Manual test documentation can be found [here](https://github.com/hfolcot/issue-tracker/tree/master/manual_tests).
 
 Jasmine testing has been written for JavaScript functions.
-To use, these scripts must be added to the base.html header above the local scripts: `
+To use, these scripts must be added to the base.html header above the local scripts: ```
     <!-- Jasmine Testing -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jasmine/3.1.0/jasmine.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jasmine/3.1.0/jasmine-html.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jasmine/3.1.0/boot.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jasmine/3.1.0/jasmine.css" />`
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jasmine/3.1.0/jasmine.css" />```
+
 In addition, this needs to be added to the block bodyjs section of statistics.html:
+
 `<script src="{% static 'js/spec.js' %}"></script>`
 
 
 HTML Validator:
+
 Error: Element ul not allowed as child of element small in this context. -- Contained within some of the Django forms which are rendered automatically.
+
 All other HTML is now passing.
 
 JSHint:
