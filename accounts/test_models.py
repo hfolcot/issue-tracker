@@ -21,7 +21,7 @@ class TestProfileModel(TestCase):
 	def test_get_image_url_of_profile(self):
 		user = User.objects.get(username='test')
 		image_path = user.profile.get_image_url()
-		self.assertEqual(image_path, '/media/profile_pics/default.jpg')
+		self.assertEqual(image_path, 'https://issue-tracker-hev.s3.amazonaws.com/media/profile_pics/default.jpg')
 
 class TestSentinelUser(TestCase):	
 	def setUp(self):

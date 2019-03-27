@@ -73,7 +73,6 @@ def statistics_view(request):
 		for profile in Profile.objects.all().order_by('-total_contributed')[:10]:
 			if not profile.user.is_staff and not profile.id == deleted_profile:
 				customers.append(profile)
-	print(customers)
 	context = {
 	'fixed_bugs' : bugs_fixed_today,
 	'implemented_features' : features_implemented_today,
