@@ -193,10 +193,16 @@ hr.canvas {
 /******************************Buttons*/
 
 .btn-primary,
-.btn-primary:not(:disabled):not(.disabled):active,
-.btn-primary:hover {
+.btn-primary:not(:disabled):not(.disabled):active
+ {
 	background-color: #1C6E8C;
 	border-color: #1C6E8C;
+}
+
+.btn-primary:hover{
+	background-color: #4588A0;
+	border-color: #4588A0;
+	
 }
 
 .contribute {

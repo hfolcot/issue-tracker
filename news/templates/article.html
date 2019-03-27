@@ -16,8 +16,10 @@
 	<h2>{{ article.title }}</h2>
 </div>
 <div class="col-12 d-flex justify-content-end align-items-end">
-	<small>By {{ article.author.first_name|capfirst }} {{ article.author.last_name|capfirst }} on {{ article.timestamp }}</small>
-	<img src="{{ profile.get_image_url }}" class="profile-pic rounded-circle" alt="{{ article.author }}" style='align-self: center'/>
+	<small>By <a href="{% url 'profile' id=article.author.profile.id %}">{{ article.author.first_name|capfirst }} {{ article.author.last_name|capfirst }}</a> on {{ article.timestamp }}</small>
+	<a href="{% url 'profile' id=article.author.profile.id %}">
+		<img src="{{ profile.get_image_url }}" class="profile-pic rounded-circle" alt="{{ article.author }}" style='align-self: center'/>
+	</a>
 </div>
 <hr>
 <div class="article-content grey-card">
