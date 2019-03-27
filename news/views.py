@@ -5,6 +5,8 @@ from django.core.paginator import Paginator
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, reverse, redirect
 
+import datetime
+
 from accounts.models import Profile
 from comments.forms import CommentForm
 from comments.models import Comment
@@ -56,17 +58,28 @@ def article_view(request, id):
 
 @login_required
 def new_edit_article_view(request, id=None):
+	"""
+	View for adding a new article or editing an existing one
+	"""
 	if not request.user.is_staff:
 		return redirect('news')
 	else:
 		article = get_object_or_404(Article, id=id) if id else None
 		if request.method == 'POST':
+			edit = False
 			if article:
 				form = NewArticleForm(request.POST, instance=article)
+				edit = True
 			else:
 				form = NewArticleForm(request.POST)
 			if form.is_valid():
 				article = form.save()
+				if not edit:
+					article.author = request.user
+				if edit:
+					article.content += '<br><br><small>(Edited by {0} on {1})</small>'.format(request.user,
+						datetime.datetime.today().strftime("%d" + " " + "%b" + " " + "%Y" + " at " + "%X"))
+				article.save()
 				return redirect(article_view, article.id)
 		else:
 			form = NewArticleForm(instance=article)
