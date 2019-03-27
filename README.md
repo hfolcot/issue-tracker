@@ -51,7 +51,7 @@ User stories:
 ---
 ### Existing Features
 
-*Full user authentication*
+**Full user authentication**
 
 All users of the application can create a secure account with a username and password, to use for adding and viewing tickets. Developers can be given staff status by the administrator for the ability to update tickets. Users can view their own tickets in a personal dashboard and update their profile.
 
@@ -86,9 +86,11 @@ The Django Rest Framework has been utilised along with charts.js in order to cre
 A blog has been included so that developers of the company can keep end users informed of the latest developments. Articles can be written in both markdown and plain text.
 
 **Contact page**
+
 A separate contact page has been added for users to get in touch with developers about anything that is not a bug/feature. (_Please note that in the demonstration version, this function may occassionally give a 500 error, this is due to an issue with the Gmail address being used - Google has been rejecting the login - rather than an error in the application._)
 
 **Help section**
+
 Help section included to explain how the site works.
 
 ### Features left to Implement
