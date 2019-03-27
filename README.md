@@ -41,7 +41,9 @@ Planning documentation:
 [Wireframes](https://github.com/hfolcot/issue-tracker/tree/master/design/Wireframes)
 
 User stories:
+
 •	As a user of the UnicornAttractor app, I would like to be able to suggest new features for the app, in order to have it fulfil my requirements more fully.
+
 •	As a developer of the UnicornAttractor app, I would like to have a central location for all work remaining on the app, as well as a method for users to pay for the work, in order to keep the app up to date and generate income from it.
 
 
