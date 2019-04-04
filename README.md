@@ -126,6 +126,8 @@ The contact form uses the Django SendMail function. (Thanks to [this site](https
 
 [MarkedJS](https://marked.js.org/) is used to render blog articles which have been written in markdown.
 
+[Travis CI](https://travis-ci.org) is used for continuous integration testing. The build status can be seen at the top of this README file.
+
 ## Testing 
 
 There have been a number of automated tests written using Django TestCase. These are contained within each app and begin with 'test_*'.
