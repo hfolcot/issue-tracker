@@ -94,6 +94,8 @@ A separate contact page has been added for users to get in touch with developers
 Help section included to explain how the site works.
 
 ### Features left to Implement
+Some of the code in the views will require refactoring in a future version to make it more efficient and elegant.
+
 As the application currently works, when sorting bugs by priority, it is done alphabetically. A future version of the app will number the priority choices so that when bugs are sorted this way, the order will be Critical, High, Medium, Low and vice versa.
 
 Links to the next and previous articles would be a welcome addition in the blog.
@@ -112,7 +114,7 @@ Pages are written in [HTML](https://www.w3.org/html/) using [CSS3](https://www.w
 
 [ChartsJS](https://www.chartjs.org) has been used for the bar graphs in Statistics.
 
-The [Django Rest Framework](https://www.django-rest-framework.org/) was used to set up an API for the statistics to query the data.
+The [Django Rest Framework](https://www.django-rest-framework.org/) was used to set up an API for the statistics to query the data. The API can be found [here](https://issue-tracker-hev.herokuapp.com/tickets/api/).
 
 [Django Crispy Forms](https://django-crispy-forms.readthedocs.io/en/latest/) have been used for good CSS on all forms.
 
@@ -182,15 +184,17 @@ To deploy the application the following steps must be taken:
 12. From your command line, type `python manage.py createsuperuser` and enter desired credentials.
 13. Now go to <yourliveapp.herokuapp.com>/admin and log in with the superuser credentials.
 14. Go to Users > Add User and create a user with username 'unassigned' (all lower case), and name of 'Not currently assigned' or similar. This is for the application to use as a default staff assignment for all tickets. Give the user staff status.
-15. Go back to the admin home, then Developer Profiles > add, and add the new unassigned user. It is vital that this is done before any other user is given a developer profile.
+15. Go back to the admin home, then Developer Profiles > add, and add the new unassigned user. It is vital that this is done **before** any other user is given a developer profile.
 16. Create a developer profile for the superuser.
-17. Any further developers that need access to the software will need to be given staff access in the admin panel, and have a developer profile created for them.
+17. Any further developers that need access to the software will need to be given staff access in the admin panel (by going into Users > {username} > select 'Staff Status'), and have a developer profile created for them as in step 15.
 
 ## Credits
-This project was completed as part of the milestone projects in Code Institute's Full Stack Web Development course. The idea is from the brief given for milestone 5, Full Stack Frameworks, although doesnt match the brief exactly, as explained above.
+This project was completed as part of the milestone projects in Code Institute's Full Stack Web Development course. The idea is from the brief given for milestone 5, Full Stack Frameworks, although it doesn't match the brief exactly, as explained above.
 
 ### Media
 All images are taken from stock photo websites and are watermarked accordingly, except for the admin's avatar image, which was created using https://avatarmaker.com/.
 
 ### Other
 The python snippet for the sendMail function was found at https://wsvincent.com/django-contact-form/
+
+I have also learned vast amounts about Django from Justin Mitchel at Coding For Entrepreneurs - his YouTube channel can be found [here](https://www.youtube.com/user/CodingEntrepreneurs)
