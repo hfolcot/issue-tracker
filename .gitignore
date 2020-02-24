@@ -5,3 +5,4 @@ env.py
 __pycache__
 */migrations/*
 unused code.py
+env/
