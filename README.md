@@ -25,7 +25,7 @@ Username: citester
 Password: guess321
 
 ### Possible issues
-The contact form is working, however there is occassionally a 500 error caused when trying to test it. This is caused by Google blocking the attempted sign in and NOT a bug in the app.
+The contact form is working, however there is occasionally a 500 error caused when trying to test it. This is caused by Google blocking the attempted sign in and NOT a bug in the app.
 
 ### Slight difference from brief:
 The idea is that new features are quoted based on how long they will take and so a finite cost is given. Voting is available to all users but only one vote is allowed each. However commenting is only available to those who have contributed towards the project, and developers.
